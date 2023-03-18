@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
@@ -9,6 +10,7 @@ import { AppComponent } from './app.component';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { PanelModule } from 'primeng/panel';
 
 
 @NgModule({
@@ -19,10 +21,12 @@ import { InputNumberModule } from 'primeng/inputnumber';
     BrowserModule,
     AppRoutingModule,
     FormsModule,
+    BrowserAnimationsModule,
     DragDropModule,
     ButtonModule,
     TableModule,
     InputNumberModule,
+    PanelModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
