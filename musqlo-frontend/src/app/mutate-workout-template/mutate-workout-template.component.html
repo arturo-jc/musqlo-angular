@@ -1,0 +1,130 @@
+<div class="flex p-component">
+    <div class="col-2">
+        <h2>Exercies</h2>
+        <ul
+            style="min-height: 100px;"
+            cdkDropList
+            #exerciseList="cdkDropList"
+            [cdkDropListData]="exercises"
+            [cdkDropListConnectedTo]="[templateList]"
+            cdkDropListSortingDisabled
+        >
+            <li *ngFor="let exercise of exercises" [cdkDragData]="exercise" cdkDrag>
+                <p>{{ exercise.exerciseType }}</p>
+                <p>{{ exercise.category }}</p>
+            </li>
+        </ul>
+    </div>
+    <div class="col-10">
+        <div class="flex">
+            <h2 class="flex-1">My Workout</h2>
+            <div>
+                <p-toggleButton
+                    offIcon="pi pi-arrows-alt"
+                    offLabel="Reorder"
+                    onIcon="pi pi-check"
+                    onLabel="Done"
+                    [style]="{ 'width': '8rem' }"
+                    [disabled]="!reorderMode && exerciseTemplates.length < 2"
+                    [(ngModel)]="reorderModeButtonPressed"
+                    (onChange)="toggleReorderMode()"
+                ></p-toggleButton>
+            </div>
+        </div>
+        <ul
+            style="min-height: 100px;"
+            cdkDropList
+            #templateList="cdkDropList"
+            [cdkDropListData]="exerciseTemplates"
+            (cdkDropListDropped)="drop($event)"
+        >
+            <li *ngFor="let template of exerciseTemplates" [cdkDragData]="template" cdkDrag [cdkDragDisabled]="!reorderMode">
+                <div class="flex align-items-center">
+                    <button 
+                        *ngIf="reorderMode"
+                        pButton
+                        pRipple
+                        type="button"
+                        icon="pi pi-arrows-alt"
+                        class="p-button-rounded p-button-text p-button-plain mr-2"
+                        cdkDragHandle
+                    ></button>
+                    <button 
+                        *ngIf="!reorderMode"
+                        pButton
+                        pRipple
+                        (click)="template.collapsed = !template.collapsed"
+                        type="button"
+                        [icon]="template.collapsed ? 'pi pi-chevron-right' : 'pi pi-chevron-down'"
+                        class="p-button-rounded p-button-text p-button-plain mr-2"
+                    ></button>
+                    <h3 class="flex-1">{{ template.exerciseType }}</h3>
+                    <p-button 
+                        (click)="addSet(template)"
+                        label="Add Set"
+                        icon="pi pi-plus"
+                        styleClass="p-button-sm p-button-raised p-button-success mr-2"
+                        [disabled]="reorderMode"
+                    ></p-button>
+                    <p-button 
+                        (click)="deleteTemplate(template.order - 1)"
+                        label="Delete"
+                        icon="pi pi-trash"
+                        styleClass="p-button-sm p-button-raised p-button-danger"
+                    ></p-button>
+                </div>
+                <div [@collapse]="(template.collapsed || reorderModeButtonPressed) ? 'hidden' : 'visible'" style="overflow: hidden;">
+                    <p-table
+                        [value]="template.sets"
+                        (onRowReorder)="reorderSets(template)"
+                        >
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th></th>
+                                <th>Set</th>
+                                <th>Previous</th>
+                                <th>Lbs</th>
+                                <th>Reps</th>
+                                <th></th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-set let-index="rowIndex">
+                            <tr [pReorderableRow]="index">
+                                <td>
+                                    <span class="pi pi-bars" pReorderableRowHandle></span>
+                                </td>
+                                <td>{{ set.order }}</td>
+                                <td>TBD</td>
+                                <td>
+                                    <p-inputNumber
+                                        [(ngModel)]="set.weight"
+                                        [showButtons]="true"
+                                        mode="decimal"
+                                        [minFractionDigits]="2"
+                                        [maxFractionDigits]="2"
+                                        ></p-inputNumber>
+                                </td>
+                                <td>
+                                    <p-inputNumber
+                                        [(ngModel)]="set.reps"
+                                        [showButtons]="true"
+                                        ></p-inputNumber>
+                                </td>
+                                <td>
+                                    <button 
+                                        pButton 
+                                        pRipple 
+                                        type="button" 
+                                        icon="pi pi-times" 
+                                        class="p-button-rounded p-button-danger p-button-text"
+                                        (click)="deleteSet(template, set.order - 1)"
+                                        ></button>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>

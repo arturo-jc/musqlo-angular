@@ -11,11 +11,13 @@ import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ToggleButtonModule } from 'primeng/togglebutton';
+import { MutateWorkoutTemplateComponent } from './mutate-workout-template/mutate-workout-template.component';
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    MutateWorkoutTemplateComponent
   ],
   imports: [
     BrowserModule,
