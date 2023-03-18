@@ -3,20 +3,20 @@ import { Component } from '@angular/core';
 
 export type Category = 'Cardio' | 'Back' | 'Legs';
 
-export interface Exercise {
+export interface ExerciseItem {
   exerciseType: string;
   category: Category;
 }
 
-export interface ExerciseSet {
+export interface SetTemplate {
   reps?: number;
   weight?: number;
   order: number;
 }
 
-export interface SetGroup {
+export interface ExerciseTemplate {
   exerciseType: string;
-  sets: ExerciseSet[];
+  sets: SetTemplate[];
   order: number;
 }
 
@@ -27,7 +27,7 @@ export interface SetGroup {
 })
 export class AppComponent {
 
-  exercises: Exercise[] = [
+  exercises: ExerciseItem[] = [
     {
       exerciseType: 'Aerobics',
       category: 'Cardio'
@@ -42,66 +42,66 @@ export class AppComponent {
     },
   ];
 
-  setGroups: SetGroup[] = [];
+  exerciseTemplates: ExerciseTemplate[] = [];
 
-  drop(event: CdkDragDrop<SetGroup[], Exercise[] | SetGroup[], Exercise | SetGroup>) {
+  drop(event: CdkDragDrop<ExerciseTemplate[], ExerciseItem[] | ExerciseTemplate[], ExerciseItem | ExerciseTemplate>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       this.reorderGroups();
       return;
     }
-    this.insertGroup((event.item.data) as Exercise, event.currentIndex);
+    this.insertGroup((event.item.data) as ExerciseItem, event.currentIndex);
   }
 
-  insertGroup(exercise: Exercise, index: number) {
-    const firstSet: ExerciseSet = {
+  insertGroup(exercise: ExerciseItem, index: number) {
+    const firstSet: SetTemplate = {
       order: 1,
     };
 
-    const newSetGroup: SetGroup = {
+    const newSetGroup: ExerciseTemplate = {
       exerciseType: exercise.exerciseType,
       sets: [firstSet],
-      order: this.setGroups.length + 1,
+      order: this.exerciseTemplates.length + 1,
     };
 
-    const updatedSetGroups = [ ...this.setGroups ]; 
+    const updatedSetGroups = [ ...this.exerciseTemplates ]; 
     updatedSetGroups.splice(index, 0, newSetGroup);
-    this.setGroups = updatedSetGroups;
+    this.exerciseTemplates = updatedSetGroups;
   }
 
   reorderGroups() {
-    this.setGroups.forEach((group, index) => {
+    this.exerciseTemplates.forEach((group, index) => {
       group.order = index + 1;
     })
   }
 
-  deleteGroup(index: number) {
-    const updatedGroups = [ ...this.setGroups ];
+  deleteTemplate(index: number) {
+    const updatedGroups = [ ...this.exerciseTemplates ];
     updatedGroups.splice(index, 1);
-    this.setGroups = updatedGroups;
+    this.exerciseTemplates = updatedGroups;
     this.reorderGroups();
   }
 
-  addSet(setGroup: SetGroup) {
-    const newSet: ExerciseSet = {
+  addSet(setGroup: ExerciseTemplate) {
+    const newSet: SetTemplate = {
       order: setGroup.sets.length + 1,
     };
 
     setGroup.sets = [ ...setGroup.sets, newSet ];
   }
 
-  reorderSets(setGroup: SetGroup) {
+  reorderSets(setGroup: ExerciseTemplate) {
     setGroup.sets.forEach((set, index) => {
       set.order = index + 1;
     });
   }
 
-  deleteSet(setGroup: SetGroup, index: number) {
+  deleteSet(setGroup: ExerciseTemplate, index: number) {
     const updatedSets = [ ...setGroup.sets ];
     updatedSets.splice(index, 1);
 
     if (!updatedSets.length) {
-      this.deleteGroup(setGroup.order - 1);
+      this.deleteTemplate(setGroup.order - 1);
       return;
     }
 

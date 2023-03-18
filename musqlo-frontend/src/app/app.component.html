@@ -6,9 +6,8 @@
             cdkDropList
             #exerciseList="cdkDropList"
             [cdkDropListData]="exercises"
-            [cdkDropListConnectedTo]="[workoutList]"
+            [cdkDropListConnectedTo]="[templateList]"
             cdkDropListSortingDisabled
-            class="exercise-list"
         >
             <li *ngFor="let exercise of exercises" [cdkDragData]="exercise" cdkDrag>
                 <p>{{ exercise.exerciseType }}</p>
@@ -17,16 +16,15 @@
         </ul>
     </div>
     <div class="col-10">
-        <h2>Set Groups</h2>
+        <h2>My Workout</h2>
         <ul
             style="min-height: 100px;"
             cdkDropList
-            #workoutList="cdkDropList"
-            [cdkDropListData]="setGroups"
+            #templateList="cdkDropList"
+            [cdkDropListData]="exerciseTemplates"
             (cdkDropListDropped)="drop($event)"
-            class="set-group-list"
         >
-            <li *ngFor="let group of setGroups" [cdkDragData]="group" cdkDrag>
+            <li *ngFor="let template of exerciseTemplates" [cdkDragData]="template" cdkDrag>
                 <div class="flex align-items-center">
                     <button 
                         pButton
@@ -35,18 +33,18 @@
                         icon="pi pi-arrows-alt"
                         class="p-button-rounded p-button-text p-button-plain mr-2"
                         cdkDragHandle
-                        [cdkDragHandleDisabled]="setGroups.length < 2"
-                        [disabled]="setGroups.length < 2"
+                        [cdkDragHandleDisabled]="exerciseTemplates.length < 2"
+                        [disabled]="exerciseTemplates.length < 2"
                     ></button>
-                    <h3 class="flex-1">{{ group.exerciseType }}</h3>
+                    <h3 class="flex-1">{{ template.exerciseType }}</h3>
                     <p-button 
-                        (click)="addSet(group)"
+                        (click)="addSet(template)"
                         label="Add Set"
                         icon="pi pi-plus"
                         styleClass="p-button-raised p-button-success mr-2"
                     ></p-button>
                     <p-button 
-                        (click)="deleteGroup(group.order - 1)"
+                        (click)="deleteTemplate(template.order - 1)"
                         label="Delete Exercise"
                         icon="pi pi-trash"
                         styleClass="p-button-raised p-button-danger"
@@ -54,8 +52,8 @@
                 </div>
                 <div class="set-list">
                     <p-table
-                        [value]="group.sets"
-                        (onRowReorder)="reorderSets(group)"
+                        [value]="template.sets"
+                        (onRowReorder)="reorderSets(template)"
                     >
                         <ng-template pTemplate="header">
                             <tr>
@@ -96,7 +94,7 @@
                                         type="button" 
                                         icon="pi pi-times" 
                                         class="p-button-rounded p-button-danger p-button-text"
-                                        (click)="deleteSet(group, set.order - 1)"
+                                        (click)="deleteSet(template, set.order - 1)"
                                     ></button>
                                 </td>
                             </tr>
