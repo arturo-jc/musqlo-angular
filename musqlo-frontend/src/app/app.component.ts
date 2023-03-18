@@ -17,6 +17,7 @@ export interface ExerciseSet {
 export interface SetGroup {
   exerciseType: string;
   sets: ExerciseSet[];
+  order: number;
 }
 
 @Component({
@@ -46,24 +47,39 @@ export class AppComponent {
   drop(event: CdkDragDrop<SetGroup[], Exercise[] | SetGroup[], Exercise | SetGroup>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      this.reorderGroups();
       return;
     }
-    this.insertNewSetGroup((event.item.data) as Exercise, event.currentIndex);
+    this.insertGroup((event.item.data) as Exercise, event.currentIndex);
   }
 
-  insertNewSetGroup(exercise: Exercise, index: number) {
+  insertGroup(exercise: Exercise, index: number) {
     const firstSet: ExerciseSet = {
       order: 1,
     };
 
     const newSetGroup: SetGroup = {
       exerciseType: exercise.exerciseType,
-      sets: [firstSet]
+      sets: [firstSet],
+      order: this.setGroups.length + 1,
     };
 
     const updatedSetGroups = [ ...this.setGroups ]; 
     updatedSetGroups.splice(index, 0, newSetGroup);
     this.setGroups = updatedSetGroups;
+  }
+
+  reorderGroups() {
+    this.setGroups.forEach((group, index) => {
+      group.order = index + 1;
+    })
+  }
+
+  deleteGroup(index: number) {
+    const updatedGroups = [ ...this.setGroups ];
+    updatedGroups.splice(index, 1);
+    this.setGroups = updatedGroups;
+    this.reorderGroups();
   }
 
   addSet(setGroup: SetGroup) {
@@ -83,6 +99,12 @@ export class AppComponent {
   deleteSet(setGroup: SetGroup, index: number) {
     const updatedSets = [ ...setGroup.sets ];
     updatedSets.splice(index, 1);
+
+    if (!updatedSets.length) {
+      this.deleteGroup(setGroup.order - 1);
+      return;
+    }
+
     setGroup.sets = updatedSets;
     this.reorderSets(setGroup);
   }
