@@ -38,7 +38,7 @@
             [cdkDropListData]="exerciseTemplates"
             (cdkDropListDropped)="drop($event)"
         >
-            <li *ngFor="let template of exerciseTemplates" [cdkDragData]="template" cdkDrag>
+            <li *ngFor="let template of exerciseTemplates" [cdkDragData]="template" cdkDrag [cdkDragDisabled]="!reorderMode">
                 <div class="flex align-items-center">
                     <button 
                         *ngIf="reorderMode"
