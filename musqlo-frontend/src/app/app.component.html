@@ -1,0 +1,91 @@
+<div class="flex p-component">
+    <div class="col-2">
+        <h2>Exercies</h2>
+        <ul
+            style="min-height: 100px;"
+            cdkDropList
+            #exerciseList="cdkDropList"
+            [cdkDropListData]="exercises"
+            [cdkDropListConnectedTo]="[workoutList]"
+            cdkDropListSortingDisabled
+            class="exercise-list"
+        >
+            <li *ngFor="let exercise of exercises" [cdkDragData]="exercise" cdkDrag>
+                <p>{{ exercise.exerciseType }}</p>
+                <p>{{ exercise.category }}</p>
+            </li>
+        </ul>
+    </div>
+    <div class="col-10">
+        <h2>Set Groups</h2>
+        <ul
+            style="min-height: 100px;"
+            cdkDropList
+            #workoutList="cdkDropList"
+            [cdkDropListData]="setGroups"
+            (cdkDropListDropped)="drop($event)"
+            class="set-group-list"
+        >
+            <li *ngFor="let group of setGroups" [cdkDragData]="group" cdkDrag>
+                <div class="flex">
+                    <button 
+                        pButton
+                        pRipple
+                        type="button"
+                        icon="pi pi-arrows-alt"
+                        class="p-button-rounded p-button-text p-button-plain mr-2"
+                        cdkDragHandle
+                    ></button>
+                    <h3>{{ group.exerciseType }}</h3>
+                </div>
+                <div class="set-list">
+                    <p-table
+                        [value]="group.sets"
+                        (onRowReorder)="reorderSets(group)"
+                    >
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th></th>
+                                <th>Set</th>
+                                <th>Previous</th>
+                                <th>Lbs</th>
+                                <th>Reps</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-set let-index="rowIndex">
+                            <tr [pReorderableRow]="index">
+                                <td>
+                                    <span class="pi pi-bars" pReorderableRowHandle></span>
+                                </td>
+                                <td>{{ set.order }}</td>
+                                <td>TBD</td>
+                                <td>
+                                    <p-inputNumber
+                                        [(ngModel)]="set.weight"
+                                        [showButtons]="true"
+                                        mode="decimal"
+                                        [minFractionDigits]="2"
+                                        [maxFractionDigits]="2"
+                                    ></p-inputNumber>
+                                </td>
+                                <td>
+                                    <p-inputNumber
+                                        [(ngModel)]="set.reps"
+                                        [showButtons]="true"
+                                    ></p-inputNumber>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                    <button
+                        (click)="addSet(group)"
+                        pButton
+                        type="button"
+                        icon="pi pi-plus"
+                        class="p-button-rounded"
+                    ></button>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
