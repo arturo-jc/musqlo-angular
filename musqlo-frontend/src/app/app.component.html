@@ -27,7 +27,7 @@
             class="set-group-list"
         >
             <li *ngFor="let group of setGroups" [cdkDragData]="group" cdkDrag>
-                <div class="flex">
+                <div class="flex align-items-center">
                     <button 
                         pButton
                         pRipple
@@ -35,8 +35,16 @@
                         icon="pi pi-arrows-alt"
                         class="p-button-rounded p-button-text p-button-plain mr-2"
                         cdkDragHandle
+                        [cdkDragHandleDisabled]="setGroups.length < 2"
+                        [disabled]="setGroups.length < 2"
                     ></button>
-                    <h3>{{ group.exerciseType }}</h3>
+                    <h3 class="flex-1">{{ group.exerciseType }}</h3>
+                    <p-button 
+                        (click)="addSet(group)"
+                        label="Add Set"
+                        icon="pi pi-plus"
+                        styleClass="p-button-raised p-button-success"
+                    ></p-button>
                 </div>
                 <div class="set-list">
                     <p-table
@@ -50,6 +58,7 @@
                                 <th>Previous</th>
                                 <th>Lbs</th>
                                 <th>Reps</th>
+                                <th></th>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-set let-index="rowIndex">
@@ -74,16 +83,19 @@
                                         [showButtons]="true"
                                     ></p-inputNumber>
                                 </td>
+                                <td>
+                                    <button 
+                                        pButton 
+                                        pRipple 
+                                        type="button" 
+                                        icon="pi pi-times" 
+                                        class="p-button-rounded p-button-danger p-button-text"
+                                        (click)="deleteSet(group, set.order - 1)"
+                                    ></button>
+                                </td>
                             </tr>
                         </ng-template>
                     </p-table>
-                    <button
-                        (click)="addSet(group)"
-                        pButton
-                        type="button"
-                        icon="pi pi-plus"
-                        class="p-button-rounded"
-                    ></button>
                 </div>
             </li>
         </ul>

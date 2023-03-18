@@ -61,9 +61,9 @@ export class AppComponent {
       sets: [firstSet]
     };
 
-    const clone = [ ...this.setGroups ]; 
-    clone.splice(index, 0, newSetGroup);
-    this.setGroups = clone;
+    const updatedSetGroups = [ ...this.setGroups ]; 
+    updatedSetGroups.splice(index, 0, newSetGroup);
+    this.setGroups = updatedSetGroups;
   }
 
   addSet(setGroup: SetGroup) {
@@ -78,6 +78,13 @@ export class AppComponent {
     setGroup.sets.forEach((set, index) => {
       set.order = index + 1;
     });
+  }
+
+  deleteSet(setGroup: SetGroup, index: number) {
+    const updatedSets = [ ...setGroup.sets ];
+    updatedSets.splice(index, 1);
+    setGroup.sets = updatedSets;
+    this.reorderSets(setGroup);
   }
 
 }
