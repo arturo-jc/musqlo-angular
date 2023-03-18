@@ -75,13 +75,14 @@ export class AppComponent {
     const newTemplate: ExerciseTemplate = {
       exerciseType: exercise.exerciseType,
       sets: [ firstSet ],
-      order: this.exerciseTemplates.length + 1,
+      order: index + 1,
       collapsed: false,
     };
 
     const updatedTemplates = [ ...this.exerciseTemplates ]; 
     updatedTemplates.splice(index, 0, newTemplate);
     this.exerciseTemplates = updatedTemplates;
+    this.reorderTemplates();
   }
 
   reorderTemplates() {
