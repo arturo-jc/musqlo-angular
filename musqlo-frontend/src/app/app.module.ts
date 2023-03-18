@@ -10,7 +10,7 @@ import { AppComponent } from './app.component';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { PanelModule } from 'primeng/panel';
+import { AccordionModule } from 'primeng/accordion';
 
 
 @NgModule({
@@ -26,7 +26,7 @@ import { PanelModule } from 'primeng/panel';
     ButtonModule,
     TableModule,
     InputNumberModule,
-    PanelModule,
+    AccordionModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
