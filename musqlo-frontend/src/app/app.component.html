@@ -23,15 +23,13 @@
             [cdkDropListData]="exerciseTemplates"
             (cdkDropListDropped)="drop($event)"
             [multiple]="true"
-            toggler="icon"
+            [style]="{ height: '50vh' }"
         >
-            <p-accordionTab>
-                hello
-            </p-accordionTab>
             <p-accordionTab 
                 *ngFor="let template of exerciseTemplates"
                 [cdkDragData]="template"
                 cdkDrag
+                [selected]="true"
             >
                 <ng-template pTemplate="header">
                     <button 
