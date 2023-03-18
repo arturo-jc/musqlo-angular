@@ -73,7 +73,7 @@
                         styleClass="p-button-sm p-button-raised p-button-danger"
                     ></p-button>
                 </div>
-                <div [@collapse]="(template.collapsed || reorderModeButtonPressed) ? { value: 'hidden' } : { value: 'visible' }" style="overflow: hidden;">
+                <div [@collapse]="(template.collapsed || reorderModeButtonPressed) ? 'hidden' : 'visible'" style="overflow: hidden;">
                     <p-table
                         [value]="template.sets"
                         (onRowReorder)="reorderSets(template)"

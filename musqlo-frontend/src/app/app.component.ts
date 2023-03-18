@@ -1,6 +1,7 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component } from '@angular/core';
+import { cloneDeep } from 'lodash';
 
 export type Category = 'Cardio' | 'Back' | 'Legs';
 
@@ -87,6 +88,7 @@ export class AppComponent {
     this.exerciseTemplates.forEach((group, index) => {
       group.order = index + 1;
     })
+    this.exerciseTemplates = cloneDeep(this.exerciseTemplates);
   }
 
   deleteTemplate(index: number) {
