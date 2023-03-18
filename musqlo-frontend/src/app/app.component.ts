@@ -27,7 +27,7 @@ export interface ExerciseTemplate {
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   animations: [
-    trigger('toggle', [
+    trigger('collapse', [
       state('hidden', style({ height: '0' })),
       state('visible', style({ height: '*' })),
       transition('visible <=> hidden', [animate('400ms cubic-bezier(0.86, 0, 0.07, 1)')]),
@@ -36,6 +36,9 @@ export interface ExerciseTemplate {
   ]
 })
 export class AppComponent {
+
+  reorderModeButtonPressed = false;
+  reorderMode = false;
 
   exercises: ExerciseItem[] = [
     {
@@ -119,6 +122,10 @@ export class AppComponent {
 
     template.sets = updatedTemplates;
     this.reorderSets(template);
+  }
+
+  toggleReorderMode() {
+    setTimeout(() => this.reorderMode = !this.reorderMode, 400);
   }
 
 }

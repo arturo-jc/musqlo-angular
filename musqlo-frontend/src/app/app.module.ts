@@ -10,6 +10,7 @@ import { AppComponent } from './app.component';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { ToggleButtonModule } from 'primeng/togglebutton';
 
 
 @NgModule({
@@ -25,6 +26,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
     ButtonModule,
     TableModule,
     InputNumberModule,
+    ToggleButtonModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

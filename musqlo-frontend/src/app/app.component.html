@@ -16,7 +16,21 @@
         </ul>
     </div>
     <div class="col-10">
-        <h2>My Workout</h2>
+        <div class="flex">
+            <h2 class="flex-1">My Workout</h2>
+            <div>
+                <p-toggleButton
+                    offIcon="pi pi-arrows-alt"
+                    offLabel="Reorder"
+                    onIcon="pi pi-check"
+                    onLabel="Done"
+                    [style]="{ 'width': '8rem' }"
+                    [disabled]="!reorderMode && exerciseTemplates.length < 2"
+                    [(ngModel)]="reorderModeButtonPressed"
+                    (onChange)="toggleReorderMode()"
+                ></p-toggleButton>
+            </div>
+        </div>
         <ul
             style="min-height: 100px;"
             cdkDropList
@@ -24,19 +38,19 @@
             [cdkDropListData]="exerciseTemplates"
             (cdkDropListDropped)="drop($event)"
         >
-            <li *ngFor="let template of exerciseTemplates" [cdkDragData]="template" cdkDrag [cdkDragStartDelay]="500">
+            <li *ngFor="let template of exerciseTemplates" [cdkDragData]="template" cdkDrag>
                 <div class="flex align-items-center">
                     <button 
+                        *ngIf="reorderMode"
                         pButton
                         pRipple
                         type="button"
                         icon="pi pi-arrows-alt"
                         class="p-button-rounded p-button-text p-button-plain mr-2"
                         cdkDragHandle
-                        [cdkDragHandleDisabled]="exerciseTemplates.length < 2"
-                        [disabled]="exerciseTemplates.length < 2"
                     ></button>
                     <button 
+                        *ngIf="!reorderMode"
                         pButton
                         pRipple
                         (click)="template.collapsed = !template.collapsed"
@@ -50,6 +64,7 @@
                         label="Add Set"
                         icon="pi pi-plus"
                         styleClass="p-button-sm p-button-raised p-button-success mr-2"
+                        [disabled]="reorderMode"
                     ></p-button>
                     <p-button 
                         (click)="deleteTemplate(template.order - 1)"
@@ -58,7 +73,7 @@
                         styleClass="p-button-sm p-button-raised p-button-danger"
                     ></p-button>
                 </div>
-                <div [@toggle]="template.collapsed ? { value: 'hidden' } : { value: 'visible' }" style="overflow: hidden;">
+                <div [@collapse]="(template.collapsed || reorderModeButtonPressed) ? { value: 'hidden' } : { value: 'visible' }" style="overflow: hidden;">
                     <p-table
                         [value]="template.sets"
                         (onRowReorder)="reorderSets(template)"
