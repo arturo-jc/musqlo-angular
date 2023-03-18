@@ -24,7 +24,7 @@
             [cdkDropListData]="exerciseTemplates"
             (cdkDropListDropped)="drop($event)"
         >
-            <li *ngFor="let template of exerciseTemplates" [cdkDragData]="template" cdkDrag>
+            <li *ngFor="let template of exerciseTemplates" [cdkDragData]="template" cdkDrag [cdkDragStartDelay]="500">
                 <div class="flex align-items-center">
                     <button 
                         pButton
@@ -58,56 +58,57 @@
                         styleClass="p-button-sm p-button-raised p-button-danger"
                     ></p-button>
                 </div>
-                <p-table
-                    [value]="template.sets"
-                    (onRowReorder)="reorderSets(template)"
-                    *ngIf="!template.collapsed"
-                    >
-                    <ng-template pTemplate="header">
-                        <tr>
-                            <th></th>
-                            <th>Set</th>
-                            <th>Previous</th>
-                            <th>Lbs</th>
-                            <th>Reps</th>
-                            <th></th>
-                        </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-set let-index="rowIndex">
-                        <tr [pReorderableRow]="index">
-                            <td>
-                                <span class="pi pi-bars" pReorderableRowHandle></span>
-                            </td>
-                            <td>{{ set.order }}</td>
-                            <td>TBD</td>
-                            <td>
-                                <p-inputNumber
-                                    [(ngModel)]="set.weight"
-                                    [showButtons]="true"
-                                    mode="decimal"
-                                    [minFractionDigits]="2"
-                                    [maxFractionDigits]="2"
-                                    ></p-inputNumber>
-                            </td>
-                            <td>
-                                <p-inputNumber
-                                    [(ngModel)]="set.reps"
-                                    [showButtons]="true"
-                                    ></p-inputNumber>
-                            </td>
-                            <td>
-                                <button 
-                                    pButton 
-                                    pRipple 
-                                    type="button" 
-                                    icon="pi pi-times" 
-                                    class="p-button-rounded p-button-danger p-button-text"
-                                    (click)="deleteSet(template, set.order - 1)"
-                                    ></button>
-                            </td>
-                        </tr>
-                    </ng-template>
-                </p-table>
+                <div [@toggle]="template.collapsed ? { value: 'hidden' } : { value: 'visible' }" style="overflow: hidden;">
+                    <p-table
+                        [value]="template.sets"
+                        (onRowReorder)="reorderSets(template)"
+                        >
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th></th>
+                                <th>Set</th>
+                                <th>Previous</th>
+                                <th>Lbs</th>
+                                <th>Reps</th>
+                                <th></th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-set let-index="rowIndex">
+                            <tr [pReorderableRow]="index">
+                                <td>
+                                    <span class="pi pi-bars" pReorderableRowHandle></span>
+                                </td>
+                                <td>{{ set.order }}</td>
+                                <td>TBD</td>
+                                <td>
+                                    <p-inputNumber
+                                        [(ngModel)]="set.weight"
+                                        [showButtons]="true"
+                                        mode="decimal"
+                                        [minFractionDigits]="2"
+                                        [maxFractionDigits]="2"
+                                        ></p-inputNumber>
+                                </td>
+                                <td>
+                                    <p-inputNumber
+                                        [(ngModel)]="set.reps"
+                                        [showButtons]="true"
+                                        ></p-inputNumber>
+                                </td>
+                                <td>
+                                    <button 
+                                        pButton 
+                                        pRipple 
+                                        type="button" 
+                                        icon="pi pi-times" 
+                                        class="p-button-rounded p-button-danger p-button-text"
+                                        (click)="deleteSet(template, set.order - 1)"
+                                        ></button>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
             </li>
         </ul>
     </div>

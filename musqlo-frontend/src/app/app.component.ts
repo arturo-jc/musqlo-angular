@@ -1,3 +1,4 @@
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component } from '@angular/core';
 
@@ -24,7 +25,15 @@ export interface ExerciseTemplate {
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  animations: [
+    trigger('toggle', [
+      state('hidden', style({ height: '0' })),
+      state('visible', style({ height: '*' })),
+      transition('visible <=> hidden', [animate('400ms cubic-bezier(0.86, 0, 0.07, 1)')]),
+      transition('void => *', animate(0)),
+    ])
+  ]
 })
 export class AppComponent {
 
