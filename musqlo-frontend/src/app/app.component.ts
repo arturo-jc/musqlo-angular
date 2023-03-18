@@ -99,12 +99,17 @@ export class AppComponent {
   }
 
   addSet(template: ExerciseTemplate) {
-    const newSet: SetTemplate = {
-      order: template.sets.length + 1,
-    };
+    const delay = template.collapsed ? 400 : 0;
 
-    template.sets = [ ...template.sets, newSet ];
     template.collapsed = false;
+
+    setTimeout(() => {
+      const newSet: SetTemplate = {
+        order: template.sets.length + 1,
+      };
+
+      template.sets = [ ...template.sets, newSet ];
+    }, delay);
   }
 
   reorderSets(template: ExerciseTemplate) {
