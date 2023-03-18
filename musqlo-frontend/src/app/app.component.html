@@ -36,6 +36,14 @@
                         [cdkDragHandleDisabled]="exerciseTemplates.length < 2"
                         [disabled]="exerciseTemplates.length < 2"
                     ></button>
+                    <button 
+                        pButton
+                        pRipple
+                        (click)="template.collapsed = !template.collapsed"
+                        type="button"
+                        [icon]="template.collapsed ? 'pi pi-chevron-right' : 'pi pi-chevron-down'"
+                        class="p-button-rounded p-button-text p-button-plain mr-2"
+                    ></button>
                     <h3 class="flex-1">{{ template.exerciseType }}</h3>
                     <p-button 
                         (click)="addSet(template)"
@@ -50,57 +58,56 @@
                         styleClass="p-button-sm p-button-raised p-button-danger"
                     ></p-button>
                 </div>
-                <div class="set-list">
-                    <p-table
-                        [value]="template.sets"
-                        (onRowReorder)="reorderSets(template)"
+                <p-table
+                    [value]="template.sets"
+                    (onRowReorder)="reorderSets(template)"
+                    *ngIf="!template.collapsed"
                     >
-                        <ng-template pTemplate="header">
-                            <tr>
-                                <th></th>
-                                <th>Set</th>
-                                <th>Previous</th>
-                                <th>Lbs</th>
-                                <th>Reps</th>
-                                <th></th>
-                            </tr>
-                        </ng-template>
-                        <ng-template pTemplate="body" let-set let-index="rowIndex">
-                            <tr [pReorderableRow]="index">
-                                <td>
-                                    <span class="pi pi-bars" pReorderableRowHandle></span>
-                                </td>
-                                <td>{{ set.order }}</td>
-                                <td>TBD</td>
-                                <td>
-                                    <p-inputNumber
-                                        [(ngModel)]="set.weight"
-                                        [showButtons]="true"
-                                        mode="decimal"
-                                        [minFractionDigits]="2"
-                                        [maxFractionDigits]="2"
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th></th>
+                            <th>Set</th>
+                            <th>Previous</th>
+                            <th>Lbs</th>
+                            <th>Reps</th>
+                            <th></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-set let-index="rowIndex">
+                        <tr [pReorderableRow]="index">
+                            <td>
+                                <span class="pi pi-bars" pReorderableRowHandle></span>
+                            </td>
+                            <td>{{ set.order }}</td>
+                            <td>TBD</td>
+                            <td>
+                                <p-inputNumber
+                                    [(ngModel)]="set.weight"
+                                    [showButtons]="true"
+                                    mode="decimal"
+                                    [minFractionDigits]="2"
+                                    [maxFractionDigits]="2"
                                     ></p-inputNumber>
-                                </td>
-                                <td>
-                                    <p-inputNumber
-                                        [(ngModel)]="set.reps"
-                                        [showButtons]="true"
+                            </td>
+                            <td>
+                                <p-inputNumber
+                                    [(ngModel)]="set.reps"
+                                    [showButtons]="true"
                                     ></p-inputNumber>
-                                </td>
-                                <td>
-                                    <button 
-                                        pButton 
-                                        pRipple 
-                                        type="button" 
-                                        icon="pi pi-times" 
-                                        class="p-button-rounded p-button-danger p-button-text"
-                                        (click)="deleteSet(template, set.order - 1)"
+                            </td>
+                            <td>
+                                <button 
+                                    pButton 
+                                    pRipple 
+                                    type="button" 
+                                    icon="pi pi-times" 
+                                    class="p-button-rounded p-button-danger p-button-text"
+                                    (click)="deleteSet(template, set.order - 1)"
                                     ></button>
-                                </td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
-                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
             </li>
         </ul>
     </div>

@@ -63,6 +63,7 @@ export class AppComponent {
       exerciseType: exercise.exerciseType,
       sets: [ firstSet ],
       order: this.exerciseTemplates.length + 1,
+      collapsed: false,
     };
 
     const updatedTemplates = [ ...this.exerciseTemplates ]; 
@@ -89,6 +90,7 @@ export class AppComponent {
     };
 
     template.sets = [ ...template.sets, newSet ];
+    template.collapsed = false;
   }
 
   reorderSets(template: ExerciseTemplate) {
