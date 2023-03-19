@@ -93,6 +93,11 @@ export class MutateScheduleComponent implements AfterViewInit {
         dayHeaderFormat: { weekday: 'short' },
       }
     },
+    eventOrder: 'lastEdited',
+    eventDidMount({ event }) {
+      if (!event.allDay) { return; }
+      event.setExtendedProp('lastEdited', new Date().getTime());
+    }
   }
 
   ngAfterViewInit(): void {
@@ -123,7 +128,7 @@ export class MutateScheduleComponent implements AfterViewInit {
   }
 
   saveSchedule() {
-    const events = this.calendar.getEvents().map(e => e.toPlainObject())
+    const events = this.calendar.getEvents().map(e => e.toPlainObject());
     console.log(events);
   }
 
