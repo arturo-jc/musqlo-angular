@@ -1,0 +1,12 @@
+<p-inputSwitch (onChange)="changeCalendarView($event)"></p-inputSwitch>
+<div>
+  <div *ngFor="let workout of workouts">
+    <b>{{ workout.name }}</b>
+    <ul>
+      <li *ngFor="let exercise of workout.exercises">
+        {{ exercise.exerciseType }}
+      </li>
+    </ul>
+  </div>
+</div>
+<full-calendar #calendar [options]="calendarOptions" class="p-component"></full-calendar>

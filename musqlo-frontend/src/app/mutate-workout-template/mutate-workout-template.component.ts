@@ -23,6 +23,11 @@ export interface ExerciseTemplate {
   collapsed?: boolean;
 }
 
+export interface WorkoutTemplate {
+  name: string;
+  exercises: ExerciseTemplate[];
+}
+
 @Component({
   selector: 'app-mutate-workout-template',
   templateUrl: './mutate-workout-template.component.html',

@@ -12,12 +12,15 @@ import { TableModule } from 'primeng/table';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { MutateWorkoutTemplateComponent } from './mutate-workout-template/mutate-workout-template.component';
-
+import { MutateScheduleComponent } from './mutate-schedule/mutate-schedule.component';
+import { FullCalendarModule } from '@fullcalendar/angular';
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 @NgModule({
   declarations: [
     AppComponent,
-    MutateWorkoutTemplateComponent
+    MutateWorkoutTemplateComponent,
+    MutateScheduleComponent
   ],
   imports: [
     BrowserModule,
@@ -29,6 +32,8 @@ import { MutateWorkoutTemplateComponent } from './mutate-workout-template/mutate
     TableModule,
     InputNumberModule,
     ToggleButtonModule,
+    InputSwitchModule,
+    FullCalendarModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
