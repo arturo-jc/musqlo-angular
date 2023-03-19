@@ -52,7 +52,7 @@ export class MutateScheduleComponent implements AfterViewInit {
           order: 1
         },
         {
-          exerciseType: 'Dumbbells',
+          exerciseType: 'Dumbbells and other words that make this into a very long title',
           sets: [
             {
               order: 1,

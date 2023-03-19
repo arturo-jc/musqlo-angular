@@ -7,9 +7,16 @@ import { ExerciseTemplate } from '../mutate-workout-template/mutate-workout-temp
 })
 export class FullCalendarService {
 
+  ellipsis = {
+    'overflow': 'hidden',
+    'white-space': 'nowrap',
+    'text-overflow': 'ellipsis',
+  }
+
   titleStyle = {
     'font-weight': 'bold',
     'margin-bottom': '0.25rem',
+    ...this.ellipsis,
   }
 
   bodyStyle = {
@@ -17,7 +24,12 @@ export class FullCalendarService {
   }
 
   exerciseStyle = {
-    'display': 'block',
+    'display': 'flex',
+  }
+
+  exerciseTypeStyle = {
+    'flex': '1',
+    ...this.ellipsis,
   }
 
   constructor() { }
@@ -31,9 +43,9 @@ export class FullCalendarService {
 
   createTitle(title: string): HTMLSpanElement {
     const titleEl = document.createElement('span');
+    titleEl.textContent = title;
     titleEl.classList.add('fc-event-title', 'fc-sticky');
     this.applyStyle(this.titleStyle, titleEl);
-    titleEl.textContent = title;
     return titleEl;
   }
 
@@ -49,10 +61,19 @@ export class FullCalendarService {
     return bodyEl;
   }
 
-  createExerciseEl(exercise: ExerciseTemplate): HTMLSpanElement {
-    const exerciseEl = document.createElement('span');
+  createExerciseEl(exercise: ExerciseTemplate): HTMLDivElement {
+    const exerciseEl = document.createElement('div');
     this.applyStyle(this.exerciseStyle, exerciseEl);
-    exerciseEl.textContent = exercise.exerciseType;
+
+    const exerciseTypeEl = document.createElement('div');
+    exerciseTypeEl.textContent = exercise.exerciseType;
+    this.applyStyle(this.exerciseTypeStyle, exerciseTypeEl);
+    exerciseEl.append(exerciseTypeEl);
+
+    const setCountEl = document.createElement('div');
+    setCountEl.textContent = `x ${exercise.sets.length}`;
+    exerciseEl.append(setCountEl);
+
     return exerciseEl;
   }
 

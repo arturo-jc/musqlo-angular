@@ -32,9 +32,14 @@
                 <span class="fc-event-main">
                   <span class="fc-event-title fc-event-sticky" [style]="fullCalendar.titleStyle">{{ workout.name }}</span>
                   <div [style]="fullCalendar.bodyStyle">
-                    <span *ngFor="let exercise of workout.exercises" [style]="fullCalendar.exerciseStyle">
-                      {{ exercise.exerciseType }}
-                    </span>
+                    <div *ngFor="let exercise of workout.exercises" [style]="fullCalendar.exerciseStyle">
+                      <div style="flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; ">
+                        {{ exercise.exerciseType }}
+                      </div>
+                      <div>
+                        x {{ exercise.sets.length }}
+                      </div>
+                    </div>
                   </div>
                 </span>
               </a>
