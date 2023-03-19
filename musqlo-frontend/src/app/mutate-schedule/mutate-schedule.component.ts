@@ -1,9 +1,19 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { Calendar, CalendarOptions } from '@fullcalendar/core';
-import { WorkoutTemplate } from '../mutate-workout-template/mutate-workout-template.component';
 import dayGridWeek from '@fullcalendar/daygrid';
 import { InputSwitchOnChangeEvent } from 'primeng/inputswitch';
 import { FullCalendarComponent } from '@fullcalendar/angular';
+import { Draggable } from '@fullcalendar/interaction';
+import { ExerciseTemplate } from '../mutate-workout-template/mutate-workout-template.component';
+
+export interface WorkoutTemplate {
+  name: string;
+  exercises: ExerciseTemplate[];
+}
+
+export interface ScheduleWorkoutTemplate extends WorkoutTemplate {
+  calendarData: string;
+}
 
 @Component({
   selector: 'app-mutate-schedule',
@@ -12,12 +22,17 @@ import { FullCalendarComponent } from '@fullcalendar/angular';
 })
 export class MutateScheduleComponent implements AfterViewInit {
   @ViewChild('calendar', { static: false }) calendarRef!: FullCalendarComponent;
+  @ViewChild('workoutList') workoutsRef!: ElementRef;
 
   calendar!: Calendar;
 
-  workouts: WorkoutTemplate[] = [
+  workouts: ScheduleWorkoutTemplate[] = [
     {
       name: 'My Favorite Workout',
+      calendarData: JSON.stringify({
+        title: 'My Favorite Workout',
+        startTime: '02:00',
+      }),
       exercises: [
         {
           exerciseType: 'Deadlift',
@@ -55,6 +70,10 @@ export class MutateScheduleComponent implements AfterViewInit {
     },
     {
       name: 'My Least Favorite Workout',
+      calendarData: JSON.stringify({
+        title: 'My Least Favorite Workout',
+        startTime: '02:00',
+      }),
       exercises: [
         {
           exerciseType: 'Runnning',
@@ -67,27 +86,38 @@ export class MutateScheduleComponent implements AfterViewInit {
 
   calendarOptions: CalendarOptions = {
     headerToolbar: false,
+    editable: true,
     initialView: 'dayGridWeek',
     plugins: [ dayGridWeek ],
     dayHeaderFormat: { weekday: 'long' },
     views: {
-      biWeekly: {
+      biweekly: {
         type: 'dayGridWeek',
         duration: { weeks: 2 },
         dayCellContent: args => args.dayNumberText = '',
       }
     },
-
-
   }
 
   ngAfterViewInit(): void {
     this.calendar = this.calendarRef.getApi();
+
+    const { nativeElement: workouts } = this.workoutsRef;
+
+    new Draggable(workouts, {
+      itemSelector: '.workout',
+    })
+
   }
 
   changeCalendarView(event: InputSwitchOnChangeEvent) {
-    const newView = event.checked ? 'biWeekly' : 'dayGridWeek';
+    const newView = event.checked ? 'biweekly' : 'dayGridWeek';
     this.calendar.changeView(newView);
+  }
+
+  saveSchedule() {
+    const events = this.calendar.getEvents().map(e => e.toPlainObject())
+    console.log(events);
   }
 
 }

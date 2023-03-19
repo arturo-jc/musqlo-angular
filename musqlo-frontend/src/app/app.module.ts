@@ -15,12 +15,14 @@ import { MutateWorkoutTemplateComponent } from './mutate-workout-template/mutate
 import { MutateScheduleComponent } from './mutate-schedule/mutate-schedule.component';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { WorkoutTemplateEventDataPipe } from './workout-templates/workout-template-event-data.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     MutateWorkoutTemplateComponent,
-    MutateScheduleComponent
+    MutateScheduleComponent,
+    WorkoutTemplateEventDataPipe
   ],
   imports: [
     BrowserModule,

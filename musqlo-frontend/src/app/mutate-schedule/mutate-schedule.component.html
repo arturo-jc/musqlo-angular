@@ -1,6 +1,14 @@
 <p-inputSwitch (onChange)="changeCalendarView($event)"></p-inputSwitch>
-<div>
-  <div *ngFor="let workout of workouts">
+<button 
+  pButton
+  pRipple
+  type="button"
+  icon="pi pi-save"
+  label="save"
+  (click)="saveSchedule()"
+  ></button>
+<div #workoutList >
+  <div *ngFor="let workout of workouts" class="workout" [attr.data-event]="workout | workoutTemplateEventData ">
     <b>{{ workout.name }}</b>
     <ul>
       <li *ngFor="let exercise of workout.exercises">
