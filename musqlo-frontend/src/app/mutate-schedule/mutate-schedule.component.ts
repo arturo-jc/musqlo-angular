@@ -82,7 +82,6 @@ export class MutateScheduleComponent implements AfterViewInit {
       biweekly: {
         type: 'dayGridWeek',
         duration: { weeks: 2 },
-        dayCellContent: args => args.dayNumberText = '',
       }
     },
   }
