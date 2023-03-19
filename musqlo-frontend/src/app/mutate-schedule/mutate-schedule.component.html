@@ -22,13 +22,27 @@
         ></button>
     </div>
   </div>
-  <div #workoutList class="flex">
-    <div *ngFor="let workout of workouts" class="workout px-4" [attr.data-event]="workout | workoutTemplateEventData ">
-      <b>{{ workout.name }}</b>
+  <div #workoutList class="flex fc fc-theme-standard">
+    <div *ngFor="let workout of workouts" class="workout px-4" style="max-width: 12rem;" [attr.data-event]="workout | workoutTemplateEventData ">
+      <div class="fc-day">
+        <div class="fc-daygrid-day-frame">
+          <div class="fc-daygrid-day-events">
+            <div class="fc-draygrid-event-harness">
+              <a class="fc-event fc-daygrid-event fc-draygrid-block-event fc-h-event">
+                <span class="fc-event-main">
+                  <span class="fc-event-title fc-event-sticky" [style]="titleStyle">{{ workout.name }}</span>
+                  <div [style]="bodyStyle">
+                    <span *ngFor="let exercise of workout.exercises" [style]="exerciseStyle">
+                      {{ exercise.exerciseType }}
+                    </span>
+                  </div>
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
       <ul>
-        <li *ngFor="let exercise of workout.exercises">
-          {{ exercise.exerciseType }}
-        </li>
       </ul>
     </div>
   </div>
