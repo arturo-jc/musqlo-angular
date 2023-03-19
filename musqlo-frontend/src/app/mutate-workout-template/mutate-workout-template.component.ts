@@ -136,4 +136,8 @@ export class MutateWorkoutTemplateComponent {
     setTimeout(() => this.reorderMode = !this.reorderMode, 400);
   }
 
+  saveWorkout() {
+    console.warn('saveWorkout not implemeted');
+  }
+
 }
