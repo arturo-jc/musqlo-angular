@@ -30,9 +30,9 @@
             <div class="fc-draygrid-event-harness">
               <a class="fc-event fc-daygrid-event fc-draygrid-block-event fc-h-event">
                 <span class="fc-event-main">
-                  <span class="fc-event-title fc-event-sticky" [style]="titleStyle">{{ workout.name }}</span>
-                  <div [style]="bodyStyle">
-                    <span *ngFor="let exercise of workout.exercises" [style]="exerciseStyle">
+                  <span class="fc-event-title fc-event-sticky" [style]="fullCalendar.titleStyle">{{ workout.name }}</span>
+                  <div [style]="fullCalendar.bodyStyle">
+                    <span *ngFor="let exercise of workout.exercises" [style]="fullCalendar.exerciseStyle">
                       {{ exercise.exerciseType }}
                     </span>
                   </div>

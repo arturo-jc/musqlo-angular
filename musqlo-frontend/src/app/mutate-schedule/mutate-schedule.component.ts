@@ -5,6 +5,7 @@ import timeGridWeek from '@fullcalendar/timegrid';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import interaction, { Draggable } from '@fullcalendar/interaction';
 import { ExerciseTemplate } from '../mutate-workout-template/mutate-workout-template.component';
+import { FullCalendarService } from '../fullcalendar/full-calendar.service';
 
 export interface WorkoutTemplate {
   name: string;
@@ -111,8 +112,12 @@ export class MutateScheduleComponent implements AfterViewInit {
       if (!event.allDay) { return; }
       event.setExtendedProp('lastEdited', new Date().getTime());
     },
-    eventContent: (args) => this.getEventContent(args),
+    eventContent: (args) => this.fullCalendar.getEventContent(args),
   }
+
+  constructor(
+    public fullCalendar: FullCalendarService,
+  ) {}
 
   ngAfterViewInit(): void {
     this.calendar = this.calendarRef.getApi();
@@ -144,46 +149,4 @@ export class MutateScheduleComponent implements AfterViewInit {
   saveSchedule() {
     const events = this.calendar.getEvents().map(e => e.toPlainObject());
   }
-
-  getEventContent(args: EventContentArg) {
-    const { event } = args;
-    const titleEl = this.createTitle(event.title);
-    const bodyEl = this.createBody(event.extendedProps['exercises']);
-    return { domNodes: [ titleEl, bodyEl ] };
-  }
-
-  createTitle(title: string): HTMLSpanElement {
-    const titleEl = document.createElement('span');
-    titleEl.classList.add('fc-event-title', 'fc-sticky');
-    this.applyStyle(this.titleStyle, titleEl);
-    titleEl.textContent = title;
-    return titleEl;
-  }
-
-  createBody(exercises: ExerciseTemplate[]): HTMLDivElement {
-    const bodyEl = document.createElement('div');
-    this.applyStyle(this.bodyStyle, bodyEl);
-
-    for (const exercise of exercises) {
-      const exerciseEl = this.createExerciseEl(exercise);
-      bodyEl.append(exerciseEl);
-    }
-
-    return bodyEl;
-  }
-
-  createExerciseEl(exercise: ExerciseTemplate): HTMLSpanElement {
-    const exerciseEl = document.createElement('span');
-    this.applyStyle(this.exerciseStyle, exerciseEl);
-    exerciseEl.textContent = exercise.exerciseType;
-    return exerciseEl;
-  }
-
-  applyStyle(styles: Record<string, string | null>, element: HTMLElement) {
-    for (const [ style, value ] of Object.entries(styles)) {
-      element.style.setProperty(style, value);
-    }
-  }
-
-
 }
