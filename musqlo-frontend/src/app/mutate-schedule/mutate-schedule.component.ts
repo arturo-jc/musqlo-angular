@@ -76,19 +76,6 @@ export class MutateScheduleComponent implements AfterViewInit {
     }
   ]
 
-  titleStyle = {
-    'font-weight': 'bold',
-    'margin-bottom': '0.25rem',
-  }
-
-  bodyStyle = {
-    'display': 'block',
-  }
-
-  exerciseStyle = {
-    'display': 'block',
-  }
-
   calendarOptions: CalendarOptions = {
     headerToolbar: false,
     editable: true,
