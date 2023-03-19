@@ -11,10 +11,6 @@ export interface WorkoutTemplate {
   exercises: ExerciseTemplate[];
 }
 
-export interface ScheduleWorkoutTemplate extends WorkoutTemplate {
-  calendarData: string;
-}
-
 @Component({
   selector: 'app-mutate-schedule',
   templateUrl: './mutate-schedule.component.html',
@@ -26,13 +22,9 @@ export class MutateScheduleComponent implements AfterViewInit {
 
   calendar!: Calendar;
 
-  workouts: ScheduleWorkoutTemplate[] = [
+  workouts: WorkoutTemplate[] = [
     {
       name: 'My Favorite Workout',
-      calendarData: JSON.stringify({
-        title: 'My Favorite Workout',
-        startTime: '02:00',
-      }),
       exercises: [
         {
           exerciseType: 'Deadlift',
@@ -70,10 +62,6 @@ export class MutateScheduleComponent implements AfterViewInit {
     },
     {
       name: 'My Least Favorite Workout',
-      calendarData: JSON.stringify({
-        title: 'My Least Favorite Workout',
-        startTime: '02:00',
-      }),
       exercises: [
         {
           exerciseType: 'Runnning',
