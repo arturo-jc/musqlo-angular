@@ -16,6 +16,7 @@ import { MutateScheduleComponent } from './mutate-schedule/mutate-schedule.compo
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { RippleModule } from 'primeng/ripple';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { WorkoutTemplateEventDataPipe } from './workout-templates/workout-template-event-data.pipe';
 
 @NgModule({
@@ -37,6 +38,7 @@ import { WorkoutTemplateEventDataPipe } from './workout-templates/workout-templa
     ToggleButtonModule,
     InputSwitchModule,
     RippleModule,
+    OverlayPanelModule,
     FullCalendarModule,
   ],
   providers: [],
