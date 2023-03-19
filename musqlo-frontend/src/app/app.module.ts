@@ -17,6 +17,7 @@ import { FullCalendarModule } from '@fullcalendar/angular';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { RippleModule } from 'primeng/ripple';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { MenubarModule } from 'primeng/menubar';
 import { WorkoutTemplateEventDataPipe } from './workout-templates/workout-template-event-data.pipe';
 
 @NgModule({
@@ -39,6 +40,7 @@ import { WorkoutTemplateEventDataPipe } from './workout-templates/workout-templa
     InputSwitchModule,
     RippleModule,
     OverlayPanelModule,
+    MenubarModule,
     FullCalendarModule,
   ],
   providers: [],

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PrimeNGConfig } from 'primeng/api';
+import { MenuItem, PrimeNGConfig } from 'primeng/api';
 
 @Component({
   selector: 'app-root',
@@ -7,6 +7,17 @@ import { PrimeNGConfig } from 'primeng/api';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
+
+  menuLinks: MenuItem[] = [
+    {
+      label: 'New Workout',
+      routerLink: [ 'workouts', 'new' ],
+    },
+    {
+      label: 'New Schedule',
+      routerLink: [ 'schedules', 'new' ],
+    },
+  ]
 
   constructor(
     private primeConfig: PrimeNGConfig
