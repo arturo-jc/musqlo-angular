@@ -1,4 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { EventInput } from '@fullcalendar/core';
 import { WorkoutTemplate } from '../mutate-schedule/mutate-schedule.component';
 
 @Pipe({
@@ -7,9 +8,12 @@ import { WorkoutTemplate } from '../mutate-schedule/mutate-schedule.component';
 export class WorkoutTemplateEventDataPipe implements PipeTransform {
 
   transform(workout: WorkoutTemplate): string {
-    return JSON.stringify({
+
+    const event: EventInput = {
       title: workout.name,
-    })
+    }
+
+    return JSON.stringify(event);
   }
 
 }

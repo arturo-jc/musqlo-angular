@@ -1,4 +1,5 @@
-<p-inputSwitch (onChange)="changeCalendarView($event)"></p-inputSwitch>
+biweekly <p-inputSwitch [(ngModel)]="biweekly" (onChange)="updateCalendarView()"></p-inputSwitch>
+show times <p-inputSwitch [(ngModel)]="showTimes" (onChange)="updateCalendarView()"></p-inputSwitch>
 <button 
   pButton
   pRipple
