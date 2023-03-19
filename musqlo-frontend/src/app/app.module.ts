@@ -18,7 +18,7 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { RippleModule } from 'primeng/ripple';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { MenubarModule } from 'primeng/menubar';
-import { WorkoutTemplateEventDataPipe } from './workout-templates/workout-template-event-data.pipe';
+import { WorkoutTemplateEventDataPipe } from './full-calendar/workout-template-event-data.pipe';
 
 @NgModule({
   declarations: [

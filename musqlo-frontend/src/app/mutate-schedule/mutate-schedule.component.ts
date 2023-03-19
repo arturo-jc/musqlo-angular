@@ -5,7 +5,7 @@ import timeGridWeek from '@fullcalendar/timegrid';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import interaction, { Draggable } from '@fullcalendar/interaction';
 import { ExerciseTemplate } from '../mutate-workout-template/mutate-workout-template.component';
-import { FullCalendarService } from '../fullcalendar/full-calendar.service';
+import { FullCalendarService } from '../full-calendar/full-calendar.service';
 
 export interface WorkoutTemplate {
   name: string;
