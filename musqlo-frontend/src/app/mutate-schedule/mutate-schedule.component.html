@@ -23,12 +23,21 @@
     </div>
   </div>
   <div #workoutList class="flex fc fc-theme-standard">
-    <div *ngFor="let workout of workouts" class="workout px-4" style="max-width: 12rem;" [attr.data-event]="workout | workoutTemplateEventData ">
+    <div 
+      *ngFor="let workout of workouts"
+      class="workout px-4"
+      style="max-width: 12rem;"
+      [attr.data-event]="workout | workoutTemplateEventData "
+      >
       <div class="fc-day">
         <div class="fc-daygrid-day-frame">
           <div class="fc-daygrid-day-events">
             <div class="fc-draygrid-event-harness">
-              <a class="fc-event fc-daygrid-event fc-draygrid-block-event fc-h-event">
+              <a
+                class="fc-event fc-daygrid-event fc-draygrid-block-event fc-h-event"
+                [style.backgroundColor]="workout.backgroundColor"
+                [style.borderColor]="workout.backgroundColor"
+                >
                 <span class="fc-event-main">
                   <span class="fc-event-title fc-event-sticky" [style]="fullCalendar.titleStyle">{{ workout.name }}</span>
                   <div [style]="fullCalendar.bodyStyle">
