@@ -14,6 +14,8 @@ export class FullCalendarService {
   }
 
   titleStyle = {
+    'display': 'inline-block',
+    'max-width': '100%',
     'font-weight': 'bold',
     'margin-bottom': '0.25rem',
     ...this.ellipsis,
@@ -44,7 +46,6 @@ export class FullCalendarService {
   createTitle(title: string): HTMLSpanElement {
     const titleEl = document.createElement('span');
     titleEl.textContent = title;
-    titleEl.classList.add('fc-event-title', 'fc-sticky');
     this.applyStyle(this.titleStyle, titleEl);
     return titleEl;
   }

@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { Calendar, CalendarOptions, EventContentArg } from '@fullcalendar/core';
+import { Calendar, CalendarOptions } from '@fullcalendar/core';
 import dayGridWeek from '@fullcalendar/daygrid';
 import timeGridWeek from '@fullcalendar/timegrid';
 import { FullCalendarComponent } from '@fullcalendar/angular';
@@ -10,6 +10,7 @@ import { FullCalendarService } from '../full-calendar/full-calendar.service';
 export interface WorkoutTemplate {
   name: string;
   exercises: ExerciseTemplate[];
+  backgroundColor: string;
 }
 
 @Component({
@@ -29,6 +30,7 @@ export class MutateScheduleComponent implements AfterViewInit {
   workouts: WorkoutTemplate[] = [
     {
       name: 'My Favorite Workout',
+      backgroundColor: 'var(--primary-color)',
       exercises: [
         {
           exerciseType: 'Deadlift',
@@ -66,10 +68,17 @@ export class MutateScheduleComponent implements AfterViewInit {
     },
     {
       name: 'My Least Favorite Workout',
+      backgroundColor: 'var(--pink-500)',
       exercises: [
         {
           exerciseType: 'Runnning',
-          sets: [],
+          sets: [
+            {
+              order: 1,
+              reps: 23,
+              weight: 49,
+            },
+          ],
           order: 1
         }
       ]

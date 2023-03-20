@@ -9,15 +9,13 @@ export class WorkoutTemplateEventDataPipe implements PipeTransform {
 
   transform(workout: WorkoutTemplate): string {
 
-    // const color = 'var(--primary-color)';
-
     const event: EventInput = {
       title: workout.name,
       extendedProps: {
         exercises: workout.exercises,
-      }
-      // backgroundColor: color,
-      // borderColor: color,
+      },
+      backgroundColor: workout.backgroundColor,
+      borderColor: workout.backgroundColor,
     }
 
     return JSON.stringify(event);
