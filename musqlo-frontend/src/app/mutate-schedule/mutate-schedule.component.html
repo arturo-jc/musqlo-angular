@@ -1,61 +1,59 @@
-<div class="p-component">
-  <div class="flex">
-    <h1 class="flex-1">My Schedule</h1>
-    <div>
-      <button
-        pButton
-        pRipple
-        type="button"
-        icon="pi pi-cog"
-        label="Settings"
-        class="p-button-raised p-button-text p-button-plain"
-        (click)="op.toggle($event)"
-        ></button>
-      <button 
-        pButton
-        pRipple
-        type="button"
-        icon="pi pi-save"
-        label="Save"
-        class="p-button p-button-raised p-button-success ml-2"
-        (click)="saveSchedule()"
-        ></button>
-    </div>
+<div class="flex">
+  <h1 class="flex-1">My Schedule</h1>
+  <div>
+    <button
+      pButton
+      pRipple
+      type="button"
+      icon="pi pi-cog"
+      label="Settings"
+      class="p-button-raised p-button-text p-button-plain"
+      (click)="op.toggle($event)"
+      ></button>
+    <button 
+      pButton
+      pRipple
+      type="button"
+      icon="pi pi-save"
+      label="Save"
+      class="p-button p-button-raised p-button-success ml-2"
+      (click)="saveSchedule()"
+      ></button>
   </div>
-  <div #workoutList class="flex">
-    <div 
-      *ngFor="let workout of workouts"
-      class="workout mr-2"
-      style="width: 14rem;"
-      [attr.data-event]="workout | workoutTemplateEventData "
-      >
-      <div>
-        <a
-          class="fc-event fc-daygrid-event fc-draygrid-block-event fc-h-event"
-          [style.backgroundColor]="workout.backgroundColor"
-          [style.borderColor]="workout.backgroundColor"
-          >
-          <span class="fc-event-main">
-            <span class="fc-event-title fc-event-sticky" [style]="fullCalendar.titleStyle">{{ workout.name }}</span>
-            <div [style]="fullCalendar.bodyStyle">
-              <div *ngFor="let exercise of workout.exercises" [style]="fullCalendar.exerciseStyle">
-                <div [style]="fullCalendar.exerciseTypeStyle">
-                  {{ exercise.exerciseType }}
-                </div>
-                <div>
-                  x {{ exercise.sets.length }}
-                </div>
+</div>
+<div #workoutList class="flex">
+  <div 
+    *ngFor="let workout of workouts"
+    class="workout mr-2"
+    style="width: 14rem;"
+    [attr.data-event]="workout | workoutTemplateEventData "
+    >
+    <div>
+      <a
+        class="fc-event fc-daygrid-event fc-draygrid-block-event fc-h-event"
+        [style.backgroundColor]="workout.backgroundColor"
+        [style.borderColor]="workout.backgroundColor"
+        >
+        <span class="fc-event-main">
+          <span class="fc-event-title fc-event-sticky" [style]="fullCalendar.titleStyle">{{ workout.name }}</span>
+          <div [style]="fullCalendar.bodyStyle">
+            <div *ngFor="let exercise of workout.exercises" [style]="fullCalendar.exerciseStyle">
+              <div [style]="fullCalendar.exerciseTypeStyle">
+                {{ exercise.exerciseType }}
+              </div>
+              <div>
+                x {{ exercise.sets.length }}
               </div>
             </div>
-          </span>
-        </a>
-      </div>
-      <ul>
-      </ul>
+          </div>
+        </span>
+      </a>
     </div>
+    <ul>
+    </ul>
   </div>
-  <full-calendar #calendar [options]="calendarOptions" class="p-component"></full-calendar>
 </div>
+<full-calendar #calendar [options]="calendarOptions"></full-calendar>
 
 <p-overlayPanel #op>
     <ng-template pTemplate>
