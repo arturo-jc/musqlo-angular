@@ -12,7 +12,11 @@
             <li *ngFor="let exercise of exercises" [cdkDragData]="exercise" cdkDrag>
                 <p>{{ exercise.exerciseType }}</p>
                 <p>{{ exercise.category }}</p>
-                <div *cdkDragPlaceholder>Hello I am placeholder</div>
+                <ng-container
+                    *cdkDragPlaceholder
+                    [ngTemplateOutlet]="exerciseNgTemplate"
+                    [ngTemplateOutletContext]="{ template: exercise | exerciseTemplatePlaceholder }"
+                    ></ng-container>
             </li>
         </ul>
     </div>

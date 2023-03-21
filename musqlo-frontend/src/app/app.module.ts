@@ -19,13 +19,15 @@ import { RippleModule } from 'primeng/ripple';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { MenubarModule } from 'primeng/menubar';
 import { WorkoutTemplateEventDataPipe } from './full-calendar/workout-template-event-data.pipe';
+import { ExerciseTemplatePlaceholderPipe } from './exercise-template-placeholder.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     MutateWorkoutTemplateComponent,
     MutateScheduleComponent,
-    WorkoutTemplateEventDataPipe
+    WorkoutTemplateEventDataPipe,
+    ExerciseTemplatePlaceholderPipe
   ],
   imports: [
     BrowserModule,
