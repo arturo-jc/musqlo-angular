@@ -2,6 +2,7 @@
     <div class="col-2">
         <h2>Exercies</h2>
         <ul
+            class="exercise-list"
             style="min-height: 100px;"
             cdkDropList
             #exerciseList="cdkDropList"
@@ -67,22 +68,13 @@
 <ng-template #exerciseNgTemplate let-template="template">
     <div class="flex align-items-center">
         <button 
-            *ngIf="reorderMode"
             pButton
             pRipple
             type="button"
-            icon="pi pi-arrows-alt"
+            (click)="!reorderMode && template.collapsed = !template.collapsed"
+            [icon]=" reorderMode ? 'pi pi-arrows-alt' : template.collapsed ? 'pi pi-chevron-right' : 'pi pi-chevron-down'"
             class="p-button-rounded p-button-text p-button-plain mr-2"
             cdkDragHandle
-            ></button>
-        <button 
-            *ngIf="!reorderMode"
-            pButton
-            pRipple
-            (click)="template.collapsed = !template.collapsed"
-            type="button"
-            [icon]="template.collapsed ? 'pi pi-chevron-right' : 'pi pi-chevron-down'"
-            class="p-button-rounded p-button-text p-button-plain mr-2"
             ></button>
         <h3 class="flex-1">{{ template.exerciseType }}</h3>
         <p-button 

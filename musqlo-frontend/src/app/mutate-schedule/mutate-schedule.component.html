@@ -57,11 +57,11 @@
 
 <p-overlayPanel #op>
     <ng-template pTemplate>
-        <div class="flex justify-content-between align-items-center" style="min-width: 14rem">
+        <div class="flex justify-content-between align-items-center setting" style="min-width: 14rem">
           <span><i class="pi pi-calendar-plus mr-2"></i>Biweekly</span>
           <p-inputSwitch [(ngModel)]="biweekly" (onChange)="updateCalendarView()"></p-inputSwitch>
         </div>
-        <div class="flex justify-content-between align-items-center">
+        <div class="flex justify-content-between align-items-center setting">
           <span><i class="pi pi-clock mr-2"></i>Show times</span>
           <p-inputSwitch [(ngModel)]="showTimes" (onChange)="updateCalendarView()"></p-inputSwitch>
         </div>
