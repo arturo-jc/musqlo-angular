@@ -2,7 +2,7 @@
     <div class="col-2">
         <h2>Exercies</h2>
         <ul
-            class="exercise-list"
+            [class.hidden]="dragging"
             style="min-height: 100px;"
             cdkDropList
             #exerciseList="cdkDropList"
@@ -10,7 +10,13 @@
             [cdkDropListConnectedTo]="[templateList]"
             cdkDropListSortingDisabled
         >
-            <li *ngFor="let exercise of exercises" [cdkDragData]="exercise" cdkDrag>
+            <li
+                *ngFor="let exercise of exercises"
+                [cdkDragData]="exercise"
+                cdkDrag
+                (cdkDragStarted)="dragging = true"
+                (cdkDragReleased)="dragging = false"
+                >
                 <p>{{ exercise.exerciseType }}</p>
                 <p>{{ exercise.category }}</p>
                 <ng-container
@@ -18,6 +24,17 @@
                     [ngTemplateOutlet]="exerciseNgTemplate"
                     [ngTemplateOutletContext]="{ template: exercise | exerciseTemplatePlaceholder }"
                     ></ng-container>
+            </li>
+        </ul>
+        <ul
+            *ngIf="dragging"
+            style="min-height: 100px;"
+        >
+            <li
+                *ngFor="let exercise of exercises"
+                >
+                <p>{{ exercise.exerciseType }}</p>
+                <p>{{ exercise.category }}</p>
             </li>
         </ul>
     </div>

@@ -40,6 +40,7 @@ export class MutateWorkoutTemplateComponent {
 
   reorderModeButtonPressed = false;
   reorderMode = false;
+  dragging = false;
 
   exercises: ExerciseItem[] = [
     {
