@@ -18,3 +18,7 @@ li {
 .fc-daygrid-day-number {
   display: none;
 }
+
+.cdk-drag-placeholder {
+  box-shadow: var(--focus-ring);
+}
