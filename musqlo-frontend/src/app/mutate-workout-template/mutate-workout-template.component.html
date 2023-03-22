@@ -1,86 +1,84 @@
 <div class="flex">
-    <div class="col-2">
-        <h2>Exercies</h2>
-        <ul
-            [class.hidden]="dragging"
-            style="min-height: 100px;"
-            cdkDropList
-            #exerciseList="cdkDropList"
-            [cdkDropListData]="exercises"
-            [cdkDropListConnectedTo]="[templateList]"
-            cdkDropListSortingDisabled
-        >
-            <li
-                *ngFor="let exercise of exercises"
-                [cdkDragData]="exercise"
-                cdkDrag
-                (cdkDragStarted)="dragging = true"
-                (cdkDragReleased)="dragging = false"
-                >
-                <p>{{ exercise.exerciseType }}</p>
-                <p>{{ exercise.category }}</p>
-                <ng-container
-                    *cdkDragPlaceholder
-                    [ngTemplateOutlet]="exerciseNgTemplate"
-                    [ngTemplateOutletContext]="{ template: exercise | exerciseTemplatePlaceholder }"
-                    ></ng-container>
-            </li>
-        </ul>
-        <ul
-            *ngIf="dragging"
-            style="min-height: 100px;"
-        >
-            <li
-                *ngFor="let exercise of exercises"
-                >
-                <p>{{ exercise.exerciseType }}</p>
-                <p>{{ exercise.category }}</p>
-            </li>
-        </ul>
-    </div>
-    <div class="col-10">
-        <div class="flex">
-            <h1 class="flex-1">My Workout</h1>
-            <div class="flex align-items-center">
-                <p-toggleButton
-                    offIcon="pi pi-arrows-alt"
-                    offLabel="Reorder"
-                    onIcon="pi pi-check"
-                    onLabel="Done"
-                    [style]="{ 'width': '8rem' }"
-                    [disabled]="!reorderMode && exerciseTemplates.length < 2"
-                    [(ngModel)]="reorderModeButtonPressed"
-                    (onChange)="toggleReorderMode()"
-                    styleClass="p-button-raised"
-                ></p-toggleButton>
-                <button 
-                  pButton
-                  pRipple
-                  type="button"
-                  icon="pi pi-save"
-                  label="Save"
-                  class="p-button p-button-raised p-button-success ml-2"
-                  [disabled]="!exerciseTemplates.length"
-                  (click)="saveWorkout()"
-                  ></button>
-            </div>
-        </div>
-        <ul
-            style="min-height: 100px;"
-            cdkDropList
-            #templateList="cdkDropList"
-            [cdkDropListData]="exerciseTemplates"
-            (cdkDropListDropped)="drop($event)"
-        >
-            <li *ngFor="let template of exerciseTemplates" [cdkDragData]="template" cdkDrag [cdkDragDisabled]="!reorderMode">
-                <ng-container
-                    [ngTemplateOutlet]="exerciseNgTemplate"
-                    [ngTemplateOutletContext]="{ template: template }"
-                    ></ng-container>
-            </li>
-        </ul>
+    <h1 class="flex-1">My Workout</h1>
+    <div class="flex align-items-center">
+        <p-toggleButton
+            offIcon="pi pi-arrows-alt"
+            offLabel="Reorder"
+            onIcon="pi pi-check"
+            onLabel="Done"
+            [style]="{ 'width': '8rem' }"
+            [disabled]="!reorderMode && exerciseTemplates.length < 2"
+            [(ngModel)]="reorderModeButtonPressed"
+            (onChange)="toggleReorderMode()"
+            styleClass="p-button-raised"
+            ></p-toggleButton>
+        <button 
+            pButton
+            pRipple
+            type="button"
+            icon="pi pi-save"
+            label="Save"
+            class="p-button p-button-raised p-button-success ml-2"
+            [disabled]="!exerciseTemplates.length"
+            (click)="saveWorkout()"
+            ></button>
     </div>
 </div>
+<ul
+    style="min-height: 100px;"
+    cdkDropList
+    #templateList="cdkDropList"
+    [cdkDropListData]="exerciseTemplates"
+    (cdkDropListDropped)="drop($event)"
+    >
+    <li *ngFor="let template of exerciseTemplates" [cdkDragData]="template" cdkDrag [cdkDragDisabled]="!reorderMode">
+        <ng-container
+            [ngTemplateOutlet]="exerciseNgTemplate"
+            [ngTemplateOutletContext]="{ template: template }"
+            ></ng-container>
+    </li>
+</ul>
+
+<app-add-overlay>
+    <h2>Exercies</h2>
+    <ul
+        [class.hidden]="dragging"
+        style="min-height: 100px;"
+        cdkDropList
+        #exerciseList="cdkDropList"
+        [cdkDropListData]="exercises"
+        [cdkDropListConnectedTo]="[templateList]"
+        cdkDropListSortingDisabled
+        >
+        <li
+            *ngFor="let exercise of exercises"
+            [cdkDragData]="exercise"
+            cdkDrag
+            (cdkDragStarted)="dragging = true"
+            (cdkDragReleased)="dragging = false"
+            >
+            <p>{{ exercise.exerciseType }}</p>
+            <p>{{ exercise.category }}</p>
+            <ng-container
+                *cdkDragPlaceholder
+                [ngTemplateOutlet]="exerciseNgTemplate"
+                [ngTemplateOutletContext]="{ template: exercise | exerciseTemplatePlaceholder }"
+                ></ng-container>
+        </li>
+    </ul>
+    <ul
+        *ngIf="dragging"
+        style="min-height: 100px;"
+        >
+        <li
+            *ngFor="let exercise of exercises"
+            >
+            <p>{{ exercise.exerciseType }}</p>
+            <p>{{ exercise.category }}</p>
+        </li>
+    </ul>
+
+</app-add-overlay>
 
 <ng-template #exerciseNgTemplate let-template="template">
     <div class="flex align-items-center">
