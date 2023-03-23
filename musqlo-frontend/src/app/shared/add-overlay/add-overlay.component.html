@@ -2,13 +2,14 @@
     pRipple
     pButton
     icon="pi pi-plus"
-    class="p-speeddial-button p-button-rounded"
+    class="p-speeddial-button p-button-rounded main-button"
     style="position: fixed; bottom: 20px; right: 20px; "
-    (click)="op.toggle($event)"
     ></button>
 
-<p-overlayPanel #op>
-    <ng-template pTemplate>
-      <ng-content></ng-content>
-    </ng-template>
-</p-overlayPanel>
+<div
+    class="p-overlaypanel p-overlaypanel-flipped p-component"
+    >
+    <div class="p-overlaypanel-content">
+        <ng-content></ng-content>
+    </div>
+</div>
