@@ -20,8 +20,8 @@ li {
 }
 
 .cdk-drag-placeholder {
-  box-shadow: var(--focus-ring);
   border-radius: 6px;
+  opacity: 0.3;
 }
 
 .main-button .p-button-icon {
