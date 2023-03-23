@@ -16,7 +16,7 @@
     overflow:hidden;
     position:relative
 }
-.p-overlaypanel:after,.p-overlaypanel:before{
+.p-overlaypanel:before{
     bottom:100%;
     right:22px;
     content:" ";
@@ -25,39 +25,16 @@
     position:absolute;
     pointer-events:none
 }
-.p-overlaypanel:after{
-    border-width:8px;
-    margin-left:-8px
-}
 .p-overlaypanel:before{
     border-width:10px;
     margin-left:-10px
 }
-.p-overlaypanel-shifted:after,.p-overlaypanel-shifted:before{
-    left:auto;
-    right:1.25em;
-    margin-left:auto
-}
-.p-overlaypanel-flipped:after,.p-overlaypanel-flipped:before{
+.p-overlaypanel-flipped:before{
     bottom:auto;
     top:100%
 }
-.p-overlaypanel.p-overlaypanel-flipped:after{
-    border-bottom-color:transparent
-}
 .p-overlaypanel.p-overlaypanel-flipped:before{
     border-bottom-color:transparent
-}
-
-.outer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-}
-
-.inner {
-  position: relative;
 }
 
 .main-button {

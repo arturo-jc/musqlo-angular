@@ -4,9 +4,12 @@
     icon="pi pi-plus"
     class="p-speeddial-button p-button-rounded main-button"
     style="position: fixed; bottom: 20px; right: 20px; "
+    (click)="toggleOverlay()"
     ></button>
 
 <div
+    *ngIf="render"
+    [@animation]="overlayVisible ? 'open' : 'close'"
     class="p-overlaypanel p-overlaypanel-flipped p-component"
     >
     <div class="p-overlaypanel-content">
