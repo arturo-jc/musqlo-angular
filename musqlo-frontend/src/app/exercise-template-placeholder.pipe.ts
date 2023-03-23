@@ -14,8 +14,8 @@ export class ExerciseTemplatePlaceholderPipe implements PipeTransform {
       sets: [
         {
           order: 1,
-          reps: undefined,
-          weight: undefined,
+          reps: 1,
+          weight: 0,
         }
       ],
     };

@@ -65,12 +65,14 @@ export class MutateWorkoutTemplateComponent {
       this.reorderTemplates();
       return;
     }
-    this.insertTemplate((event.item.data) as ExerciseItem, event.currentIndex);
+    this.insertNewTemplate((event.item.data) as ExerciseItem, event.currentIndex);
   }
 
-  insertTemplate(exercise: ExerciseItem, index: number) {
+  insertNewTemplate(exercise: ExerciseItem, index: number) {
     const firstSet: SetTemplate = {
       order: 1,
+      weight: 0,
+      reps: 1,
     };
 
     const newTemplate: ExerciseTemplate = {
@@ -106,8 +108,16 @@ export class MutateWorkoutTemplateComponent {
     template.collapsed = false;
 
     setTimeout(() => {
+      let lastExistingSet;
+
+      if (template.sets.length) {
+        lastExistingSet = template.sets[template.sets.length - 1];
+      }
+
       const newSet: SetTemplate = {
         order: template.sets.length + 1,
+        weight: lastExistingSet?.weight || 0,
+        reps: lastExistingSet?.reps || 1,
       };
 
       template.sets = [ ...template.sets, newSet ];
