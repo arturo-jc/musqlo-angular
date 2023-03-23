@@ -10,6 +10,8 @@
 <div
     *ngIf="render"
     [@animation]="overlayVisible ? 'open' : 'close'"
+    (@animation.start)="animationInProgress = true"
+    (@animation.done)="animationInProgress = false"
     class="p-overlaypanel p-overlaypanel-flipped p-component"
     >
     <div class="p-overlaypanel-content">
