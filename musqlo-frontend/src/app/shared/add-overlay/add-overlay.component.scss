@@ -5,10 +5,12 @@
     right:20px;
     pointer-events: auto;
 }
+
 .p-overlaypanel-flipped{
     margin-top:0;
     margin-bottom:10px
 }
+
 .p-overlaypanel-close{
     display:flex;
     justify-content:center;
@@ -16,8 +18,8 @@
     overflow:hidden;
     position:relative
 }
+
 .p-overlaypanel:before{
-    bottom:100%;
     right:22px;
     content:" ";
     height:0;
@@ -25,18 +27,25 @@
     position:absolute;
     pointer-events:none
 }
+
 .p-overlaypanel:before{
     border-width:10px;
     margin-left:-10px
 }
+
 .p-overlaypanel-flipped:before{
-    bottom:auto;
     top:100%
 }
+
 .p-overlaypanel.p-overlaypanel-flipped:before{
     border-bottom-color:transparent
 }
 
-.main-button {
-  pointer-events: auto;
+.p-button-rounded.main-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    pointer-events: auto;
+    width: 4rem;
+    height: 4rem;
 }
