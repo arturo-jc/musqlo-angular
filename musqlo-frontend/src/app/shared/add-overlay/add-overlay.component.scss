@@ -1,17 +1,22 @@
-.p-overlaypanel{
+.overlaypanel{
     position:fixed;
     margin-top:10px;
     bottom:76px;
     right:20px;
     pointer-events: auto;
+    background: #ffffff;
+    color: #495057;
+    border: 0 none;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-.p-overlaypanel-flipped{
+.overlaypanel-flipped{
     margin-top:0;
     margin-bottom:10px
 }
 
-.p-overlaypanel-close{
+.overlaypanel-close{
     display:flex;
     justify-content:center;
     align-items:center;
@@ -19,26 +24,34 @@
     position:relative
 }
 
-.p-overlaypanel:before{
+.overlaypanel:before{
     right:22px;
     content:" ";
     height:0;
     width:0;
     position:absolute;
-    pointer-events:none
+    pointer-events:none;
+    border: solid transparent;
+    border-color: rgba(255, 255, 255, 0);
+    border-bottom-color: #f2f2f2;
 }
 
-.p-overlaypanel:before{
+.overlaypanel:before{
     border-width:10px;
     margin-left:-10px
 }
 
-.p-overlaypanel-flipped:before{
+.overlaypanel-flipped:before{
+    border-top-color: #ffffff;
     top:100%
 }
 
-.p-overlaypanel.p-overlaypanel-flipped:before{
+.overlaypanel.overlaypanel-flipped:before{
     border-bottom-color:transparent
+}
+
+.overlaypanel .overlaypanel-content {
+    padding: 1.25rem;
 }
 
 .p-button-rounded.main-button {
