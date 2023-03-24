@@ -64,7 +64,7 @@ export class MutateWorkoutTemplateComponent {
 
     this.insertNewTemplate((event.item.data) as ExerciseItem, event.currentIndex);
 
-    if (!this.fixedOverlay || this.reorderMode) { return; }
+    if (!this.fixedOverlay) { return; }
 
     this.fixedOverlay.show()
   }
