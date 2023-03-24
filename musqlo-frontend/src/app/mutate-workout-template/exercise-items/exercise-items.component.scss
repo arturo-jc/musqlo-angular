@@ -1,0 +1,13 @@
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
+.wrapper {
+  overflow: auto;
+  padding-left: 1rem;
+}
+
+.exercise-item {
+  cursor: pointer;
+}

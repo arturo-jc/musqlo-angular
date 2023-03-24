@@ -31,15 +31,23 @@ export class ExerciseItemsComponent implements OnInit {
   exercises: ExerciseItem[] = [
     {
       exerciseType: 'Aerobics',
-      category: 'Cardio'
+      category: 'Cardio',
     },
     {
       exerciseType: 'Deadlift',
-      category: 'Back'
+      category: 'Back',
     },
     {
       exerciseType: 'Seated Calf Raise',
-      category: 'Legs'
+      category: 'Legs',
+    },
+    {
+      exerciseType: 'Burpees',
+      category: 'Cardio',
+    },
+    {
+      exerciseType: 'Turkish Get-Up',
+      category: 'Cardio',
     },
   ];
 
