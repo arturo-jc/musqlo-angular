@@ -20,7 +20,7 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { MenubarModule } from 'primeng/menubar';
 import { WorkoutTemplateEventDataPipe } from './full-calendar/workout-template-event-data.pipe';
 import { ExerciseTemplatePlaceholderPipe } from './exercise-template-placeholder.pipe';
-import { AddOverlayComponent } from './shared/add-overlay/add-overlay.component';
+import { FixedOverlayComponent } from './shared/fixed-overlay/fixed-overlay.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +29,7 @@ import { AddOverlayComponent } from './shared/add-overlay/add-overlay.component'
     MutateScheduleComponent,
     WorkoutTemplateEventDataPipe,
     ExerciseTemplatePlaceholderPipe,
-    AddOverlayComponent
+    FixedOverlayComponent
   ],
   imports: [
     BrowserModule,

@@ -2,9 +2,9 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-add-overlay',
-  templateUrl: './add-overlay.component.html',
-  styleUrls: ['./add-overlay.component.scss'],
+  selector: 'app-fixed-overlay',
+  templateUrl: './fixed-overlay.component.html',
+  styleUrls: ['./fixed-overlay.component.scss'],
   animations: [
     trigger('animation', [
       state(
@@ -32,7 +32,7 @@ import { Component } from '@angular/core';
     ])
   ],
 })
-export class AddOverlayComponent {
+export class FixedOverlayComponent {
 
   render = false;
 
