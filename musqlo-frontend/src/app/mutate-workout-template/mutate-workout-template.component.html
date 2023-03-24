@@ -30,6 +30,7 @@
     #templateList="cdkDropList"
     [cdkDropListData]="exerciseTemplates"
     (cdkDropListDropped)="drop($event)"
+    (cdkDropListEntered)="overlay.hide()"
     >
     <li *ngFor="let template of exerciseTemplates" [cdkDragData]="template" cdkDrag [cdkDragDisabled]="!reorderMode">
         <app-exercise-template
@@ -44,7 +45,7 @@
     </li>
 </ul>
 
-<app-fixed-overlay (onShow)="exerciseItems.setFocus()">
+<app-fixed-overlay (onShow)="exerciseItems.setFocus()" #overlay>
     <app-exercise-items
         #exerciseItems
         [cdkDroplistConnectedTo]="templateList"
