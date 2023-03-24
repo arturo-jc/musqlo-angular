@@ -1,0 +1,40 @@
+<h2>Exercies</h2>
+<ul
+  [class.hidden]="dragging"
+  style="min-height: 100px;"
+  cdkDropList
+  #exerciseList="cdkDropList"
+  [cdkDropListData]="exercises"
+  [cdkDropListConnectedTo]="[cdkDroplistConnectedTo]"
+  cdkDropListSortingDisabled
+  >
+  <li
+    *ngFor="let exercise of exercises"
+    [cdkDragData]="exercise"
+    cdkDrag
+    (cdkDragStarted)="dragging = true"
+    (cdkDragReleased)="dragging = false"
+    >
+    <p>{{ exercise.exerciseType }}</p>
+    <p>{{ exercise.category }}</p>
+    <ng-container
+      *cdkDragPlaceholder
+      >
+      <app-exercise-template
+        [template]="exercise | exerciseTemplatePlaceholder "
+        [hideSets]="placeholderSetsHidden"
+        ></app-exercise-template>
+    </ng-container>
+  </li>
+</ul>
+<ul
+  *ngIf="dragging"
+  style="min-height: 100px;"
+  >
+  <li
+    *ngFor="let exercise of exercises"
+    >
+    <p>{{ exercise.exerciseType }}</p>
+    <p>{{ exercise.category }}</p>
+  </li>
+</ul>
