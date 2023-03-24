@@ -1,5 +1,5 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-fixed-overlay',
@@ -11,21 +11,21 @@ import { Component } from '@angular/core';
         'void',
         style({
           transform: 'scaleY(0.8)',
-          opacity: 0
+          opacity: 0,
         })
       ),
       state(
         'close',
         style({
           transform: 'scaleY(0.8)',
-          opacity: 0
+          opacity: 0,
         })
       ),
       state(
         'open',
         style({
           transform: 'translateY(0)',
-          opacity: 1
+          opacity: 1,
         })
       ),
       transition('* => open', animate('.12s cubic-bezier(0, 0, 0.2, 1)')),
@@ -33,6 +33,16 @@ import { Component } from '@angular/core';
   ],
 })
 export class FixedOverlayComponent {
+
+  @ViewChild('overlay') overlayRef?: ElementRef;
+
+  @HostListener('document:click', ['$event'])
+  click(event: MouseEvent) {
+    if (this.animationInProgress) { return; }
+    if (!this.overlayVisible) { return; }
+    if (this.overlayRef?.nativeElement.contains(event.target)) { return; }
+    this.hide();
+  }
 
   render = false;
 
@@ -44,11 +54,19 @@ export class FixedOverlayComponent {
     if (this.animationInProgress) { return; }
 
     if (this.overlayVisible) {
-      this.overlayVisible = false;
+      this.hide();
     } else {
-      this.overlayVisible = true;
-      this.render = true;
+      this.show();
     }
+  }
+
+  show() {
+    this.overlayVisible = true;
+    this.render = true;
+  }
+
+  hide() {
+    this.overlayVisible = false;
   }
 
 }

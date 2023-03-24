@@ -12,6 +12,8 @@
     (@animation.start)="animationInProgress = true"
     (@animation.done)="animationInProgress = false"
     class="overlaypanel overlaypanel-flipped p-component"
+    [ngStyle]="{ 'pointer-events': overlayVisible ? 'auto' : 'none' }"
+    #overlay
     >
     <div class="overlaypanel-content">
         <ng-content></ng-content>
