@@ -10,6 +10,7 @@ import { AppComponent } from './app.component';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextModule } from 'primeng/inputtext';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { MutateWorkoutTemplateComponent } from './mutate-workout-template/mutate-workout-template.component';
 import { MutateScheduleComponent } from './mutate-schedule/mutate-schedule.component';
@@ -44,6 +45,7 @@ import { ExerciseItemsComponent } from './mutate-workout-template/exercise-items
     ButtonModule,
     TableModule,
     InputNumberModule,
+    InputTextModule,
     ToggleButtonModule,
     InputSwitchModule,
     RippleModule,

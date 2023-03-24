@@ -1,4 +1,4 @@
-<h2>Exercies</h2>
+<input type="text" pInputText [(ngModel)]="filter" (input)="filterExercises()">
 <ul
   [class.hidden]="dragging"
   style="min-height: 100px;"
@@ -9,7 +9,7 @@
   cdkDropListSortingDisabled
   >
   <li
-    *ngFor="let exercise of exercises"
+    *ngFor="let exercise of filteredExercises"
     [cdkDragData]="exercise"
     cdkDrag
     (cdkDragStarted)="dragging = true"
@@ -32,7 +32,7 @@
   style="min-height: 100px;"
   >
   <li
-    *ngFor="let exercise of exercises"
+    *ngFor="let exercise of filteredExercises"
     >
     <p>{{ exercise.exerciseType }}</p>
     <p>{{ exercise.category }}</p>

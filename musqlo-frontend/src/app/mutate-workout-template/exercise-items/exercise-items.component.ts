@@ -1,5 +1,5 @@
 import { CdkDropList } from '@angular/cdk/drag-drop';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 export type Category = 'Cardio' | 'Back' | 'Legs';
 
@@ -13,11 +13,13 @@ export interface ExerciseItem {
   templateUrl: './exercise-items.component.html',
   styleUrls: ['./exercise-items.component.scss']
 })
-export class ExerciseItemsComponent {
+export class ExerciseItemsComponent implements OnInit {
 
   @Input() cdkDroplistConnectedTo!: CdkDropList | string;
 
   @Input() placeholderSetsHidden = false;
+
+  filter = '';
 
   dragging = false;
 
@@ -38,4 +40,17 @@ export class ExerciseItemsComponent {
     },
   ];
 
+  filteredExercises: ExerciseItem[] = [];
+
+  ngOnInit(): void {
+    this.filterExercises();
+  }
+
+  filterExercises() {
+    this.filteredExercises = this.exercises.filter(exercise => {
+      const noFilter = !this.filter.trim().length;
+      const exerciseIncluded = exercise.exerciseType.toLowerCase().includes(this.filter.trim().toLowerCase());
+      return noFilter || exerciseIncluded;
+    });
+  }
 }
