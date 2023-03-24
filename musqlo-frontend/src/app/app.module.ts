@@ -21,6 +21,7 @@ import { MenubarModule } from 'primeng/menubar';
 import { WorkoutTemplateEventDataPipe } from './full-calendar/workout-template-event-data.pipe';
 import { ExerciseTemplatePlaceholderPipe } from './exercise-template-placeholder.pipe';
 import { FixedOverlayComponent } from './shared/fixed-overlay/fixed-overlay.component';
+import { ExerciseTemplateComponent } from './mutate-workout-template/exercise-template/exercise-template.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { FixedOverlayComponent } from './shared/fixed-overlay/fixed-overlay.comp
     MutateScheduleComponent,
     WorkoutTemplateEventDataPipe,
     ExerciseTemplatePlaceholderPipe,
-    FixedOverlayComponent
+    FixedOverlayComponent,
+    ExerciseTemplateComponent
   ],
   imports: [
     BrowserModule,

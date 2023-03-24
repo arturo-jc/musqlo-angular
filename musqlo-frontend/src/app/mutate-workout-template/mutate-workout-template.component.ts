@@ -27,14 +27,6 @@ export interface ExerciseTemplate {
   selector: 'app-mutate-workout-template',
   templateUrl: './mutate-workout-template.component.html',
   styleUrls: ['./mutate-workout-template.component.scss'],
-  animations: [
-    trigger('collapse', [
-      state('hidden', style({ height: '0' })),
-      state('visible', style({ height: '*' })),
-      transition('visible <=> hidden', [animate('400ms cubic-bezier(0.86, 0, 0.07, 1)')]),
-      transition('void => *', animate(0)),
-    ])
-  ]
 })
 export class MutateWorkoutTemplateComponent {
 
@@ -130,7 +122,9 @@ export class MutateWorkoutTemplateComponent {
     });
   }
 
-  deleteSet(template: ExerciseTemplate, index: number) {
+  deleteSet(input: { template: ExerciseTemplate, index: number }) {
+    const { template, index } = input;
+
     const updatedTemplates = [ ...template.sets ];
     updatedTemplates.splice(index, 1);
 
