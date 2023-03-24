@@ -2,13 +2,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, ViewChild } from '@angular/core';
 import { cloneDeep } from 'lodash-es';
 import { FixedOverlayComponent } from '../shared/fixed-overlay/fixed-overlay.component';
-
-export type Category = 'Cardio' | 'Back' | 'Legs';
-
-export interface ExerciseItem {
-  exerciseType: string;
-  category: Category;
-}
+import { ExerciseItem } from './exercise-items/exercise-items.component';
 
 export interface SetTemplate {
   reps?: number;
@@ -37,21 +31,6 @@ export class MutateWorkoutTemplateComponent {
   reorderMode = false;
 
   dragging = false;
-
-  exercises: ExerciseItem[] = [
-    {
-      exerciseType: 'Aerobics',
-      category: 'Cardio'
-    },
-    {
-      exerciseType: 'Deadlift',
-      category: 'Back'
-    },
-    {
-      exerciseType: 'Seated Calf Raise',
-      category: 'Legs'
-    },
-  ];
 
   exerciseTemplates: ExerciseTemplate[] = [];
 
