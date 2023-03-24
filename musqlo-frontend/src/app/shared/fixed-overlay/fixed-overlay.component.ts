@@ -37,7 +37,7 @@ export class FixedOverlayComponent {
   @ViewChild('overlay') overlayRef?: ElementRef;
 
   @HostListener('document:click', ['$event'])
-  click(event: MouseEvent) {
+  dismiss(event: MouseEvent) {
     if (this.animationInProgress) { return; }
     if (!this.overlayVisible) { return; }
     if (this.overlayRef?.nativeElement.contains(event.target)) { return; }
