@@ -1,5 +1,5 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Output, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-fixed-overlay',
@@ -33,6 +33,7 @@ import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
   ],
 })
 export class FixedOverlayComponent {
+  @Output() onShow = new EventEmitter();
 
   @ViewChild('overlay') overlayRef?: ElementRef;
 
@@ -63,6 +64,7 @@ export class FixedOverlayComponent {
   show() {
     this.overlayVisible = true;
     this.render = true;
+    this.onShow.emit();
   }
 
   hide() {

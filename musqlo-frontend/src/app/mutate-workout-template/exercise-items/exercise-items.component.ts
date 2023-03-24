@@ -1,5 +1,6 @@
 import { CdkDropList } from '@angular/cdk/drag-drop';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { InputText } from 'primeng/inputtext';
 
 export type Category = 'Cardio' | 'Back' | 'Legs';
 
@@ -18,6 +19,8 @@ export class ExerciseItemsComponent implements OnInit {
   @Input() cdkDroplistConnectedTo!: CdkDropList | string;
 
   @Input() placeholderSetsHidden = false;
+
+  @ViewChild(InputText) inputTextRef?: InputText;
 
   filter = '';
 
@@ -52,5 +55,10 @@ export class ExerciseItemsComponent implements OnInit {
       const exerciseIncluded = exercise.exerciseType.toLowerCase().includes(this.filter.trim().toLowerCase());
       return noFilter || exerciseIncluded;
     });
+  }
+
+  setFocus() {
+    if (!this.inputTextRef) { return; }
+    setTimeout(() => this.inputTextRef?.el.nativeElement.focus(), 0);
   }
 }

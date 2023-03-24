@@ -44,8 +44,9 @@
     </li>
 </ul>
 
-<app-fixed-overlay>
+<app-fixed-overlay (onShow)="exerciseItems.setFocus()">
     <app-exercise-items
+        #exerciseItems
         [cdkDroplistConnectedTo]="templateList"
         [placeholderSetsHidden]="reorderModeButtonPressed"
         ></app-exercise-items>
