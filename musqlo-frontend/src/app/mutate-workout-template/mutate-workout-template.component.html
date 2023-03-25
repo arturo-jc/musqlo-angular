@@ -1,7 +1,7 @@
 <div class="card">
     <div class="flex">
         <div class="flex-1">
-            <app-edit-in-place [(text)]="title" placeholder="Enter a title">
+            <app-edit-in-place [(text)]="title" placeholder="Enter a title" (onActivate)="overlay.hide()">
                 <H2 class="title">{{ title }}<i class="pi pi-pencil ml-2"></i></H2>
             </app-edit-in-place>
         </div>

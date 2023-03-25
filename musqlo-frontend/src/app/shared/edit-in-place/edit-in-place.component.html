@@ -1,4 +1,4 @@
-<p-inplace #inplace (click)="$event.stopPropagation()">
+<p-inplace #inplace (click)="$event.stopPropagation()" (onActivate)="onActivate.emit()">
   <ng-template pTemplate="display">
     <ng-content>
     </ng-content>

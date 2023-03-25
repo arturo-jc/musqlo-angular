@@ -13,6 +13,8 @@ export class EditInPlaceComponent implements AfterViewInit {
 
   @Output() textChange = new EventEmitter<string>();
 
+  @Output() onActivate = new EventEmitter();
+
   @ViewChild(Inplace) inplaceRef?: Inplace;
 
   @ViewChildren('input') inputQueryList!: QueryList<ElementRef>;
@@ -25,10 +27,10 @@ export class EditInPlaceComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.autofocusOnEnterEditMode();
+    this.autofocusOnActivate();
   }
 
-  autofocusOnEnterEditMode() {
+  autofocusOnActivate() {
     this.inputQueryList.changes.subscribe(() => {
       if (!this.inputQueryList.first) { return; }
       this.inputQueryList.first.nativeElement.focus();
