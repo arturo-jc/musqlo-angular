@@ -5,7 +5,9 @@ import timeGridWeek from '@fullcalendar/timegrid';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import interaction from '@fullcalendar/interaction';
 import { FullCalendarService } from '../full-calendar/full-calendar.service';
-import { FixedOverlayComponent } from '../shared/fixed-overlay/fixed-overlay.component';
+import { FixedFilterComponent } from '../shared/fixed-filter/fixed-filter.component';
+import { WorkoutTemplate } from '../services/workout-templates.service';
+import { WorkoutTemplatesComponent } from '../workout-templates/workout-templates.component';
 
 export type CalendarView = 'weekly' | 'biweekly';
 
@@ -23,7 +25,7 @@ export class MutateScheduleComponent implements AfterViewInit {
 
   @ViewChild(FullCalendarComponent, { static: false }) calendarRef!: FullCalendarComponent;
 
-  @ViewChild(FixedOverlayComponent) fixedOverlay?: FixedOverlayComponent;
+  @ViewChild(WorkoutTemplatesComponent) workoutTemplatesRef?: WorkoutTemplatesComponent;
 
   title = 'New Schedule';
 
@@ -70,11 +72,11 @@ export class MutateScheduleComponent implements AfterViewInit {
     },
     eventContent: (args) => this.fullCalendar.getEventContent(args),
     eventAllow: () => {
-      this.hideFixedOverlay();
+      this.hideFixedFilter();
       return true;
     },
     drop: () => {
-      this.showFixedOverlay();
+      this.showFixedFilter();
     }
   }
 
@@ -104,14 +106,14 @@ export class MutateScheduleComponent implements AfterViewInit {
     this.calendar.changeView('dayGridWeek');
   }
 
-  showFixedOverlay() {
-    if (!this.fixedOverlay || this.fixedOverlay.overlayVisible) { return; }
-    this.fixedOverlay.show();
+  showFixedFilter() {
+    if (!this.workoutTemplatesRef) { return; }
+    this.workoutTemplatesRef.show();
   }
 
-  hideFixedOverlay() {
-    if (!this.fixedOverlay?.overlayVisible) { return; }
-    this.fixedOverlay.hide();
+  hideFixedFilter() {
+    if (!this.workoutTemplatesRef) { return; }
+    this.workoutTemplatesRef.hide();
   }
 
   saveSchedule() {

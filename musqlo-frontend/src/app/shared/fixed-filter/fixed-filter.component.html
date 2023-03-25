@@ -1,4 +1,4 @@
-<app-fixed-overlay>
+<app-fixed-overlay (onShow)="overlayVisible = true" (onHide)="overlayVisible = false">
   <div class="flex flex-column">
     <div class="p-3">
       <input type="text" pInputText [(ngModel)]="filter" (input)="filterOptions()" [placeholder]="placeholder">

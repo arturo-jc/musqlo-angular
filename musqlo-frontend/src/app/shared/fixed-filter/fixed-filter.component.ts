@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, ContentChild, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ContentChild, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { InputText } from 'primeng/inputtext';
 import { FixedOverlayComponent } from '../fixed-overlay/fixed-overlay.component';
 import { FixedFilterOptionDirective } from './fixed-filter-option.directive';
@@ -9,7 +9,7 @@ import { FixedFilterOptionsDirective } from './fixed-filter-options.directive';
   templateUrl: './fixed-filter.component.html',
   styleUrls: ['./fixed-filter.component.scss']
 })
-export class FixedFilterComponent<T extends { [key: string]: any }> implements AfterContentInit, OnInit {
+export class FixedFilterComponent<T extends { [key: string]: any }> implements OnInit {
 
   @Input() placeholder!: string;
 
@@ -27,16 +27,15 @@ export class FixedFilterComponent<T extends { [key: string]: any }> implements A
 
   @ContentChild(FixedFilterOptionDirective) customOptionTemplate?: FixedFilterOptionDirective;
 
-  ngOnInit(): void {
-    this.filterOptions();
-  }
-
-  ngAfterContentInit(): void {
-  }
-
   filter = '';
 
   filteredOptions!: T[];
+
+  overlayVisible = false;
+
+  ngOnInit(): void {
+    this.filterOptions();
+  }
 
   filterOptions() {
     this.filteredOptions = this.options.filter(opt => {
@@ -48,6 +47,11 @@ export class FixedFilterComponent<T extends { [key: string]: any }> implements A
   setFocus() {
     if (!this.inputTextRef) { return; }
     setTimeout(() => this.inputTextRef?.el.nativeElement.focus(), 0);
+  }
+
+  show() {
+    if (!this.fixedOverlayRef) { return; }
+    this.fixedOverlayRef.show();
   }
 
   hide() {

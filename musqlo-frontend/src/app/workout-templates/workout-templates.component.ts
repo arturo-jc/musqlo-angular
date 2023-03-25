@@ -3,6 +3,7 @@ import { FullCalendarComponent } from '@fullcalendar/angular';
 import { Calendar } from '@fullcalendar/core';
 import { Draggable } from '@fullcalendar/interaction';
 import { WorkoutTemplate, WorkoutTemplatesService } from '../services/workout-templates.service';
+import { FixedFilterComponent } from '../shared/fixed-filter/fixed-filter.component';
 
 @Component({
   selector: 'app-workout-templates',
@@ -14,6 +15,8 @@ export class WorkoutTemplatesComponent implements AfterViewInit {
   @Input() calendarRef!: FullCalendarComponent;
 
   @ViewChild('workoutList') workoutsRef?: ElementRef;
+
+  @ViewChild(FixedFilterComponent) fixedFilterRef?: FixedFilterComponent<WorkoutTemplate>;
 
   calendar?: Calendar;
 
@@ -38,6 +41,16 @@ export class WorkoutTemplatesComponent implements AfterViewInit {
 
   updateFilteredWorkoutTemplates(updatedWorkoutTemplates: WorkoutTemplate[]) {
     this.filteredWorkoutTemplates = updatedWorkoutTemplates;
+  }
+
+  show() {
+    if (!this.fixedFilterRef) { return; }
+    this.fixedFilterRef.show();
+  }
+
+  hide() {
+    if (!this.fixedFilterRef) { return; }
+    this.fixedFilterRef.hide();
   }
 
 }
