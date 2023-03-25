@@ -1,7 +1,6 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, ViewChild } from '@angular/core';
 import { cloneDeep } from 'lodash-es';
-import { FixedOverlayComponent } from '../shared/fixed-overlay/fixed-overlay.component';
 import { ExerciseItem, ExerciseItemsComponent } from './exercise-items/exercise-items.component';
 
 export interface SetTemplate {

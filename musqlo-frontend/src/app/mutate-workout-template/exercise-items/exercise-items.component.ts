@@ -1,6 +1,5 @@
 import { CdkDropList } from '@angular/cdk/drag-drop';
 import { Component, Input, ViewChild } from '@angular/core';
-import { InputText } from 'primeng/inputtext';
 import { FixedFilterComponent } from '../../shared/fixed-filter/fixed-filter.component';
 
 export type Category = 'Cardio' | 'Back' | 'Legs';
