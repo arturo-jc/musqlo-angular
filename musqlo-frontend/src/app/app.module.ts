@@ -19,6 +19,7 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { RippleModule } from 'primeng/ripple';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { MenubarModule } from 'primeng/menubar';
+import { SelectButtonModule } from 'primeng/selectbutton';
 import { WorkoutTemplateEventDataPipe } from './full-calendar/workout-template-event-data.pipe';
 import { ExerciseTemplatePlaceholderPipe } from './exercise-template-placeholder.pipe';
 import { FixedOverlayComponent } from './shared/fixed-overlay/fixed-overlay.component';
@@ -55,6 +56,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
     RippleModule,
     OverlayPanelModule,
     MenubarModule,
+    SelectButtonModule,
     FullCalendarModule,
   ],
   providers: [],

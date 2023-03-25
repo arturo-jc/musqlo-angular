@@ -14,6 +14,13 @@ export interface WorkoutTemplate {
   backgroundColor: string;
 }
 
+export type CalendarView = 'weekly' | 'biweekly';
+
+export interface CalendarViewOption {
+  label: string;
+  value: CalendarView;
+}
+
 @Component({
   selector: 'app-mutate-schedule',
   templateUrl: './mutate-schedule.component.html',
@@ -27,7 +34,18 @@ export class MutateScheduleComponent implements AfterViewInit {
 
   calendar!: Calendar;
 
-  biweekly = false;
+  selectedView: CalendarView = 'weekly';
+
+  views: CalendarViewOption[] = [
+    {
+      label: 'Weekly',
+      value: 'weekly',
+    },
+    {
+      label: 'Biweekly',
+      value: 'biweekly',
+    }
+  ];
 
   showTimes = false;
 
@@ -76,15 +94,15 @@ export class MutateScheduleComponent implements AfterViewInit {
   updateCalendarView() {
     if (!this.calendar) { return; }
 
-    if (this.biweekly && this.showTimes) {
+    if (this.selectedView === 'biweekly' && this.showTimes) {
       this.calendar.changeView('timeBiweekly');
       return;
     }
-    if (this.biweekly && !this.showTimes) {
+    if (this.selectedView === 'biweekly' && !this.showTimes) {
       this.calendar.changeView('dayBiweekly');
       return;
     }
-    if (!this.biweekly && this.showTimes) {
+    if (this.selectedView === 'weekly' && this.showTimes) {
       this.calendar.changeView('timeGridWeek');
       return;
     }
