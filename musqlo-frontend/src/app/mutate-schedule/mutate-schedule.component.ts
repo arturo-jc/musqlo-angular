@@ -19,71 +19,15 @@ export interface WorkoutTemplate {
   styleUrls: ['./mutate-schedule.component.scss']
 })
 export class MutateScheduleComponent implements AfterViewInit {
+
   @ViewChild('calendar', { static: false }) calendarRef!: FullCalendarComponent;
+
   @ViewChild('workoutList') workoutsRef!: ElementRef;
 
   calendar!: Calendar;
 
   biweekly = false;
   showTimes = false;
-
-  workouts: WorkoutTemplate[] = [
-    {
-      name: 'My Favorite Workout',
-      backgroundColor: 'var(--primary-color)',
-      exercises: [
-        {
-          exerciseType: 'Deadlift',
-          sets: [
-            {
-              order: 1,
-              reps: 20,
-              weight: 20,
-            },
-            {
-              order: 2,
-              reps: 14,
-              weight: 29,
-            },
-            {
-              order: 3,
-              reps: 24,
-              weight: 27,
-            }
-          ],
-          order: 1
-        },
-        {
-          exerciseType: 'Dumbbells and other words that make this into a very long title',
-          sets: [
-            {
-              order: 1,
-              reps: 25,
-              weight: 89,
-            },
-          ],
-          order: 2,
-        }
-      ]
-    },
-    {
-      name: 'My Least Favorite Workout',
-      backgroundColor: 'var(--pink-500)',
-      exercises: [
-        {
-          exerciseType: 'Runnning',
-          sets: [
-            {
-              order: 1,
-              reps: 23,
-              weight: 49,
-            },
-          ],
-          order: 1
-        }
-      ]
-    }
-  ]
 
   calendarOptions: CalendarOptions = {
     headerToolbar: false,
@@ -117,16 +61,11 @@ export class MutateScheduleComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.calendar = this.calendarRef.getApi();
-
-    const { nativeElement: workouts } = this.workoutsRef;
-
-    new Draggable(workouts, {
-      itemSelector: '.workout',
-    })
-
   }
 
   updateCalendarView() {
+    if (!this.calendar) { return; }
+
     if (this.biweekly && this.showTimes) {
       this.calendar.changeView('timeBiweekly');
       return;

@@ -24,6 +24,7 @@ import { ExerciseTemplatePlaceholderPipe } from './exercise-template-placeholder
 import { FixedOverlayComponent } from './shared/fixed-overlay/fixed-overlay.component';
 import { ExerciseTemplateComponent } from './mutate-workout-template/exercise-template/exercise-template.component';
 import { ExerciseItemsComponent } from './mutate-workout-template/exercise-items/exercise-items.component';
+import { WorkoutTemplatesComponent } from './workout-templates/workout-templates.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { ExerciseItemsComponent } from './mutate-workout-template/exercise-items
     ExerciseTemplatePlaceholderPipe,
     FixedOverlayComponent,
     ExerciseTemplateComponent,
-    ExerciseItemsComponent
+    ExerciseItemsComponent,
+    WorkoutTemplatesComponent
   ],
   imports: [
     BrowserModule,

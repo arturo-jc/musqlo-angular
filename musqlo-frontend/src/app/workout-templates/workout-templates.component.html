@@ -1,0 +1,30 @@
+  <div #workoutList class="flex flex-column">
+    <div 
+      *ngFor="let workout of workouts"
+      class="workout mr-2"
+      [attr.data-event]="workout | workoutTemplateEventData "
+      >
+      <div>
+        <a
+          [style.backgroundColor]="workout.backgroundColor"
+          [style.borderColor]="workout.backgroundColor"
+          >
+          <span class="fc-event-main">
+            <span class="fc-event-title fc-event-sticky">{{ workout.name }}</span>
+            <div>
+              <div *ngFor="let exercise of workout.exercises">
+                <div>
+                  {{ exercise.exerciseType }}
+                </div>
+                  <div>
+                    x {{ exercise.sets.length }}
+                  </div>
+              </div>
+            </div>
+          </span>
+        </a>
+      </div>
+      <ul>
+      </ul>
+    </div>
+  </div>
