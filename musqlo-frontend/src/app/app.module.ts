@@ -29,6 +29,7 @@ import { ExerciseItemsComponent } from './mutate-workout-template/exercise-items
 import { WorkoutTemplatesComponent } from './workout-templates/workout-templates.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { EditInPlaceComponent } from './shared/edit-in-place/edit-in-place.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     ExerciseItemsComponent,
     WorkoutTemplatesComponent,
     SidebarComponent,
-    DashboardComponent
+    DashboardComponent,
+    EditInPlaceComponent
   ],
   imports: [
     BrowserModule,
