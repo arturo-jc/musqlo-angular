@@ -1,6 +1,10 @@
 <div class="card">
   <div class="flex">
-    <h2 class="flex-1">My Schedule</h2>
+    <div class="flex-1">
+      <app-edit-in-place [(text)]="title" placeholder="Enter a title" (onActivate)="fixedOverlay.hide()">
+        <H2 class="editable-title">{{ title }}<i class="pi pi-pencil ml-2"></i></H2>
+      </app-edit-in-place>
+    </div>
     <div class="flex align-items-center">
       <button 
         pButton

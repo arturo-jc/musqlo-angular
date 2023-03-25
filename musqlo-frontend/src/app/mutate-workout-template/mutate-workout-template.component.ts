@@ -32,8 +32,6 @@ export class MutateWorkoutTemplateComponent {
 
   reorderMode = false;
 
-  dragging = false;
-
   exerciseTemplates: ExerciseTemplate[] = [];
 
   drop(event: CdkDragDrop<ExerciseTemplate[], ExerciseItem[] | ExerciseTemplate[], ExerciseItem | ExerciseTemplate>) {

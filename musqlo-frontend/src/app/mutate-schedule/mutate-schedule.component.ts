@@ -28,9 +28,11 @@ export interface CalendarViewOption {
 })
 export class MutateScheduleComponent implements AfterViewInit {
 
-  @ViewChild('calendar', { static: false }) calendarRef!: FullCalendarComponent;
+  @ViewChild(FullCalendarComponent, { static: false }) calendarRef!: FullCalendarComponent;
 
-  @ViewChild('fixedOverlay') fixedOverlay?: FixedOverlayComponent;
+  @ViewChild(FixedOverlayComponent) fixedOverlay?: FixedOverlayComponent;
+
+  title = 'New Schedule';
 
   calendar!: Calendar;
 
