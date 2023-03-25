@@ -6,6 +6,7 @@ import { FullCalendarComponent } from '@fullcalendar/angular';
 import interaction, { Draggable } from '@fullcalendar/interaction';
 import { ExerciseTemplate } from '../mutate-workout-template/mutate-workout-template.component';
 import { FullCalendarService } from '../full-calendar/full-calendar.service';
+import { FixedOverlayComponent } from '../shared/fixed-overlay/fixed-overlay.component';
 
 export interface WorkoutTemplate {
   name: string;
@@ -22,7 +23,7 @@ export class MutateScheduleComponent implements AfterViewInit {
 
   @ViewChild('calendar', { static: false }) calendarRef!: FullCalendarComponent;
 
-  @ViewChild('workoutList') workoutsRef!: ElementRef;
+  @ViewChild('fixedOverlay') fixedOverlay?: FixedOverlayComponent;
 
   calendar!: Calendar;
 
@@ -48,11 +49,19 @@ export class MutateScheduleComponent implements AfterViewInit {
       }
     },
     eventOrder: 'lastEdited',
-    eventDidMount({ event }) {
+    eventDidMount: (args) => {
+      const { event } = args;
       if (!event.allDay) { return; }
       event.setExtendedProp('lastEdited', new Date().getTime());
     },
     eventContent: (args) => this.fullCalendar.getEventContent(args),
+    eventAllow: () => {
+      this.hideFixedOverlay();
+      return true;
+    },
+    drop: () => {
+      this.showFixedOverlay();
+    }
   }
 
   constructor(
@@ -79,6 +88,16 @@ export class MutateScheduleComponent implements AfterViewInit {
       return;
     }
     this.calendar.changeView('dayGridWeek');
+  }
+
+  showFixedOverlay() {
+    if (!this.fixedOverlay || this.fixedOverlay.overlayVisible) { return; }
+    this.fixedOverlay.show();
+  }
+
+  hideFixedOverlay() {
+    if (!this.fixedOverlay?.overlayVisible) { return; }
+    this.fixedOverlay.hide();
   }
 
   saveSchedule() {
