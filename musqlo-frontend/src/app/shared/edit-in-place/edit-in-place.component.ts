@@ -9,6 +9,8 @@ import { Inplace } from 'primeng/inplace';
 export class EditInPlaceComponent implements AfterViewInit {
   @Input() text!: string;
 
+  @Input() placeholder!: string;
+
   @Output() textChange = new EventEmitter<string>();
 
   @ViewChild(Inplace) inplaceRef?: Inplace;
@@ -23,6 +25,10 @@ export class EditInPlaceComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    this.autofocusOnEnterEditMode();
+  }
+
+  autofocusOnEnterEditMode() {
     this.inputQueryList.changes.subscribe(() => {
       if (!this.inputQueryList.first) { return; }
       this.inputQueryList.first.nativeElement.focus();

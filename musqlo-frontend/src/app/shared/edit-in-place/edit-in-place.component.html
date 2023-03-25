@@ -1,15 +1,16 @@
-<p-inplace #titleInplace (click)="$event.stopPropagation()">
+<p-inplace #inplace (click)="$event.stopPropagation()">
   <ng-template pTemplate="display">
-    <H2 class="title">{{ text }}<i class="pi pi-pencil ml-2"></i></H2>
+    <ng-content>
+    </ng-content>
   </ng-template>
   <ng-template pTemplate="content">
     <input
     #input type="text"
-    placeholder="Enter a title"
+    [placeholder]="placeholder"
     pInputText
     [(ngModel)]="text"
     (ngModelChange)="textChange.emit(text)"
-    (keydown.enter)="titleInplace.deactivate()"
+    (keydown.enter)="inplace.deactivate()"
     required
     >
   </ng-template>
