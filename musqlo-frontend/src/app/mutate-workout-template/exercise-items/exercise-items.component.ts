@@ -49,6 +49,26 @@ export class ExerciseItemsComponent implements OnInit {
       exerciseType: 'Turkish Get-Up',
       category: 'Cardio',
     },
+    {
+      exerciseType: 'Aerobics',
+      category: 'Cardio',
+    },
+    {
+      exerciseType: 'Deadlift',
+      category: 'Back',
+    },
+    {
+      exerciseType: 'Seated Calf Raise',
+      category: 'Legs',
+    },
+    {
+      exerciseType: 'Burpees',
+      category: 'Cardio',
+    },
+    {
+      exerciseType: 'Turkish Get-Up',
+      category: 'Cardio',
+    },
   ];
 
   filteredExercises: ExerciseItem[] = [];

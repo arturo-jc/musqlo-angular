@@ -4,7 +4,7 @@
 <div class="wrapper">
   <ul
     [class.hidden]="dragging"
-    style="min-height: 100px;"
+    class="exercise-items"
     cdkDropList
     #exerciseList="cdkDropList"
     [cdkDropListData]="exercises"
@@ -19,8 +19,7 @@
       (cdkDragReleased)="dragging = false"
       class="exercise-item"
       >
-      <p>{{ exercise.exerciseType }}</p>
-      <p>{{ exercise.category }}</p>
+      {{ exercise.exerciseType }}
       <ng-container
         *cdkDragPlaceholder
         >
@@ -33,13 +32,13 @@
   </ul>
   <ul
     *ngIf="dragging"
-    style="min-height: 100px;"
+    class="exercise-items"
     >
     <li
       *ngFor="let exercise of filteredExercises"
+      class="exercise-item"
       >
-      <p>{{ exercise.exerciseType }}</p>
-      <p>{{ exercise.category }}</p>
+      {{ exercise.exerciseType }}
     </li>
   </ul>
 </div>
