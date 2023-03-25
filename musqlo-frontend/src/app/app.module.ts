@@ -27,6 +27,7 @@ import { ExerciseTemplateComponent } from './mutate-workout-template/exercise-te
 import { ExerciseItemsComponent } from './mutate-workout-template/exercise-items/exercise-items.component';
 import { WorkoutTemplatesComponent } from './workout-templates/workout-templates.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { SidebarComponent } from './sidebar/sidebar.component';
     ExerciseTemplateComponent,
     ExerciseItemsComponent,
     WorkoutTemplatesComponent,
-    SidebarComponent
+    SidebarComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,

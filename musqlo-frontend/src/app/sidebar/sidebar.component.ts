@@ -10,14 +10,19 @@ export class SidebarComponent {
 
   menuLinks: MenuItem[] = [
     {
+      label: 'Dashboard',
+      routerLink: [ 'dashboard' ],
+      icon: 'pi pi-home',
+    },
+    {
       label: 'New Workout',
       routerLink: [ 'workouts', 'new' ],
-      icon: 'pi pi-list'
+      icon: 'pi pi-list',
     },
     {
       label: 'New Schedule',
       routerLink: [ 'schedules', 'new' ],
-      icon: 'pi pi-calendar'
+      icon: 'pi pi-calendar',
     },
   ]
 

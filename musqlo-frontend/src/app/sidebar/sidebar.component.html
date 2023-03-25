@@ -1,6 +1,6 @@
 <ul class="layout-menu">
   <li *ngFor="let link of menuLinks" class="layout-menuitem">
-    <a [routerLink]="link.routerLink" [routerLinkActive]="['active']" pRipple>
+    <a [routerLink]="link.routerLink" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{ exact: true }" pRipple>
       <i [class]="link.icon"></i>
       <span class="layout-menuitem-label">{{ link.label }}</span>
     </a>
