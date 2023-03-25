@@ -2,7 +2,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, ViewChild } from '@angular/core';
 import { cloneDeep } from 'lodash-es';
 import { FixedOverlayComponent } from '../shared/fixed-overlay/fixed-overlay.component';
-import { ExerciseItem } from './exercise-items/exercise-items.component';
+import { ExerciseItem, ExerciseItemsComponent } from './exercise-items/exercise-items.component';
 
 export interface SetTemplate {
   reps?: number;
@@ -24,7 +24,7 @@ export interface ExerciseTemplate {
 })
 export class MutateWorkoutTemplateComponent {
 
-  @ViewChild(FixedOverlayComponent) fixedOverlay?: FixedOverlayComponent;
+  @ViewChild(ExerciseItemsComponent) exerciseItemsRef?: ExerciseItemsComponent;
 
   title = 'New Workout';
 
@@ -43,9 +43,9 @@ export class MutateWorkoutTemplateComponent {
 
     this.insertNewTemplate((event.item.data) as ExerciseItem, event.currentIndex);
 
-    if (!this.fixedOverlay) { return; }
+    if (!this.exerciseItemsRef) { return; }
 
-    this.fixedOverlay.show()
+    this.exerciseItemsRef.show()
   }
 
   insertNewTemplate(exercise: ExerciseItem, index: number) {

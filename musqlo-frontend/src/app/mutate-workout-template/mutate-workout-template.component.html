@@ -1,7 +1,7 @@
 <div class="card">
     <div class="flex">
         <div class="flex-1">
-            <app-edit-in-place [(text)]="title" placeholder="Enter a title" (onActivate)="overlay.hide()">
+            <app-edit-in-place [(text)]="title" placeholder="Enter a title" (onActivate)="exerciseItems.hide()">
                 <H2 class="editable-title">{{ title }}<i class="pi pi-pencil ml-2"></i></H2>
             </app-edit-in-place>
         </div>
@@ -34,7 +34,7 @@
         #templateList="cdkDropList"
         [cdkDropListData]="exerciseTemplates"
         (cdkDropListDropped)="drop($event)"
-        (cdkDropListEntered)="overlay.hide()"
+        (cdkDropListEntered)="exerciseItems.hide()"
         class="exercise-templates"
         >
         <li *ngFor="let template of exerciseTemplates" [cdkDragData]="template" cdkDrag [cdkDragDisabled]="!reorderMode">
@@ -59,10 +59,8 @@
     </ul>
 </div>
 
-<app-fixed-overlay (onShow)="exerciseItems.setFocus()" #overlay>
-    <app-exercise-items
-        #exerciseItems
-        [cdkDroplistConnectedTo]="templateList"
-        [placeholderSetsHidden]="reorderModeButtonPressed"
-        ></app-exercise-items>
-</app-fixed-overlay>
+<app-exercise-items
+    #exerciseItems
+    [cdkDroplistConnectedTo]="templateList"
+    [placeholderSetsHidden]="reorderModeButtonPressed"
+    ></app-exercise-items>

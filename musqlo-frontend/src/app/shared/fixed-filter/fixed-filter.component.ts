@@ -44,11 +44,6 @@ export class FixedFilterComponent<T extends { [key: string]: any }> implements O
     this.onFilter.emit(this.filteredOptions);
   }
 
-  setFocus() {
-    if (!this.inputTextRef) { return; }
-    setTimeout(() => this.inputTextRef?.el.nativeElement.focus(), 0);
-  }
-
   show() {
     if (!this.fixedOverlayRef) { return; }
     this.fixedOverlayRef.show();
@@ -63,5 +58,10 @@ export class FixedFilterComponent<T extends { [key: string]: any }> implements O
     this.overlayVisible = visible;
     if (!visible) { return; }
     this.setFocus();
+  }
+
+  setFocus() {
+    if (!this.inputTextRef) { return; }
+    setTimeout(() => this.inputTextRef?.el.nativeElement.focus(), 0);
   }
 }

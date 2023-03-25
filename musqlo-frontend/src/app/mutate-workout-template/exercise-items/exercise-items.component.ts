@@ -1,6 +1,7 @@
 import { CdkDropList } from '@angular/cdk/drag-drop';
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { InputText } from 'primeng/inputtext';
+import { FixedFilterComponent } from '../../shared/fixed-filter/fixed-filter.component';
 
 export type Category = 'Cardio' | 'Back' | 'Legs';
 
@@ -14,13 +15,13 @@ export interface ExerciseItem {
   templateUrl: './exercise-items.component.html',
   styleUrls: ['./exercise-items.component.scss']
 })
-export class ExerciseItemsComponent implements OnInit {
+export class ExerciseItemsComponent {
 
   @Input() cdkDroplistConnectedTo!: CdkDropList | string;
 
   @Input() placeholderSetsHidden = false;
 
-  @ViewChild(InputText) inputTextRef?: InputText;
+  @ViewChild(FixedFilterComponent) fixedFilter?: FixedFilterComponent<ExerciseItem>;
 
   filter = '';
 
@@ -49,44 +50,22 @@ export class ExerciseItemsComponent implements OnInit {
       exerciseType: 'Turkish Get-Up',
       category: 'Cardio',
     },
-    {
-      exerciseType: 'Aerobics',
-      category: 'Cardio',
-    },
-    {
-      exerciseType: 'Deadlift',
-      category: 'Back',
-    },
-    {
-      exerciseType: 'Seated Calf Raise',
-      category: 'Legs',
-    },
-    {
-      exerciseType: 'Burpees',
-      category: 'Cardio',
-    },
-    {
-      exerciseType: 'Turkish Get-Up',
-      category: 'Cardio',
-    },
   ];
 
   filteredExercises: ExerciseItem[] = [];
 
-  ngOnInit(): void {
-    this.filterExercises();
+  setFilteredExercises(filteredExercises: ExerciseItem[]) {
+    this.filteredExercises = filteredExercises;
   }
 
-  filterExercises() {
-    this.filteredExercises = this.exercises.filter(exercise => {
-      const noFilter = !this.filter.trim().length;
-      const exerciseIncluded = exercise.exerciseType.toLowerCase().includes(this.filter.trim().toLowerCase());
-      return noFilter || exerciseIncluded;
-    });
+  hide() {
+    if (!this.fixedFilter) { return; }
+    this.fixedFilter.hide();
   }
 
-  setFocus() {
-    if (!this.inputTextRef) { return; }
-    setTimeout(() => this.inputTextRef?.el.nativeElement.focus(), 0);
+  show() {
+    if (!this.fixedFilter) { return; }
+    this.fixedFilter.show();
   }
+
 }

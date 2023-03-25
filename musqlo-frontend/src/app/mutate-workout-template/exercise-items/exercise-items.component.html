@@ -1,42 +1,47 @@
-<div class="p-3">
-  <input type="text" pInputText [(ngModel)]="filter" (input)="filterExercises()" placeholder="Search exercises">
-</div>
-<div class="dropdown-options">
-  <ul
-    [class.hidden]="dragging"
-    cdkDropList
-    #exerciseList="cdkDropList"
-    [cdkDropListData]="exercises"
-    [cdkDropListConnectedTo]="[cdkDroplistConnectedTo]"
-    cdkDropListSortingDisabled
-    >
-    <li
-      *ngFor="let exercise of filteredExercises"
-      [cdkDragData]="exercise"
-      cdkDrag
-      (cdkDragStarted)="dragging = true"
-      (cdkDragReleased)="dragging = false"
+<app-fixed-filter
+  placeholder="Search exercises"
+  [options]="exercises"
+  optionLabel="exerciseType"
+  (onFilter)="setFilteredExercises($event)"
+  >
+  <ng-template appFixedFilterOptions>
+    <ul
+      [class.hidden]="dragging"
+      cdkDropList
+      #exerciseList="cdkDropList"
+      [cdkDropListData]="exercises"
+      [cdkDropListConnectedTo]="[cdkDroplistConnectedTo]"
+      cdkDropListSortingDisabled
       >
-      {{ exercise.exerciseType }}
-      <ng-container
-        *cdkDragPlaceholder
+      <li
+        *ngFor="let exercise of filteredExercises"
+        [cdkDragData]="exercise"
+        cdkDrag
+        (cdkDragStarted)="dragging = true"
+        (cdkDragReleased)="dragging = false"
         >
-        <app-exercise-template
-          [template]="exercise | exerciseTemplatePlaceholder "
-          [hideSets]="placeholderSetsHidden"
-          ></app-exercise-template>
-      </ng-container>
-    </li>
-  </ul>
-  <ul
-    *ngIf="dragging"
-    class="exercise-items"
-    >
-    <li
-      *ngFor="let exercise of filteredExercises"
-      class="exercise-item"
-      >
-      {{ exercise.exerciseType }}
-    </li>
-  </ul>
-</div>
+        {{ exercise.exerciseType }}
+        <ng-container
+          *cdkDragPlaceholder
+          >
+          <app-exercise-template
+            [template]="exercise | exerciseTemplatePlaceholder "
+            [hideSets]="placeholderSetsHidden"
+            ></app-exercise-template>
+        </ng-container>
+      </li>
+    </ul>
+      <ul
+        *ngIf="dragging"
+        class="exercise-items"
+        >
+        <li
+          *ngFor="let exercise of filteredExercises"
+          class="exercise-item"
+          >
+          {{ exercise.exerciseType }}
+        </li>
+      </ul>
+  </ng-template>
+</app-fixed-filter>
+
