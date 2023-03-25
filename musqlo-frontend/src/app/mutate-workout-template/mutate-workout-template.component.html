@@ -1,49 +1,51 @@
-<div class="flex">
-    <h1 class="flex-1">My Workout</h1>
-    <div class="flex align-items-center">
-        <p-toggleButton
-            offIcon="pi pi-arrows-alt"
-            offLabel="Reorder"
-            onIcon="pi pi-check"
-            onLabel="Done"
-            [style]="{ 'width': '8rem' }"
-            [disabled]="!reorderMode && exerciseTemplates.length < 2"
-            [(ngModel)]="reorderModeButtonPressed"
-            (onChange)="toggleReorderMode()"
-            styleClass="p-button-raised"
-            ></p-toggleButton>
-        <button 
-            pButton
-            pRipple
-            type="button"
-            icon="pi pi-save"
-            label="Save"
-            class="p-button p-button-raised p-button-success ml-2"
-            [disabled]="!exerciseTemplates.length"
-            (click)="saveWorkout()"
-            ></button>
+<div class="card">
+    <div class="flex">
+        <h1 class="flex-1">My Workout</h1>
+        <div class="flex align-items-center">
+            <p-toggleButton
+                offIcon="pi pi-arrows-alt"
+                offLabel="Reorder"
+                onIcon="pi pi-check"
+                onLabel="Done"
+                [style]="{ 'width': '8rem' }"
+                [disabled]="!reorderMode && exerciseTemplates.length < 2"
+                [(ngModel)]="reorderModeButtonPressed"
+                (onChange)="toggleReorderMode()"
+                styleClass="p-button-raised"
+                ></p-toggleButton>
+            <button 
+                pButton
+                pRipple
+                type="button"
+                icon="pi pi-save"
+                label="Save"
+                class="p-button p-button-raised p-button-success ml-2"
+                [disabled]="!exerciseTemplates.length"
+                (click)="saveWorkout()"
+                ></button>
+        </div>
     </div>
+    <ul
+        style="min-height: 100px;"
+        cdkDropList
+        #templateList="cdkDropList"
+        [cdkDropListData]="exerciseTemplates"
+        (cdkDropListDropped)="drop($event)"
+        (cdkDropListEntered)="overlay.hide()"
+        >
+        <li *ngFor="let template of exerciseTemplates" [cdkDragData]="template" cdkDrag [cdkDragDisabled]="!reorderMode">
+            <app-exercise-template
+                [template]="template"
+                [hideSets]="reorderModeButtonPressed"
+                [reorderMode]="reorderMode"
+                (onAddSet)="addSet($event)"
+                (onDeleteTemplate)="deleteTemplate($event)"
+                (onReorderSets)="reorderSets($event)"
+                (onDeleteSet)="deleteSet($event)"
+                ></app-exercise-template>
+        </li>
+    </ul>
 </div>
-<ul
-    style="min-height: 100px;"
-    cdkDropList
-    #templateList="cdkDropList"
-    [cdkDropListData]="exerciseTemplates"
-    (cdkDropListDropped)="drop($event)"
-    (cdkDropListEntered)="overlay.hide()"
-    >
-    <li *ngFor="let template of exerciseTemplates" [cdkDragData]="template" cdkDrag [cdkDragDisabled]="!reorderMode">
-        <app-exercise-template
-            [template]="template"
-            [hideSets]="reorderModeButtonPressed"
-            [reorderMode]="reorderMode"
-            (onAddSet)="addSet($event)"
-            (onDeleteTemplate)="deleteTemplate($event)"
-            (onReorderSets)="reorderSets($event)"
-            (onDeleteSet)="deleteSet($event)"
-            ></app-exercise-template>
-    </li>
-</ul>
 
 <app-fixed-overlay (onShow)="exerciseItems.setFocus()" #overlay>
     <app-exercise-items

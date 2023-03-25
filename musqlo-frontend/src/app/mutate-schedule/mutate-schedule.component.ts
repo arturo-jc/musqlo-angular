@@ -28,6 +28,7 @@ export class MutateScheduleComponent implements AfterViewInit {
   calendar!: Calendar;
 
   biweekly = false;
+
   showTimes = false;
 
   calendarOptions: CalendarOptions = {

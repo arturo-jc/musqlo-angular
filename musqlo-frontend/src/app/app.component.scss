@@ -1,0 +1,20 @@
+.layout-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+.layout-main {
+  flex: 1;
+}
+
+.main-container {
+  padding: 2rem 2.5rem;
+}
+
+.topbar {
+  height: 3rem;
+}
+
+.sidebar {
+  width: 11rem;
+}
