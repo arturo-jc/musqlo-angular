@@ -1,3 +1,8 @@
+:host {
+    z-index: 10000;
+    position: relative;
+}
+
 .overlaypanel{
     position:fixed;
     bottom:76px;
