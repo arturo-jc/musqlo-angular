@@ -6,8 +6,9 @@
         (click)="!reorderMode && template.collapsed = !template.collapsed"
         [icon]=" reorderMode ? 'pi pi-arrows-alt' : template.collapsed ? 'pi pi-chevron-right' : 'pi pi-chevron-down'"
         class="p-button-rounded p-button-text p-button-plain mr-2"
-        cdkDragHandle
-        ></button>
+        >
+        <ng-content></ng-content>
+    </button>
     <h3 class="flex-1">{{ template.exerciseType }}</h3>
     <p-button 
         (click)="onAddSet.emit(template)"
@@ -74,4 +75,3 @@
         </ng-template>
     </p-table>
 </div>
-

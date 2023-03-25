@@ -46,7 +46,9 @@
                 (onDeleteTemplate)="deleteTemplate($event)"
                 (onReorderSets)="reorderSets($event)"
                 (onDeleteSet)="deleteSet($event)"
-                ></app-exercise-template>
+                >
+                <div cdkDragHandle style="width: 100%; height: 100%; position: absolute"></div>
+            </app-exercise-template>
         </li>
         <li *ngIf="!exerciseTemplates.length" class="drop-here-outer">
             <i class="pi pi-inbox"></i>
