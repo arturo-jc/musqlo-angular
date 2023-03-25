@@ -1,3 +1,37 @@
 .cdk-drop-list-dragging .cdk-drag {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
+
+.exercise-templates {
+  position: relative;
+}
+
+.drop-here-outer {
+  position: absolute;
+  width: 85%;
+  height: 90%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-width: 8px;
+  border-style: dashed;
+  border-color: var(--surface-b);
+  border-radius: var(--border-radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  i.pi {
+    font-size: 20vw;
+    color: var(--surface-b);
+  }
+}
+
+.drop-here-inner {
+  position: absolute;
+  color: var(--text-color-secondary);
+}
+
+.cdk-drop-list-dragging .drop-here-outer {
+  display: none;
+}

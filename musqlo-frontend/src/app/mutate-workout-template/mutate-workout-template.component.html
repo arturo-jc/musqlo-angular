@@ -25,12 +25,13 @@
         </div>
     </div>
     <ul
-        style="min-height: 100px;"
+        style="min-height: 30rem;"
         cdkDropList
         #templateList="cdkDropList"
         [cdkDropListData]="exerciseTemplates"
         (cdkDropListDropped)="drop($event)"
         (cdkDropListEntered)="overlay.hide()"
+        class="exercise-templates"
         >
         <li *ngFor="let template of exerciseTemplates" [cdkDragData]="template" cdkDrag [cdkDragDisabled]="!reorderMode">
             <app-exercise-template
@@ -42,6 +43,12 @@
                 (onReorderSets)="reorderSets($event)"
                 (onDeleteSet)="deleteSet($event)"
                 ></app-exercise-template>
+        </li>
+        <li *ngIf="!exerciseTemplates.length" class="drop-here-outer">
+            <i class="pi pi-inbox"></i>
+            <div class="drop-here-inner">
+                Drop exercises here to add them to your workout
+            </div>
         </li>
     </ul>
 </div>
