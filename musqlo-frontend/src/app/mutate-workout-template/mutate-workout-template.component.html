@@ -11,7 +11,6 @@
                 [disabled]="!reorderMode && exerciseTemplates.length < 2"
                 [(ngModel)]="reorderModeButtonPressed"
                 (onChange)="toggleReorderMode()"
-                styleClass="p-button-raised"
                 ></p-toggleButton>
             <button 
                 pButton
@@ -19,7 +18,7 @@
                 type="button"
                 icon="pi pi-save"
                 label="Save"
-                class="p-button p-button-raised p-button-success ml-2"
+                class="p-button p-button-success ml-2"
                 [disabled]="!exerciseTemplates.length"
                 (click)="saveWorkout()"
                 ></button>
