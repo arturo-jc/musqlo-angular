@@ -45,3 +45,27 @@ li {
   }
 }
 
+.dropdown-options {
+  overflow: auto;
+
+  & > ul {
+    min-height: 100px;
+    margin: 0;
+
+    & > li {
+      transition: background-color 0.2s, color 0.2s;
+      color: var(--text-color-secondary);
+      cursor: pointer;
+      padding: 8px 1rem;
+
+      &:hover {
+        color: var(--text-color);
+        background-color: var(--surface-c);
+      }
+
+      &:last-child {
+        margin-bottom: 1rem;
+      }
+    }
+  }
+}

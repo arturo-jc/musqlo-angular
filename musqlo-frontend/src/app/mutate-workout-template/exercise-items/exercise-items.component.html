@@ -1,10 +1,9 @@
 <div class="p-3">
-  <input type="text" pInputText [(ngModel)]="filter" (input)="filterExercises()" placeholder="Search Exercises">
+  <input type="text" pInputText [(ngModel)]="filter" (input)="filterExercises()" placeholder="Search exercises">
 </div>
-<div class="wrapper">
+<div class="dropdown-options">
   <ul
     [class.hidden]="dragging"
-    class="exercise-items"
     cdkDropList
     #exerciseList="cdkDropList"
     [cdkDropListData]="exercises"
@@ -17,7 +16,6 @@
       cdkDrag
       (cdkDragStarted)="dragging = true"
       (cdkDragReleased)="dragging = false"
-      class="exercise-item"
       >
       {{ exercise.exerciseType }}
       <ng-container
