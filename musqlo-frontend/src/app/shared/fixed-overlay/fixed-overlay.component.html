@@ -4,13 +4,14 @@
     icon="pi pi-plus"
     class="p-button-rounded main-button"
     (click)="toggleOverlay()"
+    [@buttonRotate]="overlayVisible ? 'open' : 'close'"
     ></button>
 
 <div
     *ngIf="render"
-    [@animation]="overlayVisible ? 'open' : 'close'"
-    (@animation.start)="animationInProgress = true"
-    (@animation.done)="animationInProgress = false"
+    [@overlayToggle]="overlayVisible ? 'open' : 'close'"
+    (@overlayToggle.start)="animationInProgress = true"
+    (@overlayToggle.done)="animationInProgress = false"
     class="overlaypanel overlaypanel-flipped p-component"
     [ngStyle]="{ 'pointer-events': overlayVisible ? 'auto' : 'none' }"
     #overlay

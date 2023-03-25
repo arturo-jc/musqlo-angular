@@ -1,4 +1,4 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { Component, ElementRef, EventEmitter, HostListener, Output, ViewChild } from '@angular/core';
 
 @Component({
@@ -6,29 +6,25 @@ import { Component, ElementRef, EventEmitter, HostListener, Output, ViewChild } 
   templateUrl: './fixed-overlay.component.html',
   styleUrls: ['./fixed-overlay.component.scss'],
   animations: [
-    trigger('animation', [
-      state(
-        'void',
-        style({
-          transform: 'scaleY(0.8)',
-          opacity: 0,
-        })
-      ),
-      state(
-        'close',
-        style({
-          transform: 'scaleY(0.8)',
-          opacity: 0,
-        })
-      ),
-      state(
-        'open',
-        style({
-          transform: 'translateY(0)',
-          opacity: 1,
-        })
-      ),
+    trigger('overlayToggle', [
+      state('void', style({
+        transform: 'scaleY(0.8)',
+        opacity: 0,
+      })),
+      state('close', style({
+        transform: 'scaleY(0.8)',
+        opacity: 0,
+      })),
+      state('open', style({
+        transform: 'translateY(0)',
+        opacity: 1,
+      })),
       transition('* => open', animate('.12s cubic-bezier(0, 0, 0.2, 1)')),
+    ]),
+    trigger('buttonRotate', [
+      state('close', style({})),
+      state('open', style({ transform: 'rotate(45deg)' })),
+      transition('open <=> close', animate('.12s cubic-bezier(0, 0, 0.2, 1)'))
     ])
   ],
 })
