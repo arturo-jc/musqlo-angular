@@ -1,6 +1,15 @@
 <div class="card">
     <div class="flex">
-        <h2 class="flex-1">My Workout</h2>
+        <div class="flex-1">
+            <p-inplace #titleInplace (click)="$event.stopPropagation()">
+                <ng-template pTemplate="display">
+                    <H2 class="title">{{ title }}<i class="pi pi-pencil ml-2"></i></H2>
+                </ng-template>
+                <ng-template pTemplate="content">
+                    <input #titleInput type="text" pInputText [(ngModel)]="title" (keydown.enter)="titleInplace.deactivate()">
+                </ng-template>
+            </p-inplace>
+        </div>
         <div class="flex align-items-center">
             <p-toggleButton
                 offIcon="pi pi-arrows-alt"

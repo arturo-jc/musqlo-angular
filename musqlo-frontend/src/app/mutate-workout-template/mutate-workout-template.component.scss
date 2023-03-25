@@ -6,6 +6,14 @@
   position: relative;
 }
 
+.title {
+  display: inline-block;
+
+  i {
+    font-size: 1.3rem;
+  }
+}
+
 .drop-here-outer {
   position: absolute;
   width: 85%;

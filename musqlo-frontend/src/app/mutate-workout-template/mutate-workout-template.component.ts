@@ -1,6 +1,7 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { cloneDeep } from 'lodash-es';
+import { Inplace } from 'primeng/inplace';
 import { FixedOverlayComponent } from '../shared/fixed-overlay/fixed-overlay.component';
 import { ExerciseItem } from './exercise-items/exercise-items.component';
 
@@ -22,9 +23,22 @@ export interface ExerciseTemplate {
   templateUrl: './mutate-workout-template.component.html',
   styleUrls: ['./mutate-workout-template.component.scss'],
 })
-export class MutateWorkoutTemplateComponent {
+export class MutateWorkoutTemplateComponent implements AfterViewInit {
 
   @ViewChild(FixedOverlayComponent) fixedOverlay?: FixedOverlayComponent;
+
+  @ViewChild('titleInplace') titleInplaceRef?: Inplace;
+
+  @ViewChildren('titleInput') inputQueryList!: QueryList<ElementRef>;
+
+  @HostListener('document:click', ['$event'])
+  deactivateTitleInplace() {
+    if (!this.titleInplaceRef) { return; }
+    if (!this.titleInplaceRef.active) { return; }
+    this.titleInplaceRef.deactivate();
+  }
+
+  title = 'My Workout';
 
   reorderModeButtonPressed = false;
 
@@ -33,6 +47,13 @@ export class MutateWorkoutTemplateComponent {
   dragging = false;
 
   exerciseTemplates: ExerciseTemplate[] = [];
+
+  ngAfterViewInit(): void {
+    this.inputQueryList.changes.subscribe(() => {
+      if (!this.inputQueryList.first) { return; }
+      this.inputQueryList.first.nativeElement.focus();
+    })
+  }
 
   drop(event: CdkDragDrop<ExerciseTemplate[], ExerciseItem[] | ExerciseTemplate[], ExerciseItem | ExerciseTemplate>) {
     if (event.previousContainer === event.container) {
