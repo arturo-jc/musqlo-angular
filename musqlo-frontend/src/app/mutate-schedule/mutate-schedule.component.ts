@@ -5,8 +5,6 @@ import timeGridWeek from '@fullcalendar/timegrid';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import interaction from '@fullcalendar/interaction';
 import { FullCalendarService } from '../full-calendar/full-calendar.service';
-import { FixedFilterComponent } from '../shared/fixed-filter/fixed-filter.component';
-import { WorkoutTemplate } from '../services/workout-templates.service';
 import { WorkoutTemplatesComponent } from '../workout-templates/workout-templates.component';
 
 export type CalendarView = 'weekly' | 'biweekly';
@@ -23,17 +21,17 @@ export interface CalendarViewOption {
 })
 export class MutateScheduleComponent implements AfterViewInit {
 
-  @ViewChild(FullCalendarComponent, { static: false }) calendarRef!: FullCalendarComponent;
+  @ViewChild(FullCalendarComponent, { static: false }) calendar!: FullCalendarComponent;
 
-  @ViewChild(WorkoutTemplatesComponent) workoutTemplatesRef?: WorkoutTemplatesComponent;
+  @ViewChild(WorkoutTemplatesComponent) workoutTemplates?: WorkoutTemplatesComponent;
 
   title = 'New Schedule';
 
-  calendar!: Calendar;
+  calendarApi!: Calendar;
 
-  selectedView: CalendarView = 'weekly';
+  selectedCalendarView: CalendarView = 'weekly';
 
-  views: CalendarViewOption[] = [
+  calendarViews: CalendarViewOption[] = [
     {
       label: 'Weekly',
       value: 'weekly',
@@ -72,11 +70,11 @@ export class MutateScheduleComponent implements AfterViewInit {
     },
     eventContent: (args) => this.fullCalendar.getEventContent(args),
     eventAllow: () => {
-      this.hideFixedFilter();
+      this.hideWorkoutTemplates();
       return true;
     },
     drop: () => {
-      this.showFixedFilter();
+      this.showWorkoutTemplates();
     }
   }
 
@@ -85,38 +83,38 @@ export class MutateScheduleComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit(): void {
-    this.calendar = this.calendarRef.getApi();
+    this.calendarApi = this.calendar.getApi();
   }
 
   updateCalendarView() {
-    if (!this.calendar) { return; }
+    if (!this.calendarApi) { return; }
 
-    if (this.selectedView === 'biweekly' && this.showTimes) {
-      this.calendar.changeView('timeBiweekly');
+    if (this.selectedCalendarView === 'biweekly' && this.showTimes) {
+      this.calendarApi.changeView('timeBiweekly');
       return;
     }
-    if (this.selectedView === 'biweekly' && !this.showTimes) {
-      this.calendar.changeView('dayBiweekly');
+    if (this.selectedCalendarView === 'biweekly' && !this.showTimes) {
+      this.calendarApi.changeView('dayBiweekly');
       return;
     }
-    if (this.selectedView === 'weekly' && this.showTimes) {
-      this.calendar.changeView('timeGridWeek');
+    if (this.selectedCalendarView === 'weekly' && this.showTimes) {
+      this.calendarApi.changeView('timeGridWeek');
       return;
     }
-    this.calendar.changeView('dayGridWeek');
+    this.calendarApi.changeView('dayGridWeek');
   }
 
-  showFixedFilter() {
-    if (!this.workoutTemplatesRef) { return; }
-    this.workoutTemplatesRef.show();
+  showWorkoutTemplates() {
+    if (!this.workoutTemplates) { return; }
+    this.workoutTemplates.show();
   }
 
-  hideFixedFilter() {
-    if (!this.workoutTemplatesRef) { return; }
-    this.workoutTemplatesRef.hide();
+  hideWorkoutTemplates() {
+    if (!this.workoutTemplates) { return; }
+    this.workoutTemplates.hide();
   }
 
   saveSchedule() {
-    const events = this.calendar.getEvents().map(e => e.toPlainObject());
+    const events = this.calendarApi.getEvents().map(e => e.toPlainObject());
   }
 }

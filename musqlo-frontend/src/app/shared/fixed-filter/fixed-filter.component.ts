@@ -58,4 +58,10 @@ export class FixedFilterComponent<T extends { [key: string]: any }> implements O
     if (!this.fixedOverlayRef) { return; }
     this.fixedOverlayRef.hide();
   }
+
+  setOverlayVisible(visible: boolean) {
+    this.overlayVisible = visible;
+    if (!visible) { return; }
+    this.setFocus();
+  }
 }

@@ -18,7 +18,11 @@
     </div>
   </div>
   <div class="flex justify-content-between align-items-center py-3">
-    <p-selectButton [options]="views" [(ngModel)]="selectedView" (onChange)="updateCalendarView()"></p-selectButton>
+    <p-selectButton
+      [options]="calendarViews"
+      [(ngModel)]="selectedCalendarView"
+      (onChange)="updateCalendarView()"
+      ></p-selectButton>
     <p-toggleButton
       offLabel="Show Times"
       onLabel="Hide Times"
@@ -26,7 +30,6 @@
       (onChange)="updateCalendarView()"
       ></p-toggleButton>
   </div>
-  <full-calendar #calendar [options]="calendarOptions"></full-calendar>
-
-  <app-workout-templates [calendarRef]="calendar"></app-workout-templates>
+  <full-calendar #calendarRef [options]="calendarOptions"></full-calendar>
+  <app-workout-templates [calendarRef]="calendarRef"></app-workout-templates>
 </div>
