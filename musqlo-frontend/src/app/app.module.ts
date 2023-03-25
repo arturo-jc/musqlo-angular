@@ -30,6 +30,9 @@ import { WorkoutTemplatesComponent } from './workout-templates/workout-templates
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { EditInPlaceComponent } from './shared/edit-in-place/edit-in-place.component';
+import { FixedFilterComponent } from './shared/fixed-filter/fixed-filter.component';
+import { FixedFilterOptionsDirective } from './shared/fixed-filter/fixed-filter-options.directive';
+import { FixedFilterOptionDirective } from './shared/fixed-filter/fixed-filter-option.directive';
 
 @NgModule({
   declarations: [
@@ -44,7 +47,10 @@ import { EditInPlaceComponent } from './shared/edit-in-place/edit-in-place.compo
     WorkoutTemplatesComponent,
     SidebarComponent,
     DashboardComponent,
-    EditInPlaceComponent
+    EditInPlaceComponent,
+    FixedFilterComponent,
+    FixedFilterOptionsDirective,
+    FixedFilterOptionDirective
   ],
   imports: [
     BrowserModule,

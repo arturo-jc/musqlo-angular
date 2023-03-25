@@ -1,7 +1,8 @@
 <div class="card">
   <div class="flex">
     <div class="flex-1">
-      <app-edit-in-place [(text)]="title" placeholder="Enter a title" (onActivate)="fixedOverlay.hide()">
+      <!-- <app-edit-in-place [(text)]="title" placeholder="Enter a title" (onActivate)="fixedOverlay.hide()"> -->
+      <app-edit-in-place [(text)]="title" placeholder="Enter a title" >
         <H2 class="editable-title">{{ title }}<i class="pi pi-pencil ml-2"></i></H2>
       </app-edit-in-place>
     </div>
@@ -28,7 +29,8 @@
   </div>
   <full-calendar #calendar [options]="calendarOptions"></full-calendar>
 
-  <app-fixed-overlay #fixedOverlay>
-    <app-workout-templates [calendarRef]="calendar"></app-workout-templates>
-  </app-fixed-overlay>
+  <app-workout-templates [calendarRef]="calendar"></app-workout-templates>
+  <!-- <app-fixed-overlay #fixedOverlay> -->
+  <!--   <app-workout-templates [calendarRef]="calendar"></app-workout-templates> -->
+  <!-- </app-fixed-overlay> -->
 </div>

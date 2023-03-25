@@ -1,9 +1,14 @@
-  <ul #workoutList class="flex flex-column">
-    <li 
-      *ngFor="let workout of workoutTemplates.workouts"
-      class="workout mr-2"
-      [attr.data-event]="workout | workoutTemplateEventData "
-      >
-      {{ workout.name }}
-    </li>
-  </ul>
+<app-fixed-filter
+  placeholder="Search workouts"
+  [options]="workoutTemplates.workouts"
+  optionLabel="name"
+  (onFilter)="updateFilteredWorkoutTemplates($event)"
+  >
+  <ng-template appFixedFilterOptions>
+    <ul #workoutList class="flex flex-column">
+      <li *ngFor="let workout of filteredWorkoutTemplates" class="workout mr-2" [attr.data-event]="workout | workoutTemplateEventData">
+        {{ workout.name }}
+      </li>
+    </ul>
+  </ng-template>
+</app-fixed-filter>

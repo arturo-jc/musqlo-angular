@@ -1,0 +1,27 @@
+<app-fixed-overlay>
+  <div class="flex flex-column">
+    <div class="p-3">
+      <input type="text" pInputText [(ngModel)]="filter" (input)="filterOptions()" [placeholder]="placeholder">
+    </div>
+    <div class="dropdown-options">
+      <ng-container [ngTemplateOutlet]="customOptionsTemplate ? customOptionsTemplate.templateRef : defaultOptionsTemplate"></ng-container>
+    </div>
+  </div>
+</app-fixed-overlay>
+
+<ng-template #defaultOptionsTemplate>
+  <ul
+    >
+    <ng-container
+      *ngFor="let option of filteredOptions"
+      [ngTemplateOutlet]="customOptionTemplate ? customOptionTemplate.templateRef : defaultOptionTemplate"
+      [ngTemplateOutletContext]="{ option }"
+      ></ng-container>
+  </ul>
+</ng-template>
+
+<ng-template #defaultOptionTemplate let-option="option">
+  <li>
+    {{ option[optionLabel] }}
+  </li>
+</ng-template>

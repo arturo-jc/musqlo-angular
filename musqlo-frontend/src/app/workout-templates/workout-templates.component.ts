@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import { Calendar } from '@fullcalendar/core';
 import { Draggable } from '@fullcalendar/interaction';
-import { WorkoutTemplatesService } from '../services/workout-templates.service';
+import { WorkoutTemplate, WorkoutTemplatesService } from '../services/workout-templates.service';
 
 @Component({
   selector: 'app-workout-templates',
@@ -13,7 +13,7 @@ export class WorkoutTemplatesComponent implements AfterViewInit {
 
   @Input() calendarRef!: FullCalendarComponent;
 
-  @ViewChild('workoutList') workoutsRef!: ElementRef;
+  @ViewChild('workoutList') workoutsRef?: ElementRef;
 
   calendar?: Calendar;
 
@@ -25,11 +25,19 @@ export class WorkoutTemplatesComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.calendar = this.calendarRef.getApi();
 
+    if (!this.workoutsRef) { return; }
+
     const { nativeElement: workouts } = this.workoutsRef;
 
     new Draggable(workouts, {
       itemSelector: '.workout',
     })
+  }
+
+  filteredWorkoutTemplates: WorkoutTemplate[] = [];
+
+  updateFilteredWorkoutTemplates(updatedWorkoutTemplates: WorkoutTemplate[]) {
+    this.filteredWorkoutTemplates = updatedWorkoutTemplates;
   }
 
 }
