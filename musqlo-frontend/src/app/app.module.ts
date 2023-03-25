@@ -25,6 +25,7 @@ import { FixedOverlayComponent } from './shared/fixed-overlay/fixed-overlay.comp
 import { ExerciseTemplateComponent } from './mutate-workout-template/exercise-template/exercise-template.component';
 import { ExerciseItemsComponent } from './mutate-workout-template/exercise-items/exercise-items.component';
 import { WorkoutTemplatesComponent } from './workout-templates/workout-templates.component';
+import { SidebarComponent } from './sidebar/sidebar.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { WorkoutTemplatesComponent } from './workout-templates/workout-templates
     FixedOverlayComponent,
     ExerciseTemplateComponent,
     ExerciseItemsComponent,
-    WorkoutTemplatesComponent
+    WorkoutTemplatesComponent,
+    SidebarComponent
   ],
   imports: [
     BrowserModule,

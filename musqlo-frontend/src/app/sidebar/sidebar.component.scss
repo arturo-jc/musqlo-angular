@@ -1,0 +1,40 @@
+:host {
+  width: 13rem;
+  display: flex;
+  flex-direction: column;
+  margin-top: 3rem;
+}
+
+.layout-menu {
+  margin: 0;
+}
+
+.layout-menuitem {
+  padding: 6px;
+  border-radius: 8px;
+
+  a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text-color-secondary);
+    transition: background-color 0.2s, color 0.2s;
+    padding: 8px;
+    border-radius: 8px;
+    
+    &:hover {
+      color: var(--text-color);
+      background-color: var(--surface-c);
+    }
+
+    &.active {
+      color: var(--primary-color-text);
+      background-color: var(--primary-color);
+    }
+  }
+}
+
+.layout-menuitem-label {
+  margin: 0 0.5rem;
+  flex: 1;
+}
