@@ -1,18 +1,11 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { Calendar, CalendarOptions } from '@fullcalendar/core';
 import dayGridWeek from '@fullcalendar/daygrid';
 import timeGridWeek from '@fullcalendar/timegrid';
 import { FullCalendarComponent } from '@fullcalendar/angular';
-import interaction, { Draggable } from '@fullcalendar/interaction';
-import { ExerciseTemplate } from '../mutate-workout-template/mutate-workout-template.component';
+import interaction from '@fullcalendar/interaction';
 import { FullCalendarService } from '../full-calendar/full-calendar.service';
 import { FixedOverlayComponent } from '../shared/fixed-overlay/fixed-overlay.component';
-
-export interface WorkoutTemplate {
-  name: string;
-  exercises: ExerciseTemplate[];
-  backgroundColor: string;
-}
 
 export type CalendarView = 'weekly' | 'biweekly';
 

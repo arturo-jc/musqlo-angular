@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { EventInput } from '@fullcalendar/core';
-import { WorkoutTemplate } from '../mutate-schedule/mutate-schedule.component';
+import { WorkoutTemplate } from '../services/workout-templates.service';
 
 @Pipe({
   name: 'workoutTemplateEventData'

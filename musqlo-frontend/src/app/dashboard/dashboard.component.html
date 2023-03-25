@@ -1,7 +1,12 @@
 <div class="grid">
   <div class="col">
     <div class="card">
-      Not implemented
+      <h2>Workouts</h2>
+      <ul>
+        <li *ngFor="let template of workoutTemplates.workouts">
+          {{ template.name }}
+        </li>
+      </ul>
     </div>
   </div>
   <div class="col">
