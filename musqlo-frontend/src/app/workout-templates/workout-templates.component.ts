@@ -12,13 +12,17 @@ import { FixedFilterComponent } from '../shared/fixed-filter/fixed-filter.compon
 })
 export class WorkoutTemplatesComponent implements AfterViewInit {
 
-  @Input() calendarRef!: FullCalendarComponent;
+  @Input() calendar!: FullCalendarComponent;
 
-  @ViewChild('workoutList') workoutsRef?: ElementRef;
+  @ViewChild('workoutsRef') workouts?: ElementRef;
 
   @ViewChild(FixedFilterComponent) fixedFilter?: FixedFilterComponent<WorkoutTemplate>;
 
-  calendar?: Calendar;
+  calendarApi?: Calendar;
+
+  filteredWorkoutTemplates: WorkoutTemplate[] = [];
+
+  draggableSelector = 'fc-workout';
 
   constructor(
     public workoutTemplates: WorkoutTemplatesService,
@@ -26,20 +30,18 @@ export class WorkoutTemplatesComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.calendar = this.calendarRef.getApi();
+    this.calendarApi = this.calendar.getApi();
 
-    if (!this.workoutsRef) { return; }
+    if (!this.workouts) { return; }
 
-    const { nativeElement: workouts } = this.workoutsRef;
+    const { nativeElement: workouts } = this.workouts;
 
     new Draggable(workouts, {
-      itemSelector: '.workout',
+      itemSelector: `.${this.draggableSelector}`,
     })
   }
 
-  filteredWorkoutTemplates: WorkoutTemplate[] = [];
-
-  updateFilteredWorkoutTemplates(updatedWorkoutTemplates: WorkoutTemplate[]) {
+  setFilteredWorkoutTemplates(updatedWorkoutTemplates: WorkoutTemplate[]) {
     this.filteredWorkoutTemplates = updatedWorkoutTemplates;
   }
 

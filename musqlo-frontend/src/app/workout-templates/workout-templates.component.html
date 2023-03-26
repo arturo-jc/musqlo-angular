@@ -2,11 +2,17 @@
   placeholder="Search workouts"
   [options]="workoutTemplates.workouts"
   optionLabel="name"
-  (onFilter)="updateFilteredWorkoutTemplates($event)"
+  (onFilter)="setFilteredWorkoutTemplates($event)"
   >
   <ng-template appFixedFilterOptions>
-    <ul #workoutList class="flex flex-column">
-      <li *ngFor="let workout of filteredWorkoutTemplates" class="workout mr-2" [attr.data-event]="workout | workoutTemplateEventData">
+    <ul
+      #workoutsRef
+      class="flex flex-column
+      ">
+      <li 
+        *ngFor="let workout of filteredWorkoutTemplates"
+        [class]="draggableSelector"
+        [attr.data-event]="workout | workoutTemplateEventData">
         {{ workout.name }}
       </li>
     </ul>
