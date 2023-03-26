@@ -16,7 +16,7 @@ export class WorkoutTemplatesComponent implements AfterViewInit {
 
   @ViewChild('workoutList') workoutsRef?: ElementRef;
 
-  @ViewChild(FixedFilterComponent) fixedFilterRef?: FixedFilterComponent<WorkoutTemplate>;
+  @ViewChild(FixedFilterComponent) fixedFilter?: FixedFilterComponent<WorkoutTemplate>;
 
   calendar?: Calendar;
 
@@ -44,13 +44,13 @@ export class WorkoutTemplatesComponent implements AfterViewInit {
   }
 
   show() {
-    if (!this.fixedFilterRef) { return; }
-    this.fixedFilterRef.show();
+    if (!this.fixedFilter) { return; }
+    this.fixedFilter.show();
   }
 
   hide() {
-    if (!this.fixedFilterRef) { return; }
-    this.fixedFilterRef.hide();
+    if (!this.fixedFilter) { return; }
+    this.fixedFilter.hide();
   }
 
 }

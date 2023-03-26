@@ -21,13 +21,13 @@ export interface CalendarViewOption {
 })
 export class MutateScheduleComponent implements AfterViewInit {
 
-  @ViewChild(FullCalendarComponent, { static: false }) calendar!: FullCalendarComponent;
+  @ViewChild(FullCalendarComponent, { static: false }) calendar?: FullCalendarComponent;
 
   @ViewChild(WorkoutTemplatesComponent) workoutTemplates?: WorkoutTemplatesComponent;
 
   title = 'New Schedule';
 
-  calendarApi!: Calendar;
+  calendarApi?: Calendar;
 
   selectedCalendarView: CalendarView = 'weekly';
 
@@ -83,6 +83,7 @@ export class MutateScheduleComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit(): void {
+    if (!this.calendar) { return; }
     this.calendarApi = this.calendar.getApi();
   }
 
@@ -115,6 +116,7 @@ export class MutateScheduleComponent implements AfterViewInit {
   }
 
   saveSchedule() {
+    if (!this.calendarApi) { return; }
     const events = this.calendarApi.getEvents().map(e => e.toPlainObject());
   }
 }

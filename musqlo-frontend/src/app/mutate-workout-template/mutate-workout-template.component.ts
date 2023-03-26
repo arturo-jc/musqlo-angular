@@ -23,7 +23,7 @@ export interface ExerciseTemplate {
 })
 export class MutateWorkoutTemplateComponent {
 
-  @ViewChild(ExerciseItemsComponent) exerciseItemsRef?: ExerciseItemsComponent;
+  @ViewChild(ExerciseItemsComponent) exerciseItems?: ExerciseItemsComponent;
 
   title = 'New Workout';
 
@@ -42,9 +42,9 @@ export class MutateWorkoutTemplateComponent {
 
     this.insertNewTemplate((event.item.data) as ExerciseItem, event.currentIndex);
 
-    if (!this.exerciseItemsRef) { return; }
+    if (!this.exerciseItems) { return; }
 
-    this.exerciseItemsRef.show()
+    this.exerciseItems.show()
   }
 
   insertNewTemplate(exercise: ExerciseItem, index: number) {

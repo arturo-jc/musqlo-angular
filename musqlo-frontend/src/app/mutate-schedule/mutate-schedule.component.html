@@ -1,7 +1,7 @@
 <div class="card">
   <div class="flex">
     <div class="flex-1">
-      <app-edit-in-place [(text)]="title" placeholder="Enter a title"  (onActivate)="workoutTemplates.hide()">
+      <app-edit-in-place [(text)]="title" placeholder="Enter a title"  (onActivate)="workoutTemplatesRef.hide()">
         <H2 class="editable-title">{{ title }}<i class="pi pi-pencil ml-2"></i></H2>
       </app-edit-in-place>
     </div>
@@ -31,5 +31,5 @@
       ></p-toggleButton>
   </div>
   <full-calendar #calendarRef [options]="calendarOptions"></full-calendar>
-  <app-workout-templates #workoutTemplates [calendarRef]="calendarRef"></app-workout-templates>
+  <app-workout-templates #workoutTemplatesRef [calendarRef]="calendarRef"></app-workout-templates>
 </div>

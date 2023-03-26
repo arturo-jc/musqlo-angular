@@ -15,22 +15,21 @@ export class EditInPlaceComponent implements AfterViewInit {
 
   @Output() onActivate = new EventEmitter();
 
-  @ViewChild(Inplace) inplaceRef?: Inplace;
+  @ViewChild(Inplace) inplace?: Inplace;
 
-  @ViewChildren('input') inputQueryList!: QueryList<ElementRef>;
+  @ViewChildren('inputRef') inputQueryList!: QueryList<ElementRef>;
 
   @HostListener('document:click', ['$event'])
-  deactivateTitleInplace() {
-    if (!this.inplaceRef) { return; }
-    if (!this.inplaceRef.active) { return; }
-    this.inplaceRef.deactivate();
+  deactivate() {
+    if (!this.inplace || !this.inplace.active) { return; }
+    this.inplace.deactivate();
   }
 
   ngAfterViewInit(): void {
-    this.autofocusOnActivate();
+    this.autoFocusOnActivate();
   }
 
-  autofocusOnActivate() {
+  autoFocusOnActivate() {
     this.inputQueryList.changes.subscribe(() => {
       if (!this.inputQueryList.first) { return; }
       this.inputQueryList.first.nativeElement.focus();

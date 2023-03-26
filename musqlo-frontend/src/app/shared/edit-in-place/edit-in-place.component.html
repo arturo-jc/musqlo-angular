@@ -1,16 +1,17 @@
-<p-inplace #inplace (click)="$event.stopPropagation()" (onActivate)="onActivate.emit()">
+<p-inplace #inplaceRef (click)="$event.stopPropagation()" (onActivate)="onActivate.emit()">
   <ng-template pTemplate="display">
     <ng-content>
     </ng-content>
   </ng-template>
   <ng-template pTemplate="content">
     <input
-    #input type="text"
+    #inputRef
+    type="text"
     [placeholder]="placeholder"
     pInputText
     [(ngModel)]="text"
     (ngModelChange)="textChange.emit(text)"
-    (keydown.enter)="inplace.deactivate()"
+    (keydown.enter)="inplaceRef.deactivate()"
     required
     >
   </ng-template>

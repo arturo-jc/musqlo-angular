@@ -14,7 +14,7 @@
     (@overlayToggle.done)="animationInProgress = false"
     class="overlaypanel overlaypanel-flipped p-component"
     [ngStyle]="{ 'pointer-events': overlayVisible ? 'auto' : 'none' }"
-    #overlay
+    #overlayRef
     >
     <div class="overlaypanel-content">
         <ng-content></ng-content>

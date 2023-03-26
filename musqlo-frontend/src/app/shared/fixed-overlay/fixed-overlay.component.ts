@@ -33,13 +33,13 @@ export class FixedOverlayComponent {
 
   @Output() onHide = new EventEmitter();
 
-  @ViewChild('overlay') overlayRef?: ElementRef;
+  @ViewChild('overlayRef') overlay?: ElementRef;
 
   @HostListener('document:click', ['$event'])
   dismiss(event: MouseEvent) {
     if (this.animationInProgress) { return; }
     if (!this.overlayVisible) { return; }
-    if (this.overlayRef?.nativeElement.contains(event.target)) { return; }
+    if (this.overlay?.nativeElement.contains(event.target)) { return; }
     this.hide();
   }
 
