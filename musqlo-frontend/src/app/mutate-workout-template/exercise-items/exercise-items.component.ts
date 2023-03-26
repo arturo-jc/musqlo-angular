@@ -1,6 +1,6 @@
 import { CdkDropList } from '@angular/cdk/drag-drop';
 import { Component, Input, ViewChild } from '@angular/core';
-import { FixedFilterComponent } from '../../shared/fixed-filter/fixed-filter.component';
+import { FixedOverlayComponent } from '../../shared/fixed-overlay/fixed-overlay.component';
 
 export type Category = 'Cardio' | 'Back' | 'Legs';
 
@@ -20,7 +20,7 @@ export class ExerciseItemsComponent {
 
   @Input() placeholderSetsHidden = false;
 
-  @ViewChild(FixedFilterComponent) fixedFilter?: FixedFilterComponent<ExerciseItem>;
+  @ViewChild(FixedOverlayComponent) overlay?: FixedOverlayComponent;
 
   filter = '';
 
@@ -51,20 +51,14 @@ export class ExerciseItemsComponent {
     },
   ];
 
-  filteredExercises: ExerciseItem[] = [];
-
-  setFilteredExercises(filteredExercises: ExerciseItem[]) {
-    this.filteredExercises = filteredExercises;
-  }
-
   hide() {
-    if (!this.fixedFilter) { return; }
-    this.fixedFilter.hide();
+    if (!this.overlay) { return; }
+    this.overlay.hide();
   }
 
   show() {
-    if (!this.fixedFilter) { return; }
-    this.fixedFilter.show();
+    if (!this.overlay) { return; }
+    this.overlay.show();
   }
 
 }

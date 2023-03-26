@@ -1,24 +1,7 @@
-:host {
-    z-index: 10000;
-    position: fixed;
-    bottom:0;
-    right: 0;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none;
-}
-
-.wrapper {
-    position: relative;
-    width: 100%;
-    height: 100%;
-}
-
 .p-button.p-button-icon-only.p-button-rounded.toggle-button {
-    position: absolute;
+    position: fixed;
     bottom: 20px;
-    right: 50px;
-    pointer-events: auto;
+    right: 20px;
     width: 4rem;
     height: 4rem;
 }

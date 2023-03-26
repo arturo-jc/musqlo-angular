@@ -1,5 +1,7 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Component, ElementRef, EventEmitter, Inject, Output, ViewChild } from '@angular/core';
+import { OverlayPanel } from 'primeng/overlaypanel';
 
 @Component({
   selector: 'app-fixed-overlay',
@@ -18,22 +20,38 @@ export class FixedOverlayComponent {
 
   @Output() onHide = new EventEmitter();
 
-  @ViewChild('overlayRef') overlay?: ElementRef;
+  @ViewChild(OverlayPanel) overlayPanel?: OverlayPanel;
+
+  @ViewChild('buttonRef') buttonRef?: ElementRef<HTMLButtonElement>;
 
   overlayVisible = false;
 
-  toggleOverlay() {
-    this.overlayVisible = !this.overlayVisible;
-  }
+  constructor(@Inject(DOCUMENT) private document: Document) {}
 
   show() {
-    this.overlayVisible = true;
-    this.onShow.emit();
+    if (!this.buttonRef) { return; }
+    this.buttonRef.nativeElement.click();
   }
 
   hide() {
+    if (!this.overlayPanel) { return; }
+    this.overlayPanel.hide();
+  }
+
+  forwardOnShow() {
+    this.overlayVisible = true;
+    this.fixOverlay();
+    this.onShow.emit();
+  }
+
+  forwardOnHide() {
     this.overlayVisible = false;
     this.onHide.emit();
+  }
+
+  fixOverlay() {
+    const overlay = this.document.body.querySelector('.p-overlaypanel') as HTMLElement;
+    overlay.style.setProperty('position', 'fixed');
   }
 
 }

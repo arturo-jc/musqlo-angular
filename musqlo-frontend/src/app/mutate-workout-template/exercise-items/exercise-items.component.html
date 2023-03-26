@@ -1,38 +1,40 @@
-<ul
-  [class.hidden]="dragging"
-  cdkDropList
-  #exerciseList="cdkDropList"
-  [cdkDropListData]="exercises"
-  [cdkDropListConnectedTo]="[cdkDroplistConnectedTo]"
-  cdkDropListSortingDisabled
-  >
-  <li
-    *ngFor="let exercise of filteredExercises"
-    [cdkDragData]="exercise"
-    cdkDrag
-    (cdkDragStarted)="dragging = true"
-    (cdkDragReleased)="dragging = false"
-    >
-    {{ exercise.exerciseType }}
-    <ng-container
-      *cdkDragPlaceholder
-      >
-      <app-exercise-template
-        [template]="exercise | exerciseTemplatePlaceholder "
-        [hideSets]="placeholderSetsHidden"
-        ></app-exercise-template>
-    </ng-container>
-  </li>
-</ul>
+<app-fixed-overlay>
   <ul
-    *ngIf="dragging"
-    class="exercise-items"
+    [class.hidden]="dragging"
+    cdkDropList
+    #exerciseList="cdkDropList"
+    [cdkDropListData]="exercises"
+    [cdkDropListConnectedTo]="[cdkDroplistConnectedTo]"
+    cdkDropListSortingDisabled
     >
     <li
-      *ngFor="let exercise of filteredExercises"
-      class="exercise-item"
+      *ngFor="let exercise of exercises"
+      [cdkDragData]="exercise"
+      cdkDrag
+      (cdkDragStarted)="dragging = true"
+      (cdkDragReleased)="dragging = false"
       >
       {{ exercise.exerciseType }}
+      <ng-container
+        *cdkDragPlaceholder
+        >
+        <app-exercise-template
+          [template]="exercise | exerciseTemplatePlaceholder "
+          [hideSets]="placeholderSetsHidden"
+          ></app-exercise-template>
+      </ng-container>
     </li>
   </ul>
+    <ul
+      *ngIf="dragging"
+      class="exercise-items"
+      >
+      <li
+        *ngFor="let exercise of exercises"
+        class="exercise-item"
+        >
+        {{ exercise.exerciseType }}
+      </li>
+    </ul>
+</app-fixed-overlay>
 

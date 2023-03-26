@@ -1,13 +1,16 @@
-<div class="wrapper" #wrapper>
-    <button
-        pRipple
-        pButton
-        icon="pi pi-plus"
-        class="p-button-rounded toggle-button"
-        (click)="op.toggle($event)"
-        [@buttonRotate]="overlayVisible ? 'open' : 'close'"
-        ></button>
-    <p-overlayPanel [style]="{ 'pointer-events': 'auto' }" [appendTo]="wrapper" #op>
-        <ng-content></ng-content>
-    </p-overlayPanel>
-</div>
+<button
+    #buttonRef
+    pRipple
+    pButton
+    icon="pi pi-plus"
+    class="p-button-rounded toggle-button"
+    (click)="overlayRef.toggle($event)"
+    [@buttonRotate]="overlayVisible ? 'open' : 'close'"
+    ></button>
+<p-overlayPanel
+    #overlayRef
+    (onShow)="forwardOnShow()"
+    (onHide)="forwardOnHide()"
+    >
+    <ng-content></ng-content>
+</p-overlayPanel>
