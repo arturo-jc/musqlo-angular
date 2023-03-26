@@ -48,4 +48,10 @@ export class ColorPickerComponent {
 
   filter = '';
 
+  overlayVisible = false;
+
+  toggleOverlay() {
+    this.overlayVisible = !this.overlayVisible;
+  }
+
 }

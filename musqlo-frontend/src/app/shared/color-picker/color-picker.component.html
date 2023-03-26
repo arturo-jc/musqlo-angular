@@ -4,4 +4,21 @@
   type="text"
   [style.background-color]="color"
   class="p-colorpicker-preview p-inputtext"
+  (click)="toggleOverlay()"
   >
+<p-overlay [(visible)]="overlayVisible" contentStyleClass="surface-overlay shadow-2 border-round">
+  <p-listbox [options]="colors" [(ngModel)]="color" [filter]="true" [listStyle]="{ 'max-height': '15rem', overflow: 'auto' }">
+    <ng-template let-color pTemplate="item">
+      <div class="flex align-items-center">
+        <input
+          type="text"
+          [style.background-color]="color.value"
+          class="p-colorpicker-preview p-inputtext mr-2"
+          >
+          <div class="flex-1">
+            {{ color.label }}
+          </div>
+      </div>
+    </ng-template>
+  </p-listbox>
+</p-overlay>

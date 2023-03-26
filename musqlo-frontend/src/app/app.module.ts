@@ -17,7 +17,8 @@ import { MutateScheduleComponent } from './mutate-schedule/mutate-schedule.compo
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { RippleModule } from 'primeng/ripple';
-import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { OverlayModule } from 'primeng/overlay';
+import { ListboxModule } from 'primeng/listbox';
 import { MenubarModule } from 'primeng/menubar';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { InplaceModule } from 'primeng/inplace'
@@ -33,6 +34,7 @@ import { EditInPlaceComponent } from './shared/edit-in-place/edit-in-place.compo
 import { FixedFilterComponent } from './shared/fixed-filter/fixed-filter.component';
 import { FixedFilterOptionsDirective } from './shared/fixed-filter/fixed-filter-options.directive';
 import { FixedFilterOptionDirective } from './shared/fixed-filter/fixed-filter-option.directive';
+import { ColorPickerComponent } from './shared/color-picker/color-picker.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +52,8 @@ import { FixedFilterOptionDirective } from './shared/fixed-filter/fixed-filter-o
     EditInPlaceComponent,
     FixedFilterComponent,
     FixedFilterOptionsDirective,
-    FixedFilterOptionDirective
+    FixedFilterOptionDirective,
+    ColorPickerComponent,
   ],
   imports: [
     BrowserModule,
@@ -65,7 +68,8 @@ import { FixedFilterOptionDirective } from './shared/fixed-filter/fixed-filter-o
     ToggleButtonModule,
     InputSwitchModule,
     RippleModule,
-    OverlayPanelModule,
+    OverlayModule,
+    ListboxModule,
     MenubarModule,
     SelectButtonModule,
     InplaceModule,
