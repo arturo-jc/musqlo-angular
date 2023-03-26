@@ -1,10 +1,17 @@
 <app-fixed-overlay (onShow)="setOverlayVisible(true)" (onHide)="setOverlayVisible(false)">
   <div class="flex flex-column">
     <div class="p-3">
-      <input type="text" pInputText [(ngModel)]="filter" (input)="filterOptions()" [placeholder]="placeholder">
+      <input 
+      type="text"
+      pInputText
+      [(ngModel)]="filter"
+      (input)="filterOptions()"
+      [placeholder]="placeholder">
     </div>
     <div class="dropdown-options">
-      <ng-container [ngTemplateOutlet]="customOptionsTemplate ? customOptionsTemplate.templateRef : defaultOptionsTemplate"></ng-container>
+      <ng-container
+        [ngTemplateOutlet]="customOptionsTemplate ? customOptionsTemplate.templateRef : defaultOptionsTemplate"
+        ></ng-container>
     </div>
   </div>
 </app-fixed-overlay>
