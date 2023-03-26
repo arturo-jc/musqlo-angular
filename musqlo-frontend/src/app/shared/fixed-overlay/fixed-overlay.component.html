@@ -1,15 +1,4 @@
 <div class="wrapper" #wrapper>
-    <!-- <button -->
-    <!--     pRipple -->
-    <!--     pButton -->
-    <!--     icon="pi pi-plus" -->
-    <!--     class="p-button-rounded toggle-button" -->
-    <!--     (click)="toggleOverlay()" -->
-    <!--     [@buttonRotate]="overlayVisible ? 'open' : 'close'" -->
-    <!--     ></button> -->
-    <!-- <p-overlay [(visible)]="overlayVisible" contentStyleClass="p-4 surface-overlay shadow-2 border-round"> -->
-    <!--     <ng-content></ng-content> -->
-    <!-- </p-overlay> -->
     <button
         pRipple
         pButton
@@ -18,7 +7,7 @@
         (click)="op.toggle($event)"
         [@buttonRotate]="overlayVisible ? 'open' : 'close'"
         ></button>
-    <p-overlayPanel [appendTo]="wrapper" #op>
-        Hey
+    <p-overlayPanel [style]="{ 'pointer-events': 'auto' }" [appendTo]="wrapper" #op>
+        <ng-content></ng-content>
     </p-overlayPanel>
 </div>
