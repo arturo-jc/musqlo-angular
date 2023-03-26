@@ -1,6 +1,8 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { cloneDeep } from 'lodash-es';
+import { WorkoutTemplatesService } from '../services/workout-templates.service';
 import { ExerciseItem, ExerciseItemsComponent } from './exercise-items/exercise-items.component';
 
 export interface SetTemplate {
@@ -32,6 +34,11 @@ export class MutateWorkoutTemplateComponent {
   reorderMode = false;
 
   exerciseTemplates: ExerciseTemplate[] = [];
+
+  constructor(
+    private workoutTemplates: WorkoutTemplatesService,
+    private router: Router,
+  ) {}
 
   drop(event: CdkDragDrop<ExerciseTemplate[], ExerciseItem[] | ExerciseTemplate[], ExerciseItem | ExerciseTemplate>) {
     if (event.previousContainer === event.container) {
@@ -129,7 +136,8 @@ export class MutateWorkoutTemplateComponent {
   }
 
   saveWorkout() {
-    console.warn('saveWorkout not implemeted');
+    this.workoutTemplates.addWorkoutTemplate(this.title, 'var(--primary-color)', this.exerciseTemplates);
+    this.router.navigate([ 'dashboard' ]);
   }
 
 }

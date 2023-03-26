@@ -70,5 +70,14 @@ export class WorkoutTemplatesService {
     }
   ]
 
-  constructor() { }
+  addWorkoutTemplate(
+    name: string,
+    backgroundColor: string,
+    exercises: ExerciseTemplate[],
+  ) {
+    const newWorkoutTemplate: WorkoutTemplate = { name, backgroundColor, exercises };
+    const updatedWorkoutTemplates = [ ...this.workouts, newWorkoutTemplate ];
+    this.workouts = updatedWorkoutTemplates;
+  }
+
 }
