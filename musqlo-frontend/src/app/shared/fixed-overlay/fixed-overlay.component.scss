@@ -1,66 +1,22 @@
 :host {
     z-index: 10000;
-    position: relative;
-}
-
-.overlaypanel{
-    position:fixed;
-    bottom:76px;
-    right:20px;
-    background: var(--surface-overlay);
-    color: #495057;
-    border: 0 none;
-    border-radius: 6px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-.overlaypanel-flipped{
-    margin-top:0;
-    margin-bottom:10px
-}
-
-.overlaypanel-close{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    overflow:hidden;
-    position:relative
-}
-
-.overlaypanel:before{
-    right:22px;
-    content:" ";
-    height:0;
-    width:0;
-    position:absolute;
-    pointer-events:none;
-    border: solid transparent;
-    border-color: rgba(255, 255, 255, 0);
-}
-
-.overlaypanel:before{
-    border-width:10px;
-    margin-left:-10px
-}
-
-.overlaypanel-flipped:before{
-    border-top-color: var(--surface-overlay);
-    top:100%
-}
-
-.overlaypanel.overlaypanel-flipped:before{
-    border-bottom-color:transparent
-}
-
-.overlaypanel .overlaypanel-content {
-    max-height: 22rem;
-    display: inline-flex;
-}
-
-.p-button-rounded.main-button {
     position: fixed;
+    bottom:0;
+    right: 0;
+    width: 25vw;
+    height: 60vh;
+}
+
+.wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.p-button.p-button-icon-only.p-button-rounded.toggle-button {
+    position: absolute;
     bottom: 20px;
-    right: 20px;
+    right: 50px;
     pointer-events: auto;
     width: 4rem;
     height: 4rem;

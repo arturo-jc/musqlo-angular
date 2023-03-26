@@ -17,7 +17,7 @@ import { MutateScheduleComponent } from './mutate-schedule/mutate-schedule.compo
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { RippleModule } from 'primeng/ripple';
-import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { OverlayModule } from 'primeng/overlay';
 import { MenubarModule } from 'primeng/menubar';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { InplaceModule } from 'primeng/inplace'
@@ -65,7 +65,7 @@ import { FixedFilterOptionDirective } from './shared/fixed-filter/fixed-filter-o
     ToggleButtonModule,
     InputSwitchModule,
     RippleModule,
-    OverlayPanelModule,
+    OverlayModule,
     MenubarModule,
     SelectButtonModule,
     InplaceModule,
