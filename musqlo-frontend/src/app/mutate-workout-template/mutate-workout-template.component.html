@@ -1,9 +1,12 @@
 <div class="card">
     <div class="flex">
         <div class="flex-1">
-            <app-edit-in-place [(text)]="title" placeholder="Enter a title" (onActivate)="exerciseItemsRef.hide()">
-                <H2 class="editable-title">{{ title }}<i class="pi pi-pencil ml-2"></i></H2>
-            </app-edit-in-place>
+            <div class="flex align-items-center">
+                <app-color-picker class="mr-1"></app-color-picker>
+                <app-edit-in-place [(text)]="title" placeholder="Enter a title" (onActivate)="exerciseItemsRef.hide()">
+                    <H2 class="editable-title" pTooltip="Edit title" tooltipPosition="bottom">{{ title }}<i class="pi pi-pencil ml-2"></i></H2>
+                </app-edit-in-place>
+            </div>
         </div>
         <div class="flex align-items-center">
             <p-toggleButton

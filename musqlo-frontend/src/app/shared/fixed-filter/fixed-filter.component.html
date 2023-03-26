@@ -1,12 +1,15 @@
 <app-fixed-overlay (onShow)="setOverlayVisible(true)" (onHide)="setOverlayVisible(false)">
   <div class="flex flex-column">
     <div class="p-3">
-      <input 
-      type="text"
-      pInputText
-      [(ngModel)]="filter"
-      (input)="filterOptions()"
-      [placeholder]="placeholder">
+      <span class="p-input-icon-right">
+        <i class="pi pi-search"></i>
+        <input 
+        type="text"
+        pInputText
+        [(ngModel)]="filter"
+        (input)="filterOptions()"
+        [placeholder]="placeholder">
+      </span>
     </div>
     <div class="dropdown-options">
       <ng-container
