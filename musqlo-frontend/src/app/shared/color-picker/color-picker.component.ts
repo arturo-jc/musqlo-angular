@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { TitleCasePipe } from '@angular/common';
+import { Component, Input, OnInit } from '@angular/core';
 
 export const COLOR_NAMES = [
   'blue',
@@ -15,7 +16,7 @@ export const COLOR_NAMES = [
   'primary'
 ];
 
-export const COLOR_NUMBERS = [
+export const COLOR_SATURATION_LEVELS = [
   '50',
   '100',
   '200',
@@ -27,28 +28,44 @@ export const COLOR_NUMBERS = [
   '900'
 ];
 
-
 @Component({
   selector: 'app-color-picker',
   templateUrl: './color-picker.component.html',
-  styleUrls: ['./color-picker.component.scss']
+  styleUrls: ['./color-picker.component.scss'],
+  providers: [TitleCasePipe],
 })
-export class ColorPickerComponent {
+export class ColorPickerComponent implements OnInit {
   @Input() color = 'var(--primary-color)';
 
-  colors: { label: string; value: string }[] = COLOR_NAMES
-    .reduce((currentColors, name) => {
-      const colorVariations = COLOR_NUMBERS.map(number => ({
-        label: `${name} ${number}`,
-        value: `var(--${name}-${number})`,
-      }));
+  colors!: { label: string; value: string}[];
 
-      return currentColors.concat(colorVariations);
-    }, [] as { label: string; value: string; }[]);
+  constructor(private titleCasePipe: TitleCasePipe) {}
 
   filter = '';
 
   overlayVisible = false;
+
+  ngOnInit(): void {
+    this.setColors();
+  }
+
+  setColors() {
+    const colors: { label: string; value: string}[] = [];
+
+    for (const name of COLOR_NAMES) {
+      for (const level of COLOR_SATURATION_LEVELS) {
+
+        const newColor = {
+          label: `${this.titleCasePipe.transform(name)} ${level}`,
+          value: `var(--${name}-${level})`,
+        };
+
+        colors.push(newColor);
+      }
+    }
+
+    this.colors = colors;
+  }
 
   toggleOverlay() {
     this.overlayVisible = !this.overlayVisible;
