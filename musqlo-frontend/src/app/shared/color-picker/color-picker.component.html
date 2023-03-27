@@ -6,8 +6,19 @@
   class="p-colorpicker-preview p-inputtext"
   (click)="toggleOverlay()"
   >
-<p-overlay [(visible)]="overlayVisible" contentStyleClass="surface-overlay shadow-2 border-round" #overlayRef>
-  <p-listbox [options]="colors" [(ngModel)]="color" [filter]="true" (onChange)="forwardSelection()" [listStyle]="{ 'max-height': '15rem', overflow: 'auto' }">
+<p-overlay
+  #overlayRef
+  [(visible)]="overlayVisible"
+  (onShow)="focus()"
+  contentStyleClass="surface-overlay shadow-2 border-round" 
+  >
+  <p-listbox
+    [options]="colors"
+    [(ngModel)]="color"
+    [filter]="true"
+    (onChange)="forwardSelection()"
+    [listStyle]="{ 'max-height': '15rem', overflow: 'auto' }"
+    >
     <ng-template let-color pTemplate="item">
       <div class="flex align-items-center">
         <input

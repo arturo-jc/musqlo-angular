@@ -1,5 +1,6 @@
 import { TitleCasePipe } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ContentChild, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Listbox } from 'primeng/listbox';
 
 export const COLOR_NAMES = [
   'blue',
@@ -40,6 +41,8 @@ export class ColorPickerComponent implements OnInit {
 
   @Output() onColorSelected = new EventEmitter<string>();
 
+  @ViewChild(Listbox) listbox?: Listbox;
+
   colors!: { label: string; value: string}[];
 
   constructor(private titleCasePipe: TitleCasePipe) {}
@@ -78,5 +81,13 @@ export class ColorPickerComponent implements OnInit {
   toggleOverlay() {
     this.overlayVisible = !this.overlayVisible;
   }
+
+  focus() {
+    if (!this.listbox) { return; }
+    const input = this.listbox.el.nativeElement.querySelector('.p-listbox-filter') as HTMLInputElement;
+    if (!input) { return; }
+    setTimeout(() => input.focus(), 0);
+  }
+
 
 }
