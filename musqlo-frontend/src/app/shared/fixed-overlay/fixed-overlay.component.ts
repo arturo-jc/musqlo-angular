@@ -1,7 +1,7 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { DOCUMENT } from '@angular/common';
-import { Component, ElementRef, EventEmitter, Inject, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
 import { OverlayPanel } from 'primeng/overlaypanel';
+import { DomHandler } from 'primeng/dom';
 
 @Component({
   selector: 'app-fixed-overlay',
@@ -26,8 +26,6 @@ export class FixedOverlayComponent {
 
   overlayVisible = false;
 
-  constructor(@Inject(DOCUMENT) private document: Document) {}
-
   show() {
     if (!this.buttonRef) { return; }
     this.buttonRef.nativeElement.click();
@@ -40,7 +38,7 @@ export class FixedOverlayComponent {
 
   forwardOnShow() {
     this.overlayVisible = true;
-    this.fixOverlay();
+    this.realignOverlay(this.overlayPanel?.container, this.overlayPanel?.target);
     this.onShow.emit();
   }
 
@@ -49,9 +47,39 @@ export class FixedOverlayComponent {
     this.onHide.emit();
   }
 
-  fixOverlay() {
-    const overlay = this.document.body.querySelector('.p-overlaypanel') as HTMLElement;
-    overlay.style.setProperty('position', 'fixed');
+  realignOverlay(element: any, target: any): void {
+    const elementDimensions = element.offsetParent ?
+      { width: element.offsetWidth, height: element.offsetHeight } :
+      DomHandler.getHiddenElementDimensions(element);
+    const elementOuterHeight = elementDimensions.height;
+    const elementOuterWidth = elementDimensions.width;
+    const targetOuterHeight = target.offsetHeight;
+    const targetOuterWidth = target.offsetWidth;
+    const targetOffset = target.getBoundingClientRect();
+    const windowScrollTop = DomHandler.getWindowScrollTop();
+    const windowScrollLeft = DomHandler.getWindowScrollLeft();
+    const viewport = DomHandler.getViewport();
+    let top: number, left: number;
+
+    if (targetOffset.top + targetOuterHeight + elementOuterHeight > viewport.height) {
+      // top = targetOffset.top + windowScrollTop - elementOuterHeight;
+      top = targetOffset.top - elementOuterHeight;
+      element.style.transformOrigin = 'bottom';
+
+      if (top < 0) {
+        top = windowScrollTop;
+      }
+    } else {
+      top = targetOuterHeight + targetOffset.top + windowScrollTop;
+      element.style.transformOrigin = 'top';
+    }
+
+    if (targetOffset.left + elementOuterWidth > viewport.width) left = Math.max(0, targetOffset.left + windowScrollLeft + targetOuterWidth - elementOuterWidth);
+    else left = targetOffset.left + windowScrollLeft;
+
+    element.style.top = top + 'px';
+    element.style.left = left + 'px';
+    element.style.position = 'fixed';
   }
 
 }
