@@ -1,5 +1,5 @@
 import { TitleCasePipe } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 export const COLOR_NAMES = [
   'blue',
@@ -35,7 +35,10 @@ export const COLOR_SATURATION_LEVELS = [
   providers: [TitleCasePipe],
 })
 export class ColorPickerComponent implements OnInit {
+
   @Input() color = 'var(--primary-color)';
+
+  @Output() onColorSelected = new EventEmitter<string>();
 
   colors!: { label: string; value: string}[];
 
@@ -65,6 +68,11 @@ export class ColorPickerComponent implements OnInit {
     }
 
     this.colors = colors;
+  }
+
+  forwardSelection() {
+    this.onColorSelected.emit(this.color);
+    this.overlayVisible = false;
   }
 
   toggleOverlay() {
