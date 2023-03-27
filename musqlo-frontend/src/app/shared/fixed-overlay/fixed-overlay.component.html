@@ -12,7 +12,7 @@
     [@overlayToggle]="overlayVisible ? 'open' : 'close'"
     (@overlayToggle.start)="animationInProgress = true"
     (@overlayToggle.done)="animationInProgress = false"
-    class="overlaypanel overlaypanel-flipped p-component"
+    class="overlaypanel overlaypanel-flipped surface-overlay shadow-2 border-round"
     [ngStyle]="{ 'pointer-events': overlayVisible ? 'auto' : 'none' }"
     #overlayRef
     >

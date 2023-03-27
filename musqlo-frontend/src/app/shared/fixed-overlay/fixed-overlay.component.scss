@@ -7,11 +7,8 @@
     position:fixed;
     bottom:76px;
     right:20px;
-    background: var(--surface-overlay);
     color: #495057;
-    border: 0 none;
-    border-radius: 6px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    border: 1px solid #ced4da;
 }
 
 .overlaypanel-flipped{
