@@ -21,6 +21,7 @@ export const COLOR_SATURATION_LEVELS = [
   '50',
   '100',
   '200',
+  '300',
   '400',
   '500',
   '600',
@@ -39,7 +40,7 @@ export class ColorPickerComponent implements OnInit {
 
   @Input() color = 'var(--primary-color)';
 
-  @Output() onColorSelected = new EventEmitter<string>();
+  @Output() colorChange = new EventEmitter<string>();
 
   @ViewChild(Listbox) listbox?: Listbox;
 
@@ -74,8 +75,8 @@ export class ColorPickerComponent implements OnInit {
   }
 
   forwardSelection() {
-    this.onColorSelected.emit(this.color);
     this.overlayVisible = false;
+    this.colorChange.emit(this.color);
   }
 
   toggleOverlay() {
@@ -88,6 +89,5 @@ export class ColorPickerComponent implements OnInit {
     if (!input) { return; }
     setTimeout(() => input.focus(), 0);
   }
-
 
 }

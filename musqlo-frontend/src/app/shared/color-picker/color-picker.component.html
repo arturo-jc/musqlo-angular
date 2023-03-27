@@ -2,6 +2,7 @@
   pTooltip="Choose a color"
   tooltipPosition="bottom"
   type="text"
+  readonly="readonly"
   [style.background-color]="color"
   class="p-colorpicker-preview p-inputtext"
   (click)="toggleOverlay()"
@@ -23,6 +24,7 @@
       <div class="flex align-items-center">
         <input
           type="text"
+          readonly="readonly"
           [style.background-color]="color.value"
           class="p-colorpicker-preview p-inputtext mr-2"
           >

@@ -29,6 +29,8 @@ export class MutateWorkoutTemplateComponent {
 
   title = 'New Workout';
 
+  color = 'var(--primary-color)';
+
   reorderModeButtonPressed = false;
 
   reorderMode = false;
@@ -136,7 +138,7 @@ export class MutateWorkoutTemplateComponent {
   }
 
   saveWorkout() {
-    this.workoutTemplates.addWorkoutTemplate(this.title, 'var(--primary-color)', this.exerciseTemplates);
+    this.workoutTemplates.addWorkoutTemplate(this.title, this.color, this.exerciseTemplates);
     this.router.navigate([ 'dashboard' ]);
   }
 
