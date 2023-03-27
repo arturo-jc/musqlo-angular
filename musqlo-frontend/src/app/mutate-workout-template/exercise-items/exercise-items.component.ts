@@ -9,6 +9,29 @@ export interface ExerciseItem {
   category: Category;
 }
 
+export const EXERCISES: ExerciseItem[] = [
+  {
+    exerciseType: 'Aerobics',
+    category: 'Cardio',
+  },
+  {
+    exerciseType: 'Deadlift',
+    category: 'Back',
+  },
+  {
+    exerciseType: 'Seated Calf Raise',
+    category: 'Legs',
+  },
+  {
+    exerciseType: 'Burpees',
+    category: 'Cardio',
+  },
+  {
+    exerciseType: 'Turkish Get-Up',
+    category: 'Cardio',
+  },
+];
+
 @Component({
   selector: 'app-exercise-items',
   templateUrl: './exercise-items.component.html',
@@ -28,28 +51,12 @@ export class ExerciseItemsComponent {
 
   placeholderRefresing = false;
 
-  exercises: ExerciseItem[] = [
-    {
-      exerciseType: 'Aerobics',
-      category: 'Cardio',
-    },
-    {
-      exerciseType: 'Deadlift',
-      category: 'Back',
-    },
-    {
-      exerciseType: 'Seated Calf Raise',
-      category: 'Legs',
-    },
-    {
-      exerciseType: 'Burpees',
-      category: 'Cardio',
-    },
-    {
-      exerciseType: 'Turkish Get-Up',
-      category: 'Cardio',
-    },
-  ];
+  exercises = EXERCISES;
+
+  exerciseOptions = EXERCISES.map(e => ({
+    label: e.exerciseType,
+    value: e,
+  }));
 
   hide() {
     if (!this.overlay) { return; }

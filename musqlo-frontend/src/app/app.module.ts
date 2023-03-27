@@ -21,6 +21,7 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { MenubarModule } from 'primeng/menubar';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { InplaceModule } from 'primeng/inplace';
+import { ListboxModule } from 'primeng/listbox';
 import { WorkoutTemplateEventDataPipe } from './full-calendar/workout-template-event-data.pipe';
 import { ExerciseTemplatePlaceholderPipe } from './exercise-template-placeholder.pipe';
 import { FixedOverlayComponent } from './shared/fixed-overlay/fixed-overlay.component';
@@ -69,6 +70,7 @@ import { FixedFilterOptionDirective } from './shared/fixed-filter/fixed-filter-o
     MenubarModule,
     SelectButtonModule,
     InplaceModule,
+    ListboxModule,
     FullCalendarModule,
   ],
   providers: [],

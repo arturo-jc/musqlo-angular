@@ -1,30 +1,33 @@
 <app-fixed-overlay>
-  <ul
+  <p-listbox 
+    [options]="exerciseOptions" 
+    [filter]="true"
     [class.hidden]="dragging"
     cdkDropList
     #exerciseList="cdkDropList"
     [cdkDropListData]="exercises"
     [cdkDropListConnectedTo]="[cdkDroplistConnectedTo]"
     cdkDropListSortingDisabled
-    >
+    ></p-listbox>
+  <ng-template let-exercise pTemplate="item">
     <li
-      *ngFor="let exercise of exercises"
-      [cdkDragData]="exercise"
+      [cdkDragData]="exercise.value"
       cdkDrag
       (cdkDragStarted)="dragging = true"
       (cdkDragReleased)="dragging = false"
       >
-      {{ exercise.exerciseType }}
+      {{ exercise.label }}
       <ng-container
         *cdkDragPlaceholder
         >
         <app-exercise-template
-          [template]="exercise | exerciseTemplatePlaceholder "
+          [template]="exercise.value | exerciseTemplatePlaceholder "
           [hideSets]="placeholderSetsHidden"
           ></app-exercise-template>
       </ng-container>
     </li>
-  </ul>
+  </ng-template>
+  <!-- <p-listbox [options]="exerciseOptions" [filter]="true"></p-listbox> -->
     <ul
       *ngIf="dragging"
       class="exercise-items"
