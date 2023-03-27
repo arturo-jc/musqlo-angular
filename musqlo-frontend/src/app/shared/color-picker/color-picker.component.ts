@@ -30,6 +30,8 @@ export const COLOR_SATURATION_LEVELS = [
   '900'
 ];
 
+export const LIGHT_DARK_THRESHOLD = 200;
+
 @Component({
   selector: 'app-color-picker',
   templateUrl: './color-picker.component.html',

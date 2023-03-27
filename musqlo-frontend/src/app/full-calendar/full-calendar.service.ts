@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { EventContentArg } from '@fullcalendar/core';
+import { EventImpl } from '@fullcalendar/core/internal';
 import { ExerciseTemplate } from '../mutate-workout-template/mutate-workout-template.component';
 
 @Injectable({
@@ -38,9 +39,17 @@ export class FullCalendarService {
 
   getEventContent(args: EventContentArg) {
     const { event } = args;
+    const containerEl = this.createContainer(event);
     const titleEl = this.createTitle(event.title);
     const bodyEl = this.createBody(event.extendedProps['exercises']);
-    return { domNodes: [ titleEl, bodyEl ] };
+    containerEl.append(titleEl, bodyEl);
+    return { domNodes: [ containerEl ] };
+  }
+
+  createContainer(event: EventImpl): HTMLDivElement {
+    const containerEl = document.createElement('div');
+    containerEl.style.setProperty('color', event.textColor);
+    return containerEl;
   }
 
   createTitle(title: string): HTMLSpanElement {
