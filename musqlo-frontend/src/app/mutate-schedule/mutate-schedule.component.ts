@@ -40,7 +40,7 @@ export class MutateScheduleComponent implements AfterViewInit {
       label: 'Biweekly',
       value: 'biweekly',
     }
-  ];
+ ];
 
   showTimes = false;
 

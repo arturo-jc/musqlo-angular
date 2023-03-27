@@ -4,15 +4,18 @@
     </ng-content>
   </ng-template>
   <ng-template pTemplate="content">
-    <input
-    #inputRef
-    type="text"
-    [placeholder]="placeholder"
-    pInputText
-    [(ngModel)]="text"
-    (ngModelChange)="textChange.emit(text)"
-    (keydown.enter)="inplaceRef.deactivate()"
-    required
-    >
+    <div class="flex flex-column">
+      <input
+        #inputRef
+        #required="ngModel"
+        type="text"
+        [placeholder]="placeholder"
+        pInputText
+        [(ngModel)]="editedText"
+        (ngModelChange)="updateText()"
+        (keydown.enter)="deactivate()"
+        required
+        >
+    </div>
   </ng-template>
 </p-inplace>

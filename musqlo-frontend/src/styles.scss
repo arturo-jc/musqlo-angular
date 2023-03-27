@@ -17,6 +17,10 @@ li {
   display: none;
 }
 
+.invisible {
+  opacity: 0;
+}
+
 .fc-daygrid-day-number {
   display: none;
 }
@@ -39,6 +43,7 @@ li {
 
 .editable-title {
   display: inline-block;
+  // margin: 0.2rem 0;
 
   i {
     font-size: 1.3rem;
