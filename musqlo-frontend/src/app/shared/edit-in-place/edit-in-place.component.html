@@ -4,7 +4,7 @@
     </ng-content>
   </ng-template>
   <ng-template pTemplate="content">
-    <div class="flex flex-column">
+    <div class="flex flex-column relative">
       <input
         #inputRef
         #required="ngModel"
@@ -16,6 +16,7 @@
         (keydown.enter)="deactivate()"
         required
         >
+        <small class="p-error absolute" *ngIf="!required.valid" style="bottom: -18px; ">You cannot leave this blank.</small>
     </div>
   </ng-template>
 </p-inplace>

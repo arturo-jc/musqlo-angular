@@ -1,5 +1,5 @@
 <div class="card">
-  <div class="flex align-items-start">
+  <div class="flex align-items-start mb-4">
     <div>
       <app-edit-in-place
         #titleRef
@@ -15,7 +15,6 @@
           {{ title }}
           <i class="pi pi-pencil ml-2"></i></H2>
       </app-edit-in-place>
-      <small class="p-error" [class.invisible]="titleRef.valid">You cannot leave this blank.</small>
     </div>
     <div class="flex-1"></div>
     <div class="flex align-items-center">
