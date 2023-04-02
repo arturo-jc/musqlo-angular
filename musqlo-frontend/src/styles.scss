@@ -5,6 +5,11 @@ body {
   background-color: var(--surface-b);
 }
 
+h2 {
+  margin: 0.5rem 0;
+}
+
+
 ul {
   padding-inline-start: 0;
 }
@@ -43,7 +48,6 @@ li {
 
 .editable-title {
   display: inline-block;
-  // margin: 0.2rem 0;
 
   i {
     font-size: 1.3rem;

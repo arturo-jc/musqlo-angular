@@ -1,5 +1,5 @@
 <div class="card">
-  <div class="flex">
+  <div class="flex align-items-start">
     <div>
       <app-edit-in-place
         #titleRef
@@ -26,6 +26,7 @@
         icon="pi pi-save"
         label="Save"
         class="p-button p-button-success ml-2"
+        [disabled]="!titleRef.valid"
         (click)="saveSchedule()"
         ></button>
     </div>
