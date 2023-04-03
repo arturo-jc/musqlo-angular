@@ -6,6 +6,8 @@ import { FullCalendarComponent } from '@fullcalendar/angular';
 import interaction from '@fullcalendar/interaction';
 import { FullCalendarService } from '../full-calendar/full-calendar.service';
 import { WorkoutTemplatesComponent } from '../workout-templates/workout-templates.component';
+import { Schedule, SchedulesService } from '../services/schedules.service';
+import * as dayjs from 'dayjs';
 
 export type CalendarView = 'weekly' | 'biweekly';
 
@@ -80,6 +82,7 @@ export class MutateScheduleComponent implements AfterViewInit {
 
   constructor(
     public fullCalendar: FullCalendarService,
+    private schedulesService: SchedulesService,
   ) {}
 
   ngAfterViewInit(): void {
@@ -117,7 +120,28 @@ export class MutateScheduleComponent implements AfterViewInit {
 
   saveSchedule() {
     if (!this.calendarApi) { return; }
-    const events = this.calendarApi.getEvents().map(e => e.toPlainObject());
-    console.log(events);
+
+    const events = this.calendarApi.getEvents();
+
+    for (const event of events) {
+
+      if (!event.start) { continue; }
+
+      let dow = event.start.getDay();
+
+      const isNextWeek = dayjs(event.start).isAfter(dayjs(), 'week');
+
+      if (isNextWeek) {
+        dow = dow + 7;
+      }
+
+      console.log(dow);
+    }
+
+    const newSchedule: Schedule = {
+      name: this.title,
+    }
+
+    this.schedulesService.createSchedule(newSchedule);
   }
 }

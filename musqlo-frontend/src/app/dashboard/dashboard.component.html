@@ -3,7 +3,7 @@
     <div class="card">
       <h2>Workouts</h2>
       <ul>
-        <li *ngFor="let template of workoutTemplates.workoutTemplates" (click)="editWorkout(template)">
+        <li *ngFor="let template of workoutTemplatesService.workoutTemplates" (click)="editWorkout(template)">
           {{ template.name }}
         </li>
       </ul>
@@ -11,7 +11,12 @@
   </div>
   <div class="col">
     <div class="card">
-      Not implemented
+      <h2>Schedules</h2>
+      <ul>
+        <li *ngFor="let schedule of schedulesService.schedules">
+          Schedule
+        </li>
+      </ul>
     </div>
   </div>
 </div>

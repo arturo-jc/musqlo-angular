@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { SchedulesService } from '../services/schedules.service';
 import { WorkoutTemplate, WorkoutTemplatesService } from '../services/workout-templates.service';
 
 @Component({
@@ -9,12 +10,13 @@ import { WorkoutTemplate, WorkoutTemplatesService } from '../services/workout-te
 })
 export class DashboardComponent {
   constructor(
-    public workoutTemplates: WorkoutTemplatesService,
+    public workoutTemplatesService: WorkoutTemplatesService,
+    public schedulesService: SchedulesService,
     private router: Router,
   ) {}
 
   editWorkout(template: WorkoutTemplate) {
-    this.workoutTemplates.workoutTemplateToEditIndex = this.workoutTemplates.workoutTemplates.indexOf(template);
+    this.workoutTemplatesService.workoutTemplateToEditIndex = this.workoutTemplatesService.workoutTemplates.indexOf(template);
     this.router.navigate([ 'workouts', 'edit' ]);
   }
 
