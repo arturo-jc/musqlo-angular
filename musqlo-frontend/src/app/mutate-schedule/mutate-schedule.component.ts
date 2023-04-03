@@ -62,11 +62,11 @@ export class MutateScheduleComponent implements AfterViewInit {
         dayHeaderFormat: { weekday: 'short' },
       }
     },
-    eventOrder: 'lastEdited',
+    eventOrder: 'lastModified',
     eventDidMount: (args) => {
       const { event } = args;
       if (!event.allDay) { return; }
-      event.setExtendedProp('lastEdited', new Date().getTime());
+      event.setExtendedProp('lastModified', new Date().getTime());
     },
     eventContent: (args) => this.fullCalendar.getEventContent(args),
     eventAllow: () => {
@@ -118,5 +118,6 @@ export class MutateScheduleComponent implements AfterViewInit {
   saveSchedule() {
     if (!this.calendarApi) { return; }
     const events = this.calendarApi.getEvents().map(e => e.toPlainObject());
+    console.log(events);
   }
 }

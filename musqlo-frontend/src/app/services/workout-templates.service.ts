@@ -12,7 +12,7 @@ export interface WorkoutTemplate {
 })
 export class WorkoutTemplatesService {
 
-  workouts: WorkoutTemplate[] = [
+  workoutTemplates: WorkoutTemplate[] = [
     {
       name: 'My Favorite Workout',
       backgroundColor: 'var(--primary-color)',
@@ -73,15 +73,15 @@ export class WorkoutTemplatesService {
   workoutTemplateToEditIndex?: number;
 
   addWorkoutTemplate(newWorkoutTemplate: WorkoutTemplate) {
-    const updatedWorkoutTemplates = [ ...this.workouts, newWorkoutTemplate ];
-    this.workouts = updatedWorkoutTemplates;
+    const updatedWorkoutTemplates = [ ...this.workoutTemplates, newWorkoutTemplate ];
+    this.workoutTemplates = updatedWorkoutTemplates;
   }
 
   updateWorkoutTemplate(updatedWorkoutTemplate: WorkoutTemplate) {
     if (this.workoutTemplateToEditIndex === undefined) { return; }
-    const updatedWorkoutTemplates = [ ...this.workouts ];
+    const updatedWorkoutTemplates = [ ...this.workoutTemplates ];
     updatedWorkoutTemplates.splice(this.workoutTemplateToEditIndex, 1, updatedWorkoutTemplate);
-    this.workouts = updatedWorkoutTemplates;
+    this.workoutTemplates = updatedWorkoutTemplates;
   }
 
 }

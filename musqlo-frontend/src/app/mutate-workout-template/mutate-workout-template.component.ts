@@ -65,7 +65,7 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
   loadWorkout() {
     if (this.workoutTemplates.workoutTemplateToEditIndex === undefined) { return; }
 
-    const workoutToEdit = this.workoutTemplates.workouts[this.workoutTemplates.workoutTemplateToEditIndex];
+    const workoutToEdit = this.workoutTemplates.workoutTemplates[this.workoutTemplates.workoutTemplateToEditIndex];
 
     this.title = workoutToEdit.name;
     this.color = workoutToEdit.backgroundColor;

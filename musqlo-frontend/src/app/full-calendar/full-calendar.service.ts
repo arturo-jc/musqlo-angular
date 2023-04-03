@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { EventContentArg } from '@fullcalendar/core';
 import { EventImpl } from '@fullcalendar/core/internal';
 import { ExerciseTemplate } from '../mutate-workout-template/mutate-workout-template.component';
+import { WorkoutTemplatesService } from '../services/workout-templates.service';
 
 @Injectable({
   providedIn: 'root'
@@ -35,13 +36,13 @@ export class FullCalendarService {
     ...this.ellipsis,
   }
 
-  constructor() { }
+  constructor(private workoutTemplates: WorkoutTemplatesService) { }
 
   getEventContent(args: EventContentArg) {
     const { event } = args;
     const containerEl = this.createContainer(event);
     const titleEl = this.createTitle(event.title);
-    const bodyEl = this.createBody(event.extendedProps['exercises']);
+    const bodyEl = this.createBody(event.extendedProps['index']);
     containerEl.append(titleEl, bodyEl);
     return { domNodes: [ containerEl ] };
   }
@@ -59,11 +60,14 @@ export class FullCalendarService {
     return titleEl;
   }
 
-  createBody(exercises: ExerciseTemplate[]): HTMLDivElement {
+  createBody(workoutTemplateIndex: number): HTMLDivElement {
+
     const bodyEl = document.createElement('div');
     this.applyStyle(this.bodyStyle, bodyEl);
 
-    for (const exercise of exercises) {
+    const workoutTemplate = this.workoutTemplates.workoutTemplates[workoutTemplateIndex];
+
+    for (const exercise of workoutTemplate.exercises) {
       const exerciseEl = this.createExerciseEl(exercise);
       bodyEl.append(exerciseEl);
     }

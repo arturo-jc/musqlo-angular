@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { EventInput } from '@fullcalendar/core';
-import { WorkoutTemplate } from '../services/workout-templates.service';
+import { WorkoutTemplate, WorkoutTemplatesService } from '../services/workout-templates.service';
 import { LIGHT_DARK_THRESHOLD } from '../shared/color-picker/color-picker.component';
 
 @Pipe({
@@ -8,12 +8,15 @@ import { LIGHT_DARK_THRESHOLD } from '../shared/color-picker/color-picker.compon
 })
 export class WorkoutTemplateEventDataPipe implements PipeTransform {
 
+  constructor(private workoutTemplates: WorkoutTemplatesService) {}
+
   transform(workout: WorkoutTemplate): string {
+
 
     const event: EventInput = {
       title: workout.name,
       extendedProps: {
-        exercises: workout.exercises,
+        index: this.workoutTemplates.workoutTemplates.indexOf(workout),
       },
       backgroundColor: workout.backgroundColor,
       borderColor: workout.backgroundColor,
