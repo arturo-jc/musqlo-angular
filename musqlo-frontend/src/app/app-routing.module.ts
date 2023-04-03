@@ -7,6 +7,7 @@ import { MutateWorkoutTemplateComponent } from './mutate-workout-template/mutate
 const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
   { path: 'workouts/new', component: MutateWorkoutTemplateComponent },
+  { path: 'workouts/edit', component: MutateWorkoutTemplateComponent },
   { path: 'schedules/new', component: MutateScheduleComponent },
 ];
 

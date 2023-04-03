@@ -70,6 +70,8 @@ export class WorkoutTemplatesService {
     }
   ]
 
+  workoutTemplateToEditIndex?: number;
+
   addWorkoutTemplate(
     name: string,
     backgroundColor: string,
@@ -78,6 +80,14 @@ export class WorkoutTemplatesService {
     const newWorkoutTemplate: WorkoutTemplate = { name, backgroundColor, exercises };
     const updatedWorkoutTemplates = [ ...this.workouts, newWorkoutTemplate ];
     this.workouts = updatedWorkoutTemplates;
+  }
+
+  updateWorkoutTemplate(updatedWorkout: WorkoutTemplate) {
+    if (this.workoutTemplateToEditIndex === undefined) { return; }
+
+    const updatedWorkouts = [ ...this.workouts ];
+    updatedWorkouts.splice(this.workoutTemplateToEditIndex, 1, updatedWorkout);
+    this.workouts = updatedWorkouts;
   }
 
 }

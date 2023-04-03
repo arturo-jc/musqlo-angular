@@ -1,8 +1,8 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { cloneDeep } from 'lodash-es';
-import { WorkoutTemplatesService } from '../services/workout-templates.service';
+import { WorkoutTemplate, WorkoutTemplatesService } from '../services/workout-templates.service';
 import { ExerciseItem, ExerciseItemsComponent } from './exercise-items/exercise-items.component';
 
 export interface SetTemplate {
@@ -23,13 +23,15 @@ export interface ExerciseTemplate {
   templateUrl: './mutate-workout-template.component.html',
   styleUrls: ['./mutate-workout-template.component.scss'],
 })
-export class MutateWorkoutTemplateComponent {
+export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
 
   @ViewChild(ExerciseItemsComponent) exerciseItems?: ExerciseItemsComponent;
 
   title = 'New Workout';
 
   color = 'var(--primary-color)';
+
+  mode!: 'create' | 'edit';
 
   reorderModeButtonPressed = false;
 
@@ -40,7 +42,35 @@ export class MutateWorkoutTemplateComponent {
   constructor(
     private workoutTemplates: WorkoutTemplatesService,
     private router: Router,
+    private route: ActivatedRoute,
   ) {}
+
+  ngOnInit(): void {
+    this.setMode();
+
+    if (this.mode === 'edit') {
+      this.loadWorkout();
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.workoutTemplates.workoutTemplateToEditIndex = undefined;
+  }
+
+  setMode() {
+    const [ , urlFragment ] = this.route.snapshot.url;
+    this.mode = urlFragment.path === 'new' ? 'create' : 'edit';
+  }
+
+  loadWorkout() {
+    if (this.workoutTemplates.workoutTemplateToEditIndex === undefined) { return; }
+
+    const workoutToEdit = this.workoutTemplates.workouts[this.workoutTemplates.workoutTemplateToEditIndex];
+
+    this.title = workoutToEdit.name;
+    this.color = workoutToEdit.backgroundColor;
+    this.exerciseTemplates = workoutToEdit.exercises;
+  }
 
   drop(event: CdkDragDrop<ExerciseTemplate[], ExerciseItem[] | ExerciseTemplate[], ExerciseItem | ExerciseTemplate>) {
     if (event.previousContainer === event.container) {
@@ -138,7 +168,19 @@ export class MutateWorkoutTemplateComponent {
   }
 
   saveWorkout() {
-    this.workoutTemplates.addWorkoutTemplate(this.title, this.color, this.exerciseTemplates);
+    if (this.mode === 'create') {
+      this.workoutTemplates.addWorkoutTemplate(this.title, this.color, this.exerciseTemplates);
+    } else if (this.mode === 'edit') {
+
+      const updatedWorkoutTemplate: WorkoutTemplate = {
+        name: this.title,
+        exercises: this.exerciseTemplates,
+        backgroundColor: this.color,
+      }
+
+      this.workoutTemplates.updateWorkoutTemplate(updatedWorkoutTemplate);
+    }
+
     this.router.navigate([ 'dashboard' ]);
   }
 
