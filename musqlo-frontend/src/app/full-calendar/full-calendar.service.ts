@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { EventContentArg } from '@fullcalendar/core';
+import { EventContentArg, EventInput } from '@fullcalendar/core';
 import { EventImpl } from '@fullcalendar/core/internal';
+import * as dayjs from 'dayjs';
 import { ExerciseTemplate } from '../mutate-workout-template/mutate-workout-template.component';
-import { WorkoutTemplatesService } from '../services/workout-templates.service';
+import { WorkoutTemplate, WorkoutTemplatesService } from '../services/workout-templates.service';
+import { LIGHT_DARK_THRESHOLD } from '../shared/color-picker/color-picker.component';
 
 @Injectable({
   providedIn: 'root'
@@ -96,4 +98,42 @@ export class FullCalendarService {
       element.style.setProperty(style, value);
     }
   }
+
+  getEventInput(workoutTemplate: WorkoutTemplate): EventInput {
+    return {
+      title: workoutTemplate.name,
+      extendedProps: {
+        key: workoutTemplate.key,
+      },
+      backgroundColor: workoutTemplate.backgroundColor,
+      borderColor: workoutTemplate.backgroundColor,
+      textColor: this.getTextColor(workoutTemplate),
+    }
+  }
+
+  getTextColor(workoutTemplate: WorkoutTemplate): string {
+
+    const lightTextColor = 'var(--gray-50)';
+    const darkTextColor = 'var(--gray-800)';
+
+    const consecutiveNumbersRegex = new RegExp(/[.*!\d](\d+)[.*!\d]/g);
+
+    const regexMatches = workoutTemplate.backgroundColor.match(consecutiveNumbersRegex);
+
+    const bgColorIntensity = regexMatches?.length ? Number(regexMatches[0]) : undefined;
+
+    const isBgColorDark = (bgColorIntensity && bgColorIntensity > LIGHT_DARK_THRESHOLD) || workoutTemplate.backgroundColor.includes('--primary-color');
+
+    const textColor = isBgColorDark ? lightTextColor : darkTextColor;
+
+    return textColor;
+  }
+
+  findFirstSunday(start: dayjs.Dayjs): dayjs.Dayjs {
+    if (start.day() === 0) {
+      return start;
+    }
+    return this.findFirstSunday(start.add(1, 'day'));
+  }
+
 }

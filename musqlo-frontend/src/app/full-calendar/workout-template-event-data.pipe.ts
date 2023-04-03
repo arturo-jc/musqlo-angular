@@ -1,45 +1,15 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { EventInput } from '@fullcalendar/core';
 import { WorkoutTemplate } from '../services/workout-templates.service';
-import { LIGHT_DARK_THRESHOLD } from '../shared/color-picker/color-picker.component';
+import { FullCalendarService } from './full-calendar.service';
 
 @Pipe({
   name: 'workoutTemplateEventData'
 })
 export class WorkoutTemplateEventDataPipe implements PipeTransform {
 
-  transform(workout: WorkoutTemplate): string {
+  constructor(private fullCalendar: FullCalendarService) {}
 
-
-    const event: EventInput = {
-      title: workout.name,
-      extendedProps: {
-        key: workout.key,
-      },
-      backgroundColor: workout.backgroundColor,
-      borderColor: workout.backgroundColor,
-      textColor: this.getTextColor(workout),
-    }
-
-    return JSON.stringify(event);
+  transform(workoutTemplate: WorkoutTemplate): string {
+    return JSON.stringify(this.fullCalendar.getEventInput(workoutTemplate));
   }
-
-  getTextColor(workout: WorkoutTemplate): string {
-
-    const lightTextColor = 'var(--gray-50)';
-    const darkTextColor = 'var(--gray-800)';
-
-    const consecutiveNumbersRegex = new RegExp(/[.*!\d](\d+)[.*!\d]/g);
-
-    const regexMatches = workout.backgroundColor.match(consecutiveNumbersRegex);
-
-    const bgColorIntensity = regexMatches?.length ? Number(regexMatches[0]) : undefined;
-
-    const isBgColorDark = (bgColorIntensity && bgColorIntensity > LIGHT_DARK_THRESHOLD) || workout.backgroundColor.includes('--primary-color');
-
-    const textColor = isBgColorDark ? lightTextColor : darkTextColor;
-
-    return textColor;
-  }
-
 }

@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Calendar, CalendarOptions } from '@fullcalendar/core';
+import { Calendar, CalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridWeek from '@fullcalendar/daygrid';
 import timeGridWeek from '@fullcalendar/timegrid';
 import { FullCalendarComponent } from '@fullcalendar/angular';
@@ -10,6 +10,7 @@ import { Schedule, SchedulesService, ScheduleWorkout } from '../services/schedul
 import * as dayjs from 'dayjs';
 import { EventImpl } from '@fullcalendar/core/internal';
 import { ActivatedRoute, Router } from '@angular/router';
+import { WorkoutTemplatesService } from '../services/workout-templates.service';
 
 export type CalendarView = 'weekly' | 'biweekly';
 
@@ -87,6 +88,7 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
   constructor(
     public fullCalendar: FullCalendarService,
     private schedulesService: SchedulesService,
+    private workoutTemplatesService: WorkoutTemplatesService,
     private router: Router,
     private route: ActivatedRoute,
     private cd: ChangeDetectorRef,
@@ -149,8 +151,6 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
       workouts: this.getScheduleWorkouts(this.calendarApi.getEvents()),
     }
 
-    console.log(newSchedule);
-
     this.schedulesService.addSchedule(newSchedule);
 
     this.router.navigate([ 'dashboard' ]);
@@ -177,8 +177,8 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
       }
 
       if (!event.allDay) {
-        newWorkout.start = event.start.toTimeString();
-        newWorkout.end = event.end?.toTimeString();
+        newWorkout.start = event.start.toTimeString().split(' ')[0];
+        newWorkout.end = event.end ? event.end.toTimeString().split(' ')[0] : undefined;
       }
 
       workouts.push(newWorkout);
@@ -189,23 +189,61 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
 
   loadSchedule() {
     const { scheduleToEdit } = this.schedulesService;
-    if (!scheduleToEdit) { return; }
 
-    this.setCalendarView(scheduleToEdit);
+    if (!scheduleToEdit || !this.calendarApi) { return; }
+
+    const { currentRange } = this.calendarApi.getCurrentData().dateProfile;
+
+    const scheduleStart = this.fullCalendar.findFirstSunday(dayjs(currentRange.start));
+
+    let showTimes = false;
+
+    for (const scheduleWorkout of scheduleToEdit.workouts) {
+      const workout = this.workoutTemplatesService.workoutTemplates
+        .find(t => t.key === scheduleWorkout.workoutTemplateKey);
+
+      if (!workout) { continue; }
+
+      const eventInput = this.fullCalendar.getEventInput(workout);
+
+      eventInput.allDay = scheduleWorkout.allDay;
+
+      const eventDay = scheduleStart.add(scheduleWorkout.dow, 'day');
+
+      if (eventInput.allDay) {
+        eventInput.start = eventDay.toDate();
+      } else {
+        this.setEventTimes(scheduleWorkout.start, eventInput, 'start', eventDay);
+        this.setEventTimes(scheduleWorkout.end, eventInput, 'end', eventDay);
+        showTimes = true;
+      }
+
+      this.calendarApi.addEvent(eventInput);
+    }
+
+    this.setCalendarView(scheduleToEdit, showTimes);
 
     this.title = scheduleToEdit.name;
 
     this.cd.detectChanges();
   }
 
-  setCalendarView(scheduleToEdit: Schedule) {
+  setEventTimes(dateString: string | undefined, eventInput: EventInput, time: 'start' | 'end', eventDay: dayjs.Dayjs) {
+    if (!dateString) { return; }
+    const [ hourString, minString, secString ] = dateString.split(':');
+    eventInput[time] = eventDay.hour(Number(hourString)).minute(Number(minString)).second(Number(secString)).toDate();
+  }
+
+  setCalendarView(scheduleToEdit: Schedule, showTimes: boolean) {
 
     const latestWorkoutDow = Math.max(...scheduleToEdit.workouts.map(w => w.dow));
 
     if (latestWorkoutDow > 6) {
       this.selectedCalendarView = 'biweekly';
-      this.updateCalendarView();
     }
 
+    this.showTimes = showTimes;
+
+    this.updateCalendarView();
   }
 }
