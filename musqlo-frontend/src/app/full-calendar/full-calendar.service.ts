@@ -42,7 +42,7 @@ export class FullCalendarService {
     const { event } = args;
     const containerEl = this.createContainer(event);
     const titleEl = this.createTitle(event.title);
-    const bodyEl = this.createBody(event.extendedProps['index']);
+    const bodyEl = this.createBody(event.extendedProps['key']);
     containerEl.append(titleEl, bodyEl);
     return { domNodes: [ containerEl ] };
   }
@@ -60,14 +60,14 @@ export class FullCalendarService {
     return titleEl;
   }
 
-  createBody(workoutTemplateIndex: number): HTMLDivElement {
+  createBody(workoutTemplateKey: number): HTMLDivElement {
 
     const bodyEl = document.createElement('div');
     this.applyStyle(this.bodyStyle, bodyEl);
 
-    const workoutTemplate = this.workoutTemplates.workoutTemplates[workoutTemplateIndex];
+    const workoutTemplate = this.workoutTemplates.workoutTemplates.find(t => t.key === workoutTemplateKey);
 
-    for (const exercise of workoutTemplate.exercises) {
+    for (const exercise of workoutTemplate?.exercises || []) {
       const exerciseEl = this.createExerciseEl(exercise);
       bodyEl.append(exerciseEl);
     }

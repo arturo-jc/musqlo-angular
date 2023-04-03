@@ -6,8 +6,10 @@ import { FullCalendarComponent } from '@fullcalendar/angular';
 import interaction from '@fullcalendar/interaction';
 import { FullCalendarService } from '../full-calendar/full-calendar.service';
 import { WorkoutTemplatesComponent } from '../workout-templates/workout-templates.component';
-import { Schedule, SchedulesService } from '../services/schedules.service';
+import { Schedule, SchedulesService, ScheduleWorkout } from '../services/schedules.service';
 import * as dayjs from 'dayjs';
+import { EventImpl } from '@fullcalendar/core/internal';
+import { Router } from '@angular/router';
 
 export type CalendarView = 'weekly' | 'biweekly';
 
@@ -83,6 +85,7 @@ export class MutateScheduleComponent implements AfterViewInit {
   constructor(
     public fullCalendar: FullCalendarService,
     private schedulesService: SchedulesService,
+    private router: Router,
   ) {}
 
   ngAfterViewInit(): void {
@@ -121,10 +124,20 @@ export class MutateScheduleComponent implements AfterViewInit {
   saveSchedule() {
     if (!this.calendarApi) { return; }
 
-    const events = this.calendarApi.getEvents();
+    const newSchedule: Schedule = {
+      name: this.title,
+      workouts: this.getScheduleWorkouts(this.calendarApi.getEvents()),
+    }
+
+    this.schedulesService.addSchedule(newSchedule);
+
+    this.router.navigate([ 'dashboard' ]);
+  }
+
+  getScheduleWorkouts(events: EventImpl[]) {
+    const workouts: ScheduleWorkout[] = [];
 
     for (const event of events) {
-
       if (!event.start) { continue; }
 
       let dow = event.start.getDay();
@@ -135,13 +148,12 @@ export class MutateScheduleComponent implements AfterViewInit {
         dow = dow + 7;
       }
 
-      console.log(dow);
+      const newWorkout: ScheduleWorkout = {
+        workoutTemplateKey: event.extendedProps['key'],
+        dow,
+      }
     }
 
-    const newSchedule: Schedule = {
-      name: this.title,
-    }
-
-    this.schedulesService.createSchedule(newSchedule);
+    return workouts;
   }
 }
