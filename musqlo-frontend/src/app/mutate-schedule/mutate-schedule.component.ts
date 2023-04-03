@@ -55,6 +55,7 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
     headerToolbar: false,
     editable: true,
     initialView: 'dayGridWeek',
+    aspectRatio: 2.5,
     plugins: [ dayGridWeek, timeGridWeek, interaction ],
     dayHeaderFormat: { weekday: 'long' },
     views: {
