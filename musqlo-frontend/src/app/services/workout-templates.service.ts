@@ -72,22 +72,16 @@ export class WorkoutTemplatesService {
 
   workoutTemplateToEditIndex?: number;
 
-  addWorkoutTemplate(
-    name: string,
-    backgroundColor: string,
-    exercises: ExerciseTemplate[],
-  ) {
-    const newWorkoutTemplate: WorkoutTemplate = { name, backgroundColor, exercises };
+  addWorkoutTemplate(newWorkoutTemplate: WorkoutTemplate) {
     const updatedWorkoutTemplates = [ ...this.workouts, newWorkoutTemplate ];
     this.workouts = updatedWorkoutTemplates;
   }
 
-  updateWorkoutTemplate(updatedWorkout: WorkoutTemplate) {
+  updateWorkoutTemplate(updatedWorkoutTemplate: WorkoutTemplate) {
     if (this.workoutTemplateToEditIndex === undefined) { return; }
-
-    const updatedWorkouts = [ ...this.workouts ];
-    updatedWorkouts.splice(this.workoutTemplateToEditIndex, 1, updatedWorkout);
-    this.workouts = updatedWorkouts;
+    const updatedWorkoutTemplates = [ ...this.workouts ];
+    updatedWorkoutTemplates.splice(this.workoutTemplateToEditIndex, 1, updatedWorkoutTemplate);
+    this.workouts = updatedWorkoutTemplates;
   }
 
 }

@@ -168,17 +168,17 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
   }
 
   saveWorkout() {
+
+    const workoutTemplateToSave: WorkoutTemplate = {
+      name: this.title,
+      exercises: this.exerciseTemplates,
+      backgroundColor: this.color,
+    }
+
     if (this.mode === 'create') {
-      this.workoutTemplates.addWorkoutTemplate(this.title, this.color, this.exerciseTemplates);
+      this.workoutTemplates.addWorkoutTemplate(workoutTemplateToSave);
     } else if (this.mode === 'edit') {
-
-      const updatedWorkoutTemplate: WorkoutTemplate = {
-        name: this.title,
-        exercises: this.exerciseTemplates,
-        backgroundColor: this.color,
-      }
-
-      this.workoutTemplates.updateWorkoutTemplate(updatedWorkoutTemplate);
+      this.workoutTemplates.updateWorkoutTemplate(workoutTemplateToSave);
     }
 
     this.router.navigate([ 'dashboard' ]);
