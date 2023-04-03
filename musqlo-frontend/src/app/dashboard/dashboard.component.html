@@ -13,7 +13,7 @@
     <div class="card">
       <h2>Schedules</h2>
       <ul>
-        <li *ngFor="let schedule of schedulesService.schedules">
+        <li *ngFor="let schedule of schedulesService.schedules" (click)="editSchedule(schedule)">
           {{ schedule.name }}
         </li>
       </ul>

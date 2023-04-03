@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Calendar, CalendarOptions } from '@fullcalendar/core';
 import dayGridWeek from '@fullcalendar/daygrid';
 import timeGridWeek from '@fullcalendar/timegrid';
@@ -9,7 +9,7 @@ import { WorkoutTemplatesComponent } from '../workout-templates/workout-template
 import { Schedule, SchedulesService, ScheduleWorkout } from '../services/schedules.service';
 import * as dayjs from 'dayjs';
 import { EventImpl } from '@fullcalendar/core/internal';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 export type CalendarView = 'weekly' | 'biweekly';
 
@@ -23,11 +23,13 @@ export interface CalendarViewOption {
   templateUrl: './mutate-schedule.component.html',
   styleUrls: ['./mutate-schedule.component.scss']
 })
-export class MutateScheduleComponent implements AfterViewInit {
+export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild(FullCalendarComponent, { static: false }) calendar?: FullCalendarComponent;
 
   @ViewChild(WorkoutTemplatesComponent) workoutTemplates?: WorkoutTemplatesComponent;
+
+  mode!: 'create' | 'edit';
 
   title = 'New Schedule';
 
@@ -86,11 +88,29 @@ export class MutateScheduleComponent implements AfterViewInit {
     public fullCalendar: FullCalendarService,
     private schedulesService: SchedulesService,
     private router: Router,
+    private route: ActivatedRoute,
+    private cd: ChangeDetectorRef,
   ) {}
+
+  ngOnInit(): void {
+    this.setMode();
+  }
 
   ngAfterViewInit(): void {
     if (!this.calendar) { return; }
     this.calendarApi = this.calendar.getApi();
+
+    if (this.mode === 'edit') {
+      this.loadSchedule();
+    }
+  }
+
+  ngOnDestroy(): void {
+  }
+
+  setMode() {
+    const [ , urlFragment ] = this.route.snapshot.url;
+    this.mode = urlFragment.path === 'new' ? 'create' : 'edit';
   }
 
   updateCalendarView() {
@@ -129,6 +149,8 @@ export class MutateScheduleComponent implements AfterViewInit {
       workouts: this.getScheduleWorkouts(this.calendarApi.getEvents()),
     }
 
+    console.log(newSchedule);
+
     this.schedulesService.addSchedule(newSchedule);
 
     this.router.navigate([ 'dashboard' ]);
@@ -151,11 +173,39 @@ export class MutateScheduleComponent implements AfterViewInit {
       const newWorkout: ScheduleWorkout = {
         workoutTemplateKey: event.extendedProps['key'],
         dow,
+        allDay: event.allDay,
+      }
+
+      if (!event.allDay) {
+        newWorkout.start = event.start.toTimeString();
+        newWorkout.end = event.end?.toTimeString();
       }
 
       workouts.push(newWorkout);
     }
 
     return workouts;
+  }
+
+  loadSchedule() {
+    const { scheduleToEdit } = this.schedulesService;
+    if (!scheduleToEdit) { return; }
+
+    this.setCalendarView(scheduleToEdit);
+
+    this.title = scheduleToEdit.name;
+
+    this.cd.detectChanges();
+  }
+
+  setCalendarView(scheduleToEdit: Schedule) {
+
+    const latestWorkoutDow = Math.max(...scheduleToEdit.workouts.map(w => w.dow));
+
+    if (latestWorkoutDow > 6) {
+      this.selectedCalendarView = 'biweekly';
+      this.updateCalendarView();
+    }
+
   }
 }

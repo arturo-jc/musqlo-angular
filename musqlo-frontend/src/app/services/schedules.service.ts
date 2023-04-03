@@ -3,6 +3,9 @@ import { Injectable } from '@angular/core';
 export interface ScheduleWorkout {
   workoutTemplateKey?: number;
   dow: number;
+  allDay: boolean;
+  start?: string;
+  end?: string;
 }
 
 export interface Schedule {
@@ -20,6 +23,8 @@ export class SchedulesService {
 
   schedules: Schedule[] = [];
 
+  editScheduleKey?: number;
+
   currentKey = 0;
 
   addSchedule(newSchedule: Schedule) {
@@ -29,4 +34,11 @@ export class SchedulesService {
     this.schedules = updatedSchedules;
   }
 
+  get scheduleToEdit() {
+    return this.schedules.find(t => t.key === this.editScheduleKey);
+  }
+
+  get scheduleToEditIndex() {
+    return this.schedules.findIndex(t => t.key === this.editScheduleKey);
+  }
 }

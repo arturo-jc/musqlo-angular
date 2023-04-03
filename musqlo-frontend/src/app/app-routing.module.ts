@@ -9,6 +9,7 @@ const routes: Routes = [
   { path: 'workouts/new', component: MutateWorkoutTemplateComponent },
   { path: 'workouts/edit', component: MutateWorkoutTemplateComponent },
   { path: 'schedules/new', component: MutateScheduleComponent },
+  { path: 'schedules/edit', component: MutateScheduleComponent },
 ];
 
 @NgModule({
