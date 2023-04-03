@@ -3,8 +3,8 @@
     <div class="card">
       <h2>Workouts</h2>
       <ul>
-        <li *ngFor="let template of workoutTemplatesService.workoutTemplates" (click)="editWorkout(template)">
-          {{ template.name }}
+        <li *ngFor="let workoutTemplate of workoutTemplatesService.workoutTemplates" (click)="editWorkout(workoutTemplate)">
+          {{ workoutTemplate.name }}
         </li>
       </ul>
     </div>

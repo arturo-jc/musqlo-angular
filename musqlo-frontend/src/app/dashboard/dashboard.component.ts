@@ -15,8 +15,8 @@ export class DashboardComponent {
     private router: Router,
   ) {}
 
-  editWorkout(template: WorkoutTemplate) {
-    this.workoutTemplatesService.workoutTemplateToEditIndex = this.workoutTemplatesService.workoutTemplates.indexOf(template);
+  editWorkout(workoutTemplate: WorkoutTemplate) {
+    this.workoutTemplatesService.editWorkoutTemplateKey = workoutTemplate.key;
     this.router.navigate([ 'workouts', 'edit' ]);
   }
 

@@ -54,7 +54,7 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.workoutTemplates.workoutTemplateToEditIndex = undefined;
+    this.workoutTemplates.editWorkoutTemplateKey = undefined;
   }
 
   setMode() {
@@ -63,13 +63,13 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
   }
 
   loadWorkout() {
-    if (this.workoutTemplates.workoutTemplateToEditIndex === undefined) { return; }
+    const { workoutTemplateToEdit } = this.workoutTemplates;
 
-    const workoutToEdit = this.workoutTemplates.workoutTemplates[this.workoutTemplates.workoutTemplateToEditIndex];
+    if (!workoutTemplateToEdit) { return; }
 
-    this.title = workoutToEdit.name;
-    this.color = workoutToEdit.backgroundColor;
-    this.exerciseTemplates = workoutToEdit.exercises;
+    this.title = workoutTemplateToEdit.name;
+    this.color = workoutTemplateToEdit.backgroundColor;
+    this.exerciseTemplates = workoutTemplateToEdit.exercises;
   }
 
   drop(event: CdkDragDrop<ExerciseTemplate[], ExerciseItem[] | ExerciseTemplate[], ExerciseItem | ExerciseTemplate>) {

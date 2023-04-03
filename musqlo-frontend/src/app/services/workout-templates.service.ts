@@ -5,6 +5,7 @@ export interface WorkoutTemplate {
   name: string;
   exercises: ExerciseTemplate[];
   backgroundColor: string;
+  key?: number;
 }
 
 @Injectable({
@@ -49,7 +50,8 @@ export class WorkoutTemplatesService {
           ],
           order: 2,
         }
-      ]
+      ],
+      key: 0,
     },
     {
       name: 'My Least Favorite Workout',
@@ -66,22 +68,35 @@ export class WorkoutTemplatesService {
           ],
           order: 1
         }
-      ]
+      ],
+      key: 1,
     }
   ]
 
-  workoutTemplateToEditIndex?: number;
+  editWorkoutTemplateKey?: number;
+
+  currentKey = 2;
 
   addWorkoutTemplate(newWorkoutTemplate: WorkoutTemplate) {
+    newWorkoutTemplate.key = this.currentKey;
+    this.currentKey++;
     const updatedWorkoutTemplates = [ ...this.workoutTemplates, newWorkoutTemplate ];
     this.workoutTemplates = updatedWorkoutTemplates;
   }
 
   updateWorkoutTemplate(updatedWorkoutTemplate: WorkoutTemplate) {
-    if (this.workoutTemplateToEditIndex === undefined) { return; }
+    updatedWorkoutTemplate.key = this.editWorkoutTemplateKey;
     const updatedWorkoutTemplates = [ ...this.workoutTemplates ];
     updatedWorkoutTemplates.splice(this.workoutTemplateToEditIndex, 1, updatedWorkoutTemplate);
     this.workoutTemplates = updatedWorkoutTemplates;
+  }
+
+  get workoutTemplateToEdit() {
+    return this.workoutTemplates.find(t => t.key === this.editWorkoutTemplateKey);
+  }
+
+  get workoutTemplateToEditIndex() {
+    return this.workoutTemplates.findIndex(t => t.key === this.editWorkoutTemplateKey);
   }
 
 }
