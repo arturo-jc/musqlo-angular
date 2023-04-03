@@ -152,6 +152,8 @@ export class MutateScheduleComponent implements AfterViewInit {
         workoutTemplateKey: event.extendedProps['key'],
         dow,
       }
+
+      workouts.push(newWorkout);
     }
 
     return workouts;
