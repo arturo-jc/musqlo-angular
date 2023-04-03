@@ -34,6 +34,13 @@ export class SchedulesService {
     this.schedules = updatedSchedules;
   }
 
+  updateSchedule(updatedSchedule: Schedule) {
+    updatedSchedule.key = this.editScheduleKey;
+    const updatedSchedules = [ ...this.schedules ];
+    updatedSchedules.splice(this.scheduleToEditIndex, 1, updatedSchedule);
+    this.schedules = updatedSchedules;
+  }
+
   get scheduleToEdit() {
     return this.schedules.find(t => t.key === this.editScheduleKey);
   }

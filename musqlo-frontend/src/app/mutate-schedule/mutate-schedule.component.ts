@@ -146,12 +146,16 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
   saveSchedule() {
     if (!this.calendarApi) { return; }
 
-    const newSchedule: Schedule = {
+    const scheduleToSave: Schedule = {
       name: this.title,
       workouts: this.getScheduleWorkouts(this.calendarApi.getEvents()),
     }
 
-    this.schedulesService.addSchedule(newSchedule);
+    if (this.mode === 'create') {
+      this.schedulesService.addSchedule(scheduleToSave);
+    } else if (this.mode === 'edit') {
+      this.schedulesService.updateSchedule(scheduleToSave);
+    }
 
     this.router.navigate([ 'dashboard' ]);
   }
