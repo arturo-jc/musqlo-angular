@@ -1,9 +1,33 @@
 import express from 'express';
-import { createHandler } from 'graphql-http';
-import { schema } from './schema';
+import http from 'http';
+import { typeDefs, resolvers } from './schema';
+import { ApolloServer } from '@apollo/server';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import { expressMiddleware } from '@apollo/server/express4';
+import cors from 'cors';
+import bodyParser from 'body-parser';
 
-const app = express();
+async function start() {
 
-app.all('/graphql', createHandler({ schema }));
+  const app = express();
 
-app.listen(3000, () => console.log('Listening...'));
+  const httpServer = http.createServer(app);
+
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    plugins: [ ApolloServerPluginDrainHttpServer({ httpServer })],
+  });
+
+  await server.start();
+
+  app.use(
+    cors(),
+    bodyParser.json(),
+    expressMiddleware(server),
+  );
+
+  httpServer.listen({ port: 4000 });
+}
+
+start();

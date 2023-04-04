@@ -1,0 +1,8 @@
+type ExerciseItem {
+  exerciseType: String!
+  category: String!
+}
+
+type Query {
+  exerciseItem(exerciseType: String!): ExerciseItem
+}
