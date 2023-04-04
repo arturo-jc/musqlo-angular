@@ -5,7 +5,7 @@ async function getExerciseItem(root: any, args: any) {
   }
 }
 
-module.exports = {
+export default {
   Query: {
     exerciseItem: getExerciseItem,
   }
