@@ -22,7 +22,7 @@ import { AppComponent } from './app.component';
 import { MutateWorkoutTemplateComponent } from './mutate-workout-template/mutate-workout-template.component';
 import { MutateScheduleComponent } from './mutate-schedule/mutate-schedule.component';
 import { WorkoutTemplateEventDataPipe } from './full-calendar/workout-template-event-data.pipe';
-import { ExerciseTemplatePlaceholderPipe } from './exercise-template-placeholder.pipe';
+import { ExerciseTemplatePlaceholderPipe } from './shared/exercise-template-placeholder.pipe';
 import { FixedOverlayComponent } from './shared/fixed-overlay/fixed-overlay.component';
 import { ExerciseTemplateComponent } from './mutate-workout-template/exercise-template/exercise-template.component';
 import { ExerciseItemsComponent } from './mutate-workout-template/exercise-items/exercise-items.component';

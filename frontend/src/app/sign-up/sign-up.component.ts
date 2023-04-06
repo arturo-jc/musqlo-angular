@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { SubSink } from 'subsink';
 import { SignUpGQL } from '../../generated/graphql.generated';
 
 @Component({
@@ -9,8 +8,6 @@ import { SignUpGQL } from '../../generated/graphql.generated';
   styleUrls: ['./sign-up.component.scss']
 })
 export class SignUpComponent {
-
-  subs = new SubSink();
 
   loginForm = new FormGroup({
     email: new FormControl('', [ Validators.required, Validators.email ]),
@@ -27,7 +24,7 @@ export class SignUpComponent {
 
     if (!email || !password) { return; }
 
-    this.subs.sink = this.signUpGQL.mutate({ email, password, username })
+    this.signUpGQL.mutate({ email, password, username })
       .subscribe((res) => console.log(res));
   }
 }

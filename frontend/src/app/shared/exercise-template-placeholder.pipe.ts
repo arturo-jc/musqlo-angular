@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { ExerciseItem } from './mutate-workout-template/exercise-items/exercise-items.component';
-import { ExerciseTemplate } from './mutate-workout-template/mutate-workout-template.component';
+import { ExerciseItem } from '../mutate-workout-template/exercise-items/exercise-items.component';
+import { ExerciseTemplate } from '../mutate-workout-template/mutate-workout-template.component';
 
 @Pipe({
   name: 'exerciseTemplatePlaceholder'
