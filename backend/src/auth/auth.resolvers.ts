@@ -1,5 +1,6 @@
 import { GraphQLError } from 'graphql';
 import bcrypt from 'bcrypt';
+import { v1 as uuid } from 'uuid';
 
 export interface SignUpInput {
   email: string;
@@ -13,11 +14,13 @@ export const CUSTOM_ERROR_CODES = {
 
 export interface LogInInput extends SignUpInput {}
 
-export interface User extends SignUpInput {}
+export interface User extends SignUpInput {
+  id: string;
+}
 
 let users: User[] = [];
 
-async function signUp(root: any, args: SignUpInput) {
+async function signUp(root: any, args: SignUpInput): Promise<Omit<User, 'password'>> {
   const existingUser = users.find(u => u.email === args.email);
 
   if (existingUser) {
@@ -30,14 +33,15 @@ async function signUp(root: any, args: SignUpInput) {
   const newUser: User = {
     ...args,
     password: hash,
+    id: uuid(),
   };
 
   users = [ ...users, newUser ];
 
-  return true;
+  return newUser;
 }
 
-async function logIn(root: any, args: LogInInput) {
+async function logIn(root: any, args: LogInInput): Promise<Omit<User, 'password'>> {
   const existingUser = users.find(u => u.email === args.email);
 
   if (!existingUser) {
@@ -50,7 +54,7 @@ async function logIn(root: any, args: LogInInput) {
     throw new GraphQLError('Invalid credentials', { extensions: { code: CUSTOM_ERROR_CODES.INVALID_CREDENTIALS }});
   }
 
-  return true;
+  return existingUser;
 }
 
 export default {

@@ -1,8 +1,14 @@
 extend type Query {
-  logIn(email: String!, password: String!, username: String): Boolean
+  logIn(email: String!, password: String!, username: String): User
 }
 
 extend type Mutation {
-  signUp(email: String!, password: String!, username: String): Boolean
+  signUp(email: String!, password: String!, username: String): User
+}
+
+type User {
+  id: String
+  username: String
+  email: String
 }
 
