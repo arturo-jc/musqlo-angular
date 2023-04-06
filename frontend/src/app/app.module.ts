@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FullCalendarModule } from '@fullcalendar/angular';
@@ -34,6 +34,8 @@ import { FixedFilterComponent } from './shared/fixed-filter/fixed-filter.compone
 import { FixedFilterOptionsDirective } from './shared/fixed-filter/fixed-filter-options.directive';
 import { FixedFilterOptionDirective } from './shared/fixed-filter/fixed-filter-option.directive';
 import { ColorPickerComponent } from './shared/color-picker/color-picker.component';
+import { LogInComponent } from './log-in/log-in.component';
+import { SignUpComponent } from './sign-up/sign-up.component';
 
 @NgModule({
   declarations: [
@@ -53,11 +55,14 @@ import { ColorPickerComponent } from './shared/color-picker/color-picker.compone
     FixedFilterOptionsDirective,
     FixedFilterOptionDirective,
     ColorPickerComponent,
+    LogInComponent,
+    SignUpComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
+    ReactiveFormsModule,
     BrowserAnimationsModule,
     DragDropModule,
     ButtonModule,

@@ -1,0 +1,40 @@
+<div class="grid">
+  <div class="col-offset-3 col-6">
+    <div class="card" [formGroup]="loginForm">
+      <h1>Sign Up</h1>
+      <div class="field">
+        <span class="p-float-label">
+          <input
+          pInputText
+          formControlName="email"
+          type="text"
+          class="w-full"
+          >
+          <label for="email">Email</label>
+        </span>
+      </div>
+      <div class="field">
+        <span class="p-float-label">
+          <input
+          pInputText
+          formControlName="password"
+          type="text"
+          class="w-full"
+          >
+          <label for="email">Password</label>
+        </span>
+      </div>
+      <div class="field">
+        <span class="p-float-label">
+          <input
+          pInputText
+          formControlName="username"
+          type="text"
+          class="w-full"
+          >
+          <label for="email">Username (optional)</label>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
