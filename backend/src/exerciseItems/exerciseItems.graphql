@@ -3,6 +3,6 @@ type ExerciseItem {
   category: String!
 }
 
-type Query {
+extend type Query {
   exerciseItem(exerciseType: String!): ExerciseItem
 }

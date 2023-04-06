@@ -8,5 +8,5 @@ async function getExerciseItem(root: any, args: any) {
 export default {
   Query: {
     exerciseItem: getExerciseItem,
-  }
+  },
 }
