@@ -2,15 +2,15 @@ import { GraphQLError } from 'graphql';
 import bcrypt from 'bcrypt';
 import { v1 as uuid } from 'uuid';
 
+export const CUSTOM_ERROR_CODES = {
+  INVALID_CREDENTIALS: 'INVALID_CREDENTIALS',
+};
+
 export interface SignUpInput {
   email: string;
   password: string;
   username?: string;
 }
-
-export const CUSTOM_ERROR_CODES = {
-  INVALID_CREDENTIALS: 'INVALID_CREDENTIALS',
-};
 
 export interface LogInInput extends SignUpInput {}
 
