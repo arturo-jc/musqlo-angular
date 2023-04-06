@@ -7,7 +7,7 @@ import { AbstractControl } from '@angular/forms';
 })
 export class ValidationErrorMessagePipe implements PipeTransform {
 
-  transform(abstractControl: AbstractControl<null | undefined, null | undefined> | null, controlName: string): string {
+  transform(abstractControl: AbstractControl<string | null, string | null> | null, controlName: string): string {
     if (!abstractControl?.invalid || abstractControl.pristine) {
       return controlName;
     }
