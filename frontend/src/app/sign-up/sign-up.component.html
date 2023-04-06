@@ -1,40 +1,52 @@
 <div class="grid">
   <div class="col-offset-3 col-6">
     <div class="card" [formGroup]="loginForm">
-      <h1>Sign Up</h1>
-      <div class="field">
+      <h1 class="mb-5">Sign Up</h1>
+      <div class="field mb-5">
         <span class="p-float-label">
           <input
+          id="email"
           pInputText
           formControlName="email"
           type="text"
           class="w-full"
           >
-          <label for="email">Email</label>
+          <label for="email">{{ loginForm.get('email') | validationErrorMessage : 'Email' }}</label>
         </span>
       </div>
-      <div class="field">
+      <div class="field mb-5">
         <span class="p-float-label">
           <input
+          id="password"
           pInputText
           formControlName="password"
-          type="text"
+          type="password"
           class="w-full"
           >
-          <label for="email">Password</label>
+          <label for="password">{{ loginForm.get('password') | validationErrorMessage : 'Password' }}</label>
         </span>
       </div>
       <div class="field">
         <span class="p-float-label">
           <input
+          id="username"
           pInputText
           formControlName="username"
           type="text"
           class="w-full"
           >
-          <label for="email">Username (optional)</label>
+          <label for="username">Username (optional)</label>
         </span>
       </div>
+      <button 
+          pButton
+          pRipple
+          type="button"
+          icon="pi pi-user-plus"
+          label="Sign Up"
+          (click)="signUp()"
+          [disabled]="loginForm.invalid"
+          ></button>
     </div>
   </div>
 </div>

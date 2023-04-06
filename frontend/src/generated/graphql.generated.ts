@@ -90,7 +90,7 @@ export const LogInDocument = gql`
     providedIn: 'root'
   })
   export class LogInGQL extends Apollo.Query<LogInQuery, LogInQueryVariables> {
-    document = LogInDocument;
+    override document = LogInDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);
@@ -109,7 +109,7 @@ export const SignUpDocument = gql`
     providedIn: 'root'
   })
   export class SignUpGQL extends Apollo.Mutation<SignUpMutation, SignUpMutationVariables> {
-    document = SignUpDocument;
+    override document = SignUpDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

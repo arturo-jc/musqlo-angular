@@ -36,6 +36,8 @@ import { FixedFilterOptionDirective } from './shared/fixed-filter/fixed-filter-o
 import { ColorPickerComponent } from './shared/color-picker/color-picker.component';
 import { LogInComponent } from './log-in/log-in.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
+import { ApolloModule } from 'apollo-angular';
+import { ValidationErrorMessagePipe } from './shared/validation-error-message.pipe';
 
 @NgModule({
   declarations: [
@@ -57,6 +59,7 @@ import { SignUpComponent } from './sign-up/sign-up.component';
     ColorPickerComponent,
     LogInComponent,
     SignUpComponent,
+    ValidationErrorMessagePipe,
   ],
   imports: [
     BrowserModule,
@@ -79,6 +82,7 @@ import { SignUpComponent } from './sign-up/sign-up.component';
     InplaceModule,
     ColorPickerModule,
     FullCalendarModule,
+    ApolloModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
