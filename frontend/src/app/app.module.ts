@@ -36,8 +36,9 @@ import { FixedFilterOptionDirective } from './shared/fixed-filter/fixed-filter-o
 import { ColorPickerComponent } from './shared/color-picker/color-picker.component';
 import { LogInComponent } from './log-in/log-in.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
-import { ApolloModule } from 'apollo-angular';
 import { ValidationErrorMessagePipe } from './shared/validation-error-message.pipe';
+import { GraphQLModule } from './graphql.module';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -82,7 +83,8 @@ import { ValidationErrorMessagePipe } from './shared/validation-error-message.pi
     InplaceModule,
     ColorPickerModule,
     FullCalendarModule,
-    ApolloModule,
+    GraphQLModule,
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
