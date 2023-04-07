@@ -9,7 +9,6 @@ import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 
 export interface Context {
-  hostname: string;
   res: express.Response;
 }
 
@@ -38,7 +37,6 @@ async function start() {
         context: async ({ req, res }) => {
 
           const context: Context = {
-            hostname: req.hostname,
             res,
           };
 

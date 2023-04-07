@@ -42,12 +42,12 @@ async function signUp(root: any, args: SignUpInput, ctx: Context): Promise<Omit<
 
   users = [ ...users, newUser ];
 
-  setJWT(newUser, ctx);
+  setJWT(newUser, ctx.res);
 
   return newUser;
 }
 
-function setJWT(user: User, ctx: Context): void {
+function setJWT(user: User, res: Response): void {
   const payload = {
     id: user.id,
   };
@@ -62,11 +62,9 @@ function setJWT(user: User, ctx: Context): void {
   const opts: CookieOptions = {
     httpOnly: true,
     expires: dayjs().add(lifetime, 's').toDate(),
-    domain: ctx.hostname,
-    secure: true,
   }
 
-  ctx.res.cookie('jwt', jwt, opts);
+  res.cookie('jwt', jwt, opts);
 }
 
 function getJWTConfigs() {
