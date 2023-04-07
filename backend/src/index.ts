@@ -6,8 +6,16 @@ import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHt
 import { expressMiddleware } from '@apollo/server/express4';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import dotenv from 'dotenv';
+
+export interface Context {
+  hostname: string;
+  res: express.Response;
+}
 
 async function start() {
+
+  dotenv.config();
 
   const app = express();
 
@@ -24,10 +32,25 @@ async function start() {
   app.use(
     cors(),
     bodyParser.json(),
-    expressMiddleware(server),
+    expressMiddleware(
+      server,
+      {
+        context: async ({ req, res }) => {
+
+          const context: Context = {
+            hostname: req.hostname,
+            res,
+          };
+
+          return context;
+        }
+      }
+    ),
   );
 
-  httpServer.listen({ port: 4000 });
+  const port = 4000;
+
+  httpServer.listen({ port }, () => console.log(`Listening on ${port}`));
 }
 
 start();
