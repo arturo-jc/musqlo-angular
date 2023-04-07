@@ -1,5 +1,5 @@
 <div class="layout-wrapper">
-  <app-sidebar></app-sidebar>
+  <app-sidebar *ngIf="auth.user | async"></app-sidebar>
   <div class="layout-main">
     <div class="topbar">
     </div>

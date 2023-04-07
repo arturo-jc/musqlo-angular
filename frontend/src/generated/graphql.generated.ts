@@ -66,7 +66,7 @@ export type LogInQueryVariables = Exact<{
 }>;
 
 
-export type LogInQuery = { __typename?: 'Query', logIn?: { __typename?: 'User', id?: string | null, username?: string | null } | null };
+export type LogInQuery = { __typename?: 'Query', logIn?: { __typename?: 'User', id?: string | null, username?: string | null, email?: string | null } | null };
 
 export type SignUpMutationVariables = Exact<{
   email: Scalars['String'];
@@ -75,13 +75,14 @@ export type SignUpMutationVariables = Exact<{
 }>;
 
 
-export type SignUpMutation = { __typename?: 'Mutation', signUp?: { __typename?: 'User', id?: string | null, username?: string | null } | null };
+export type SignUpMutation = { __typename?: 'Mutation', signUp?: { __typename?: 'User', id?: string | null, username?: string | null, email?: string | null } | null };
 
 export const LogInDocument = gql`
     query logIn($email: String!, $password: String!) {
   logIn(email: $email, password: $password) {
     id
     username
+    email
   }
 }
     `;
@@ -101,6 +102,7 @@ export const SignUpDocument = gql`
   signUp(email: $email, password: $password, username: $username) {
     id
     username
+    email
   }
 }
     `;

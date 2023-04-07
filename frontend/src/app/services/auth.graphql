@@ -1,6 +1,15 @@
+query logIn($email: String!, $password: String!) {
+  logIn(email: $email, password: $password) {
+    id
+    username
+    email
+  }
+}
+
 mutation signUp($email: String!, $password: String!, $username: String) {
   signUp(email: $email, password: $password, username: $username) {
     id
     username
+    email
   }
 }

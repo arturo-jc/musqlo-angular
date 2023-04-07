@@ -1,6 +1,0 @@
-query logIn($email: String!, $password: String!) {
-  logIn(email: $email, password: $password) {
-    id
-    username
-  }
-}

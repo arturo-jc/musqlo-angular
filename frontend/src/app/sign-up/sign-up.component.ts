@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { SignUpGQL } from '../../generated/graphql.generated';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-sign-up',
@@ -16,7 +16,7 @@ export class SignUpComponent {
   })
 
   constructor(
-    private signUpGQL: SignUpGQL,
+    private authService: AuthService,
   ) {}
 
   signUp() {
@@ -24,7 +24,6 @@ export class SignUpComponent {
 
     if (!email || !password) { return; }
 
-    this.signUpGQL.mutate({ email, password, username })
-      .subscribe((res) => console.log(res));
+    this.authService.signUp(email, password, username);
   }
 }
