@@ -1,7 +1,7 @@
 import { GraphQLError } from 'graphql';
 import bcrypt from 'bcrypt';
 import { v1 as uuid } from 'uuid';
-import jwt, { Algorithm } from 'jsonwebtoken';
+import jwt, { Algorithm, JsonWebTokenError } from 'jsonwebtoken';
 import dayjs from 'dayjs';
 import { Context } from '../context';
 import { CookieOptions, Response } from 'express';
@@ -54,7 +54,15 @@ function setToken(user: User, res: Response): void {
 
   const { secret, algorithm, expiresIn } = getJWTConfigs();
 
-  const token = jwt.sign(payload, secret, { algorithm, expiresIn });
+  let token: string | undefined = undefined;
+
+  try {
+    token = jwt.sign(payload, secret, { algorithm, expiresIn });
+  } catch(e) {
+    console.error((e as JsonWebTokenError).message);
+  }
+
+  if (!token) { return; }
 
   const opts: CookieOptions = {
     httpOnly: true,
@@ -67,13 +75,13 @@ function setToken(user: User, res: Response): void {
 export function getJWTConfigs() {
   const secret = process.env.JWT_SECRET;
   const algorithm = process.env.JWT_ALGORITHM as Algorithm | undefined;
-  const expiresIn = process.env.JWT_EXPIRES_IN as number | undefined;
+  const lifetime = process.env.JWT_LIFETIME;
 
-  if (!secret || !algorithm || !expiresIn) {
+  if (!secret || !algorithm || !lifetime) {
     throw new Error('Could not resolve JWT configs');
   };
 
-  return { secret, algorithm, expiresIn };
+  return { secret, algorithm, expiresIn: Number(lifetime) };
 }
 
 async function logIn(_root: any, args: LogInInput): Promise<Omit<User, 'password'>> {
