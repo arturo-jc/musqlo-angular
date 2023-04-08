@@ -24,7 +24,7 @@ export interface User extends SignUpInput {
 
 let users: User[] = [];
 
-async function signUp(root: any, args: SignUpInput, ctx: Context): Promise<Omit<User, 'password'>> {
+async function signUp(_root: any, args: SignUpInput, ctx: Context): Promise<Omit<User, 'password'>> {
   const existingUser = users.find(u => u.email === args.email);
 
   if (existingUser) {
@@ -76,7 +76,7 @@ export function getJWTConfigs() {
   return { secret, algorithm, expiresIn };
 }
 
-async function logIn(root: any, args: LogInInput): Promise<Omit<User, 'password'>> {
+async function logIn(_root: any, args: LogInInput): Promise<Omit<User, 'password'>> {
   const existingUser = users.find(u => u.email === args.email);
 
   if (!existingUser) {
