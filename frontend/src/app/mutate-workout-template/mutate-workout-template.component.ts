@@ -2,8 +2,9 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { cloneDeep } from 'lodash-es';
+import { ExerciseItem } from '../../generated/graphql.generated';
 import { WorkoutTemplate, WorkoutTemplatesService } from '../services/workout-templates.service';
-import { ExerciseItem, ExerciseItemsComponent } from './exercise-items/exercise-items.component';
+import { ExerciseItemsComponent } from './exercise-items/exercise-items.component';
 
 export interface SetTemplate {
   reps?: number;

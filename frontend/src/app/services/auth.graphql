@@ -1,4 +1,4 @@
-query logIn($email: String!, $password: String!) {
+query LogIn($email: String!, $password: String!) {
   logIn(email: $email, password: $password) {
     id
     username
@@ -6,7 +6,7 @@ query logIn($email: String!, $password: String!) {
   }
 }
 
-mutation signUp($email: String!, $password: String!, $username: String) {
+mutation SignUp($email: String!, $password: String!, $username: String) {
   signUp(email: $email, password: $password, username: $username) {
     id
     username

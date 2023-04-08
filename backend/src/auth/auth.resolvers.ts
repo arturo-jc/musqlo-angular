@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import { v1 as uuid } from 'uuid';
 import jwt, { Algorithm, JsonWebTokenError } from 'jsonwebtoken';
 import dayjs from 'dayjs';
-import { Context } from '../context';
+import { Context, TokenPayload } from '../context';
 import { CookieOptions, Response } from 'express';
 
 export const CUSTOM_ERROR_CODES = {
@@ -48,7 +48,8 @@ async function signUp(_root: any, args: SignUpInput, ctx: Context): Promise<Omit
 }
 
 function setToken(user: User, res: Response): void {
-  const payload = {
+
+  const payload: TokenPayload = {
     userId: user.id,
   };
 

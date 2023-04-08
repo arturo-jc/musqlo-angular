@@ -1,19 +1,20 @@
-import { Component, ContentChild, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ContentChild, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { InputText } from 'primeng/inputtext';
 import { FixedOverlayComponent } from '../fixed-overlay/fixed-overlay.component';
 import { FixedFilterOptionDirective } from './fixed-filter-option.directive';
 import { FixedFilterOptionsDirective } from './fixed-filter-options.directive';
+import { isEqual } from 'lodash-es';
 
 @Component({
   selector: 'app-fixed-filter',
   templateUrl: './fixed-filter.component.html',
   styleUrls: ['./fixed-filter.component.scss']
 })
-export class FixedFilterComponent<T extends { [key: string]: any }> implements OnInit {
+export class FixedFilterComponent<T extends { [key: string]: any }> implements OnInit, OnChanges {
 
   @Input() placeholder!: string;
 
-  @Input() options!: T[];
+  @Input() options!: T[] | null;
 
   @Input() optionLabel!: string;
 
@@ -37,11 +38,24 @@ export class FixedFilterComponent<T extends { [key: string]: any }> implements O
     this.filterOptions();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!changes.hasOwnProperty('options')) { return; }
+
+    const { currentValue, previousValue } = changes['options'];
+
+    if (isEqual(currentValue, previousValue)) { return; }
+
+    this.filterOptions();
+  }
+
   filterOptions() {
-    this.filteredOptions = this.options.filter(opt => {
+
+    this.filteredOptions = (this.options || []).filter(opt => {
       return (opt[this.optionLabel]).toLowerCase().includes(this.filter.trim().toLowerCase())
-    })
+    });
+
     this.onFilter.emit(this.filteredOptions);
+
   }
 
   show() {

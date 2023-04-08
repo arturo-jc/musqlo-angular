@@ -28,9 +28,9 @@ export const context: ContextFunction<[ExpressContextFunctionArgument], BaseCont
 
 function verifyToken(token?: string): TokenPayload | undefined {
 
-  let payload: TokenPayload | undefined = undefined;
-
   if (!token) { return; }
+
+  let payload: TokenPayload | undefined = undefined;
 
   const { secret, algorithm } = getJWTConfigs();
 

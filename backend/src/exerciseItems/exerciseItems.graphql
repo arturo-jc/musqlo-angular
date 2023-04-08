@@ -4,5 +4,5 @@ type ExerciseItem {
 }
 
 extend type Query {
-  exerciseItem(exerciseType: String!): ExerciseItem
+  exerciseItems: [ExerciseItem]!
 }

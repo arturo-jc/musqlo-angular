@@ -1,6 +1,6 @@
 <app-fixed-filter
   placeholder="Search exercises"
-  [options]="exercises"
+  [options]="exerciseItems$ | async"
   optionLabel="exerciseType"
   (onFilter)="setFilteredExercises($event)"
   >
@@ -9,7 +9,7 @@
       [class.hidden]="dragging"
       cdkDropList
       #exerciseList="cdkDropList"
-      [cdkDropListData]="exercises"
+      [cdkDropListData]="exerciseItems$ | async"
       [cdkDropListConnectedTo]="[cdkDroplistConnectedTo]"
       cdkDropListSortingDisabled
       >

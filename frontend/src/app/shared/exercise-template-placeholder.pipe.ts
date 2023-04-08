@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { ExerciseItem } from '../mutate-workout-template/exercise-items/exercise-items.component';
+import { ExerciseItem } from '../../generated/graphql.generated';
 import { ExerciseTemplate } from '../mutate-workout-template/mutate-workout-template.component';
 
 @Pipe({
