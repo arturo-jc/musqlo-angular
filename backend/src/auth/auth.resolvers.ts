@@ -1,7 +1,7 @@
 import { GraphQLError } from 'graphql';
 import bcrypt from 'bcrypt';
 import { v1 as uuid } from 'uuid';
-import * as jsonWebToken from 'jsonwebtoken';
+import jsonWebToken from 'jsonwebtoken';
 import dayjs from 'dayjs';
 import { Context } from '../index';
 import { CookieOptions, Response } from 'express';
@@ -26,6 +26,8 @@ let users: User[] = [];
 
 async function signUp(root: any, args: SignUpInput, ctx: Context): Promise<Omit<User, 'password'>> {
   const existingUser = users.find(u => u.email === args.email);
+
+  console.log('made it to this other place!');
 
   if (existingUser) {
     throw new GraphQLError('This email is already in use', { extensions: { code: CUSTOM_ERROR_CODES.INVALID_CREDENTIALS }});

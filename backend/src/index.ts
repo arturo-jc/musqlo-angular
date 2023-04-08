@@ -7,7 +7,7 @@ import { expressMiddleware } from '@apollo/server/express4';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
-import * as jsonWebToken from 'jsonwebtoken';
+import jsonWebToken, { JsonWebTokenError } from 'jsonwebtoken';
 import cookieParser from 'cookie-parser';
 import { getJWTConfigs } from './auth/auth.resolvers';
 
@@ -43,9 +43,14 @@ async function start() {
           if (req.cookies?.jwt) {
             const { jwt } = req.cookies;
             const { secret, algorithm } = getJWTConfigs();
-            console.log({ secret, algorithm, jwt });
-            // const payload = jsonWebToken.verify(jwt, secret, { algorithms: [ algorithm ]});
-            // console.log(payload);
+
+            let payload: string | jsonWebToken.JwtPayload;
+
+            try {
+              payload = jsonWebToken.verify(jwt, secret, { algorithms: [ algorithm ]});
+            } catch(e) {
+              console.error((e as JsonWebTokenError).message);
+            }
           }
 
           const context: Context = {
