@@ -6,27 +6,40 @@ import { Response } from 'express';
 
 export interface Context {
   res: Response;
+  userId?: string;
+}
+
+export interface TokenPayload extends JwtPayload {
+  userId: string;
 }
 
 export const context: ContextFunction<[ExpressContextFunctionArgument], BaseContext> = async ({ req, res }) => {
 
-  if (req.cookies?.token) {
-    const { token } = req.cookies;
-    const { secret, algorithm } = getJWTConfigs();
-
-    let payload: string | JwtPayload;
-
-    try {
-      payload = jwt.verify(token, secret, { algorithms: [ algorithm ]});
-    } catch(e) {
-      console.error((e as JsonWebTokenError).message);
-    }
-  }
+  const payload = verifyToken(req.cookies?.token);
 
   const context: Context = {
     res,
+    userId: payload?.userId,
   };
 
   return context;
 
 };
+
+function verifyToken(token?: string): TokenPayload | undefined {
+
+  let payload: TokenPayload | undefined = undefined;
+
+  if (!token) { return; }
+
+  const { secret, algorithm } = getJWTConfigs();
+
+  try {
+    payload = jwt.verify(token, secret, { algorithms: [ algorithm ]}) as TokenPayload;
+  } catch(e) {
+    console.error((e as JsonWebTokenError).message);
+  }
+
+  return payload;
+
+}

@@ -49,7 +49,7 @@ async function signUp(_root: any, args: SignUpInput, ctx: Context): Promise<Omit
 
 function setToken(user: User, res: Response): void {
   const payload = {
-    id: user.id,
+    userId: user.id,
   };
 
   const { secret, algorithm, expiresIn } = getJWTConfigs();
