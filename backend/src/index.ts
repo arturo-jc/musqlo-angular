@@ -10,10 +10,6 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import { context } from './context';
 
-export interface Context {
-  res: express.Response;
-}
-
 async function start() {
 
   dotenv.config();
@@ -39,7 +35,7 @@ async function start() {
 
   const port = 4000;
 
-  httpServer.listen({ port }, () => console.log(`Listening on ${port}`));
+  httpServer.listen({ port }, () => console.log(`Listening on ${port} 🚀`));
 }
 
 start();

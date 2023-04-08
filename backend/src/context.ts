@@ -1,7 +1,7 @@
 import { BaseContext, ContextFunction } from "@apollo/server";
 import { ExpressContextFunctionArgument } from "@apollo/server/dist/esm/express4";
 import { getJWTConfigs } from "./auth/auth.resolvers";
-import { JsonWebTokenError, JwtPayload } from "jsonwebtoken";
+import jwt, { JsonWebTokenError, JwtPayload } from "jsonwebtoken";
 import { Response } from 'express';
 
 export interface Context {
@@ -17,7 +17,7 @@ export const context: ContextFunction<[ExpressContextFunctionArgument], BaseCont
     let payload: string | JwtPayload;
 
     try {
-      payload = token.verify(token, secret, { algorithms: [ algorithm ]});
+      payload = jwt.verify(token, secret, { algorithms: [ algorithm ]});
     } catch(e) {
       console.error((e as JsonWebTokenError).message);
     }

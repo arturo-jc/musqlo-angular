@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import { v1 as uuid } from 'uuid';
 import jwt, { Algorithm } from 'jsonwebtoken';
 import dayjs from 'dayjs';
-import { Context } from '../index';
+import { Context } from '../context';
 import { CookieOptions, Response } from 'express';
 
 export const CUSTOM_ERROR_CODES = {
