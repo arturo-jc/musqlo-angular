@@ -52,31 +52,28 @@ function setJWT(user: User, res: Response): void {
     id: user.id,
   };
 
-  const { secret, algo, lifetime } = getJWTConfigs();
+  const { secret, algorithm, expiresIn } = getJWTConfigs();
 
-  const jwt = jsonWebToken.sign(payload, secret, {
-    algorithm: algo,
-    expiresIn: lifetime,
-  });
+  const jwt = jsonWebToken.sign(payload, secret, { algorithm, expiresIn });
 
   const opts: CookieOptions = {
     httpOnly: true,
-    expires: dayjs().add(lifetime, 's').toDate(),
+    expires: dayjs().add(expiresIn, 's').toDate(),
   }
 
   res.cookie('jwt', jwt, opts);
 }
 
-function getJWTConfigs() {
+export function getJWTConfigs() {
   const secret = process.env.JWT_SECRET;
-  const algo = process.env.JWT_ALGO as jsonWebToken.Algorithm | undefined;
-  const lifetime = process.env.JWT_LIFETIME as number | undefined;
+  const algorithm = process.env.JWT_ALGORITHM as jsonWebToken.Algorithm | undefined;
+  const expiresIn = process.env.JWT_EXPIRES_IN as number | undefined;
 
-  if (!secret || !algo || !lifetime) {
+  if (!secret || !algorithm || !expiresIn) {
     throw new Error('Could not resolve JWT configs');
   };
 
-  return { secret, algo, lifetime };
+  return { secret, algorithm, expiresIn };
 }
 
 async function logIn(root: any, args: LogInInput): Promise<Omit<User, 'password'>> {
