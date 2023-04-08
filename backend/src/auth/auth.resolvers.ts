@@ -1,7 +1,7 @@
 import { GraphQLError } from 'graphql';
 import bcrypt from 'bcrypt';
 import { v1 as uuid } from 'uuid';
-import jsonWebToken from 'jsonwebtoken';
+import jwt, { Algorithm } from 'jsonwebtoken';
 import dayjs from 'dayjs';
 import { Context } from '../index';
 import { CookieOptions, Response } from 'express';
@@ -27,8 +27,6 @@ let users: User[] = [];
 async function signUp(root: any, args: SignUpInput, ctx: Context): Promise<Omit<User, 'password'>> {
   const existingUser = users.find(u => u.email === args.email);
 
-  console.log('made it to this other place!');
-
   if (existingUser) {
     throw new GraphQLError('This email is already in use', { extensions: { code: CUSTOM_ERROR_CODES.INVALID_CREDENTIALS }});
   }
@@ -44,31 +42,31 @@ async function signUp(root: any, args: SignUpInput, ctx: Context): Promise<Omit<
 
   users = [ ...users, newUser ];
 
-  setJWT(newUser, ctx.res);
+  setToken(newUser, ctx.res);
 
   return newUser;
 }
 
-function setJWT(user: User, res: Response): void {
+function setToken(user: User, res: Response): void {
   const payload = {
     id: user.id,
   };
 
   const { secret, algorithm, expiresIn } = getJWTConfigs();
 
-  const jwt = jsonWebToken.sign(payload, secret, { algorithm, expiresIn });
+  const token = jwt.sign(payload, secret, { algorithm, expiresIn });
 
   const opts: CookieOptions = {
     httpOnly: true,
     expires: dayjs().add(expiresIn, 's').toDate(),
   }
 
-  res.cookie('jwt', jwt, opts);
+  res.cookie('token', token, opts);
 }
 
 export function getJWTConfigs() {
   const secret = process.env.JWT_SECRET;
-  const algorithm = process.env.JWT_ALGORITHM as jsonWebToken.Algorithm | undefined;
+  const algorithm = process.env.JWT_ALGORITHM as Algorithm | undefined;
   const expiresIn = process.env.JWT_EXPIRES_IN as number | undefined;
 
   if (!secret || !algorithm || !expiresIn) {
