@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { ApolloError, ApolloQueryResult } from '@apollo/client/core';
 import { MutationResult } from 'apollo-angular';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, filter, map, Subject } from 'rxjs';
 import { AuthenticateGQL, LogInGQL, LogInQuery, SignUpGQL, SignUpMutation, User } from '../../generated/graphql.generated';
 import { TimeService } from './time.service';
+import { notEmpty } from '../shared/utils';
 
 @Injectable({
   providedIn: 'root'
@@ -38,53 +38,44 @@ export class AuthService {
   ) { }
 
   signUp(email: string, password: string, username?: string | null) {
-    this.signUpGQL.mutate({ email, password, username })
-    .subscribe({
+    this.signUpGQL.mutate({ email, password, username }).subscribe({
       next: res => this.handleSignUpSuccess(res),
       error: () => this._onAuthFail.next(undefined),
     });
   }
 
-  handleSignUpSuccess(res: MutationResult<SignUpMutation>) {
-    if (!res.data?.signUp?.user) { return; }
-    this._user.next(res.data.signUp.user);
-    this._onAuthSuccess.next(res.data.signUp.user);
-    this.tokenExpirationDate = res.data.signUp.tokenExpirationDate;
-  }
-
   login(email: string, password: string) {
     this.logInGQL.fetch({ email, password }).subscribe({
-      next: res => {
-        if (!res.data?.logIn) { return; }
-        this.handleLoginSuccess(res.data.logIn);
-      },
-      error: () => this._onAuthFail.next(undefined),
-    });
-  }
-
-  authenticate() {
-    this.authenticateGQL.fetch().subscribe({
-      next: res => {
-        if (!res.data?.authenticate) { return; }
-        this.handleLoginSuccess(res.data.authenticate);
-      },
+      next: res => this.handleLoginSuccess(res.data?.logIn),
       error: () => this._onAuthFail.next(undefined),
     })
   }
 
-  handleLoginSuccess(user: User) {
+  authenticate() {
+    this.authenticateGQL.fetch().subscribe({
+      next: res => this.handleLoginSuccess(res.data?.authenticate),
+      error: () => this._onAuthFail.next(undefined),
+    })
+  }
+
+  handleSignUpSuccess(res: MutationResult<SignUpMutation>) {
+    this.handleLoginSuccess(res.data?.signUp?.user);
+    this._tokenExpirationDate = res.data?.signUp?.tokenExpirationDate;
+  }
+
+  handleLoginSuccess(user?: User | null ) {
+    if (!user) { return; }
     this._user.next(user);
     this._onAuthSuccess.next(user);
   }
 
   autoAuthenticate() {
-    if (!this.tokenExpirationDate) { return; }
-    if (this.timeService.currentTimeSeconds > this.tokenExpirationDate) { return; }
+    if (!this._tokenExpirationDate) { return; }
+    if (this.timeService.currentTimeSeconds > this._tokenExpirationDate) { return; }
     this.authenticate();
   }
 
-  private set tokenExpirationDate(time: number | null | undefined) {
-    console.log(time);
+  private set _tokenExpirationDate(time: number | null | undefined) {
     if (time) {
       localStorage.setItem(this.lsKeys.tokenExpirationDate, time.toString());
     } else {
@@ -92,7 +83,7 @@ export class AuthService {
     }
   }
 
-  private get tokenExpirationDate() {
+  private get _tokenExpirationDate() {
     return Number(localStorage.getItem(this.lsKeys.tokenExpirationDate));
   }
 
