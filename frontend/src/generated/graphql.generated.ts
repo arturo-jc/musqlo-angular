@@ -15,6 +15,12 @@ export type Scalars = {
   Float: number;
 };
 
+export type AuthenticateOutput = {
+  __typename?: 'AuthenticateOutput';
+  expiresIn?: Maybe<Scalars['Int']>;
+  user?: Maybe<User>;
+};
+
 export type ExerciseItem = {
   __typename?: 'ExerciseItem';
   category: Scalars['String'];
@@ -24,7 +30,7 @@ export type ExerciseItem = {
 export type Mutation = {
   __typename?: 'Mutation';
   _blank?: Maybe<Scalars['Boolean']>;
-  signUp?: Maybe<SignUpOutput>;
+  signUp?: Maybe<AuthenticateOutput>;
 };
 
 
@@ -39,7 +45,7 @@ export type Query = {
   _blank?: Maybe<Scalars['Boolean']>;
   authenticate?: Maybe<User>;
   exerciseItems: Array<Maybe<ExerciseItem>>;
-  logIn?: Maybe<User>;
+  logIn?: Maybe<AuthenticateOutput>;
 };
 
 
@@ -47,12 +53,6 @@ export type QueryLogInArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
   username?: InputMaybe<Scalars['String']>;
-};
-
-export type SignUpOutput = {
-  __typename?: 'SignUpOutput';
-  tokenExpirationDate?: Maybe<Scalars['Int']>;
-  user?: Maybe<User>;
 };
 
 export type User = {
@@ -73,7 +73,7 @@ export type LogInQueryVariables = Exact<{
 }>;
 
 
-export type LogInQuery = { __typename?: 'Query', logIn?: { __typename?: 'User', id?: string | null, username?: string | null, email?: string | null } | null };
+export type LogInQuery = { __typename?: 'Query', logIn?: { __typename?: 'AuthenticateOutput', expiresIn?: number | null, user?: { __typename?: 'User', id?: string | null, username?: string | null, email?: string | null } | null } | null };
 
 export type AuthenticateQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -87,7 +87,7 @@ export type SignUpMutationVariables = Exact<{
 }>;
 
 
-export type SignUpMutation = { __typename?: 'Mutation', signUp?: { __typename?: 'SignUpOutput', tokenExpirationDate?: number | null, user?: { __typename?: 'User', id?: string | null, username?: string | null, email?: string | null } | null } | null };
+export type SignUpMutation = { __typename?: 'Mutation', signUp?: { __typename?: 'AuthenticateOutput', expiresIn?: number | null, user?: { __typename?: 'User', id?: string | null, username?: string | null, email?: string | null } | null } | null };
 
 export const ExerciseItemsDocument = gql`
     query ExerciseItems {
@@ -111,9 +111,12 @@ export const ExerciseItemsDocument = gql`
 export const LogInDocument = gql`
     query LogIn($email: String!, $password: String!) {
   logIn(email: $email, password: $password) {
-    id
-    username
-    email
+    user {
+      id
+      username
+      email
+    }
+    expiresIn
   }
 }
     `;
@@ -156,7 +159,7 @@ export const SignUpDocument = gql`
       username
       email
     }
-    tokenExpirationDate
+    expiresIn
   }
 }
     `;

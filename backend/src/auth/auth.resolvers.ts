@@ -17,9 +17,9 @@ export interface SignUpInput {
   username?: string;
 }
 
-export interface SignUpOutput {
+export interface AuthenticateOutput {
   user: Omit<User, 'password'>;
-  tokenExpirationDate?: number;
+  expiresIn?: number;
 }
 
 export interface LogInInput extends SignUpInput {}
@@ -30,7 +30,7 @@ export interface User extends SignUpInput {
 
 let users: User[] = [];
 
-async function signUp(_root: any, args: SignUpInput, ctx: Context): Promise<SignUpOutput> {
+async function signUp(_root: any, args: SignUpInput, ctx: Context): Promise<AuthenticateOutput> {
   const existingUser = users.find(u => u.email === args.email);
 
   if (existingUser) {
@@ -50,12 +50,35 @@ async function signUp(_root: any, args: SignUpInput, ctx: Context): Promise<Sign
 
   const expiresIn = setToken(newUser, ctx.res);
 
-  const tokenExpirationDate = expiresIn ? getCurrentTimeSeconds() + expiresIn : undefined;
-
   return {
     user: newUser,
-    tokenExpirationDate,
+    expiresIn,
   };
+}
+
+async function logIn(_root: any, args: LogInInput, ctx: Context): Promise<AuthenticateOutput> {
+  const existingUser = users.find(u => u.email === args.email);
+
+  if (!existingUser) {
+    throw new GraphQLError('Invalid credentials', { extensions: { code: CUSTOM_ERROR_CODES.INVALID_CREDENTIALS }});
+  }
+
+  const isPasswordValid = await bcrypt.compare(args.password, existingUser.password);
+
+  if (!isPasswordValid) {
+    throw new GraphQLError('Invalid credentials', { extensions: { code: CUSTOM_ERROR_CODES.INVALID_CREDENTIALS }});
+  }
+
+  const expiresIn = setToken(existingUser, ctx.res);
+
+  return {
+    user: existingUser,
+    expiresIn,
+  };
+}
+
+async function authenticate(_root: any, _args: any, ctx: Context) {
+  return users.find(u => u.id === ctx.userId);
 }
 
 function setToken(user: User, res: Response): number | undefined {
@@ -96,26 +119,6 @@ export function getJWTConfigs() {
   };
 
   return { secret, algorithm, expiresIn: Number(lifetime) };
-}
-
-async function logIn(_root: any, args: LogInInput): Promise<Omit<User, 'password'>> {
-  const existingUser = users.find(u => u.email === args.email);
-
-  if (!existingUser) {
-    throw new GraphQLError('Invalid credentials', { extensions: { code: CUSTOM_ERROR_CODES.INVALID_CREDENTIALS }});
-  }
-
-  const isPasswordValid = await bcrypt.compare(args.password, existingUser.password);
-
-  if (!isPasswordValid) {
-    throw new GraphQLError('Invalid credentials', { extensions: { code: CUSTOM_ERROR_CODES.INVALID_CREDENTIALS }});
-  }
-
-  return existingUser;
-}
-
-async function authenticate(_root: any, _args: any, ctx: Context) {
-  return users.find(u => u.id === ctx.userId);
 }
 
 export default {

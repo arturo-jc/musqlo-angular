@@ -1,7 +1,13 @@
 <div class="layout-wrapper">
   <app-sidebar *ngIf="auth.user | async"></app-sidebar>
   <div class="layout-main">
-    <div class="topbar">
+    <div class="topbar flex justify-content-between">
+      <div class="topbar-left"></div>
+      <div class="topbar-right">
+        <div class="user" *ngIf="auth.user | async">
+          <i class="pi pi-user"></i>
+        </div>
+      </div>
     </div>
     <div class="main-container">
       <router-outlet></router-outlet>

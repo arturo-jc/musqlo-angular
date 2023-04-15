@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
-import { MutationResult } from 'apollo-angular';
-import { BehaviorSubject, filter, map, Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { AuthenticateGQL, LogInGQL, LogInQuery, SignUpGQL, SignUpMutation, User } from '../../generated/graphql.generated';
 import { TimeService } from './time.service';
-import { notEmpty } from '../shared/utils';
 
 @Injectable({
   providedIn: 'root'
@@ -39,34 +37,34 @@ export class AuthService {
 
   signUp(email: string, password: string, username?: string | null) {
     this.signUpGQL.mutate({ email, password, username }).subscribe({
-      next: res => this.handleSignUpSuccess(res),
+      next: res => this.handleAuthSuccess(res.data?.signUp),
       error: () => this._onAuthFail.next(undefined),
     });
   }
 
   login(email: string, password: string) {
     this.logInGQL.fetch({ email, password }).subscribe({
-      next: res => this.handleLoginSuccess(res.data?.logIn),
+      next: res => this.handleAuthSuccess(res.data?.logIn),
       error: () => this._onAuthFail.next(undefined),
     })
   }
 
   authenticate() {
     this.authenticateGQL.fetch().subscribe({
-      next: res => this.handleLoginSuccess(res.data?.authenticate),
+      next: res => this.loadUser(res.data?.authenticate),
       error: () => this._onAuthFail.next(undefined),
     })
   }
 
-  handleSignUpSuccess(res: MutationResult<SignUpMutation>) {
-    this.handleLoginSuccess(res.data?.signUp?.user);
-    this._tokenExpirationDate = res.data?.signUp?.tokenExpirationDate;
+  handleAuthSuccess(handleAuthSuccess: SignUpMutation['signUp'] | LogInQuery['logIn']) {
+    this.loadUser(handleAuthSuccess?.user);
+    this._tokenExpirationDate = this.calculateExpirationDate(handleAuthSuccess?.expiresIn);
   }
 
-  handleLoginSuccess(user?: User | null ) {
-    if (!user) { return; }
-    this._user.next(user);
-    this._onAuthSuccess.next(user);
+  loadUser(loadUser?: User | null ) {
+    if (!loadUser) { return; }
+    this._user.next(loadUser);
+    this._onAuthSuccess.next(loadUser);
   }
 
   autoAuthenticate() {
@@ -75,9 +73,14 @@ export class AuthService {
     this.authenticate();
   }
 
-  private set _tokenExpirationDate(time: number | null | undefined) {
-    if (time) {
-      localStorage.setItem(this.lsKeys.tokenExpirationDate, time.toString());
+  calculateExpirationDate(expiresIn: number | undefined | null) {
+    if (!expiresIn) { return; }
+    return this.timeService.currentTimeSeconds + expiresIn;
+  }
+
+  private set _tokenExpirationDate(tokenExpirationDate: number | undefined) {
+    if (tokenExpirationDate) {
+      localStorage.setItem(this.lsKeys.tokenExpirationDate, tokenExpirationDate.toString());
     } else {
       localStorage.removeItem(this.lsKeys.tokenExpirationDate);
     }
