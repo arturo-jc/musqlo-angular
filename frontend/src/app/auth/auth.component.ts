@@ -44,24 +44,16 @@ export class AuthComponent implements OnInit {
     this.authType = path as AuthType;
   }
 
-  handleSubmit() {
-    if (this.authType === 'login') {
-      this.login();
-    } else if (this.authType === 'signup') {
-      this.signUp();
-    }
-  }
-
-  login() {
-    console.log('Buckle up...');
-  }
-
-  signUp() {
+  authenticate() {
     const { email, password, username } = this.authForm.value;
 
     if (!email || !password) { return; }
 
-    this.authService.signUp(email, password, username);
+    if (this.authType === 'login') {
+      this.authService.login(email, password);
+    } else if (this.authType === 'signup') {
+      this.authService.signUp(email, password, username);
+    }
   }
 
 }
