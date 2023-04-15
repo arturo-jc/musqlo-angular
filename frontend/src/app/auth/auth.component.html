@@ -43,11 +43,20 @@
           pButton
           pRipple
           type="submit"
+          class="mb-3"
           [icon]="authType === 'login' ? 'pi pi-sign-in' : 'pi pi-user-plus'"
           [label]="authType === 'login' ? 'Log In' : 'Sign Up'"
           (click)="handleSubmit()"
           [disabled]="authForm.invalid"
           ></button>
+      </div>
+      <div style="text-align: center;">
+        <small>
+          {{ authType === 'login' ? 'Don\'t have an account yet?' : 'Already have an account?' }}
+          <a [routerLink]="authType === 'login' ? [ '/signup' ] : [ '/login' ]">
+            {{ authType === 'login' ? 'Sign Up' : 'Log In'}}
+          </a>
+        </small>
       </div>
     </div>
   </div>
