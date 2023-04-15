@@ -30,6 +30,7 @@ export type ExerciseItem = {
 export type Mutation = {
   __typename?: 'Mutation';
   _blank?: Maybe<Scalars['Boolean']>;
+  logOut?: Maybe<Scalars['Boolean']>;
   signUp?: Maybe<AuthenticateOutput>;
 };
 
@@ -88,6 +89,11 @@ export type SignUpMutationVariables = Exact<{
 
 
 export type SignUpMutation = { __typename?: 'Mutation', signUp?: { __typename?: 'AuthenticateOutput', expiresIn?: number | null, user?: { __typename?: 'User', id?: string | null, username?: string | null, email?: string | null } | null } | null };
+
+export type LogOutMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LogOutMutation = { __typename?: 'Mutation', logOut?: boolean | null };
 
 export const ExerciseItemsDocument = gql`
     query ExerciseItems {
@@ -169,6 +175,22 @@ export const SignUpDocument = gql`
   })
   export class SignUpGQL extends Apollo.Mutation<SignUpMutation, SignUpMutationVariables> {
     override document = SignUpDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const LogOutDocument = gql`
+    mutation LogOut {
+  logOut
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class LogOutGQL extends Apollo.Mutation<LogOutMutation, LogOutMutationVariables> {
+    override document = LogOutDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

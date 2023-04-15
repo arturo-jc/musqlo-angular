@@ -81,6 +81,11 @@ async function authenticate(_root: any, _args: any, ctx: Context) {
   return users.find(u => u.id === ctx.userId);
 }
 
+async function logOut(_root: any, _args: any, ctx: Context) {
+  ctx.res.clearCookie('token');
+  return true;
+}
+
 function setToken(user: User, res: Response): number | undefined {
 
   const payload: TokenPayload = {
@@ -128,5 +133,6 @@ export default {
   },
   Mutation: {
     signUp,
+    logOut,
   },
 }

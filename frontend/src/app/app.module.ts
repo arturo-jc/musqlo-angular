@@ -17,6 +17,7 @@ import { MenubarModule } from 'primeng/menubar';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { InplaceModule } from 'primeng/inplace'
 import { ColorPickerModule } from 'primeng/colorpicker'
+import { MenuModule } from 'primeng/menu';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MutateWorkoutTemplateComponent } from './mutate-workout-template/mutate-workout-template.component';
@@ -82,6 +83,7 @@ import { HttpClientModule } from '@angular/common/http';
     SelectButtonModule,
     InplaceModule,
     ColorPickerModule,
+    MenuModule,
     FullCalendarModule,
     GraphQLModule,
     HttpClientModule,

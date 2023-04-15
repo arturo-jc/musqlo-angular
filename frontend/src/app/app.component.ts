@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PrimeNGConfig } from 'primeng/api';
+import { MenuItem, PrimeNGConfig } from 'primeng/api';
 import { AuthService } from './services/auth.service';
 
 @Component({
@@ -8,6 +8,14 @@ import { AuthService } from './services/auth.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
+
+  topbarItems: MenuItem[] = [
+    {
+      label: 'Log Out',
+      icon: 'pi pi-sign-out',
+      command: () => this.auth.logOut()
+    ,}
+  ];
 
   constructor(
     private primeConfig: PrimeNGConfig,

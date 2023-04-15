@@ -1,12 +1,17 @@
 <div class="layout-wrapper">
   <app-sidebar *ngIf="auth.user | async"></app-sidebar>
   <div class="layout-main">
-    <div class="topbar flex justify-content-between">
+    <div class="topbar flex justify-content-between align-items-center">
       <div class="topbar-left"></div>
       <div class="topbar-right">
-        <div class="user" *ngIf="auth.user | async">
-          <i class="pi pi-user"></i>
-        </div>
+        <p-menu #menu [model]="topbarItems" [popup]="true"></p-menu>
+        <p-button
+          *ngIf="auth.user | async"
+          styleClass="p-button-text my-2"
+          [label]="(auth.user | async)?.username || 'Anonymous'"
+          icon="pi pi-user"
+          (click)="menu.toggle($event)"
+          ></p-button>
       </div>
     </div>
     <div class="main-container">

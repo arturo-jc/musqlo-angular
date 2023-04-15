@@ -50,7 +50,7 @@ export class AuthComponent implements OnInit {
     if (!email || !password) { return; }
 
     if (this.authType === 'login') {
-      this.authService.login(email, password);
+      this.authService.logIn(email, password);
     } else if (this.authType === 'signup') {
       this.authService.signUp(email, password, username);
     }

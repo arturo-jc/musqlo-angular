@@ -27,3 +27,7 @@ mutation SignUp($email: String!, $password: String!, $username: String) {
     expiresIn
   }
 }
+
+mutation LogOut {
+  logOut
+}
