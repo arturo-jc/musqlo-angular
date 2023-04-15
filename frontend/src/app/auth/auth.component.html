@@ -1,7 +1,7 @@
 <div class="grid">
   <div class="col-offset-3 col-6">
-    <div class="sign-up card" [formGroup]="loginForm">
-      <h1 class="mb-5">Sign Up</h1>
+    <div class="sign-up card" [formGroup]="authForm">
+      <h1 class="mb-5">{{ authType === 'login' ? 'Log In' : 'Sign Up' }}</h1>
       <div class="field mb-5">
         <span class="p-float-label">
           <input
@@ -11,7 +11,7 @@
           type="text"
           class="w-full"
           >
-          <label for="email">{{ loginForm.get('email') | validationErrorMessage : 'Email' }}</label>
+          <label for="email">{{ authForm.get('email') | validationErrorMessage : 'Email' }}</label>
         </span>
       </div>
       <div class="field mb-5">
@@ -23,10 +23,10 @@
           type="password"
           class="w-full"
           >
-          <label for="password">{{ loginForm.get('password') | validationErrorMessage : 'Password' }}</label>
+          <label for="password">{{ authForm.get('password') | validationErrorMessage : 'Password' }}</label>
         </span>
       </div>
-      <div class="field mb-5">
+      <div *ngIf="authType === 'signup'" class="field mb-5">
         <span class="p-float-label">
           <input
           id="username"
@@ -43,10 +43,10 @@
           pButton
           pRipple
           type="submit"
-          icon="pi pi-user-plus"
-          label="Sign Up"
-          (click)="signUp()"
-          [disabled]="loginForm.invalid"
+          [icon]="authType === 'login' ? 'pi pi-sign-in' : 'pi pi-user-plus'"
+          [label]="authType === 'login' ? 'Log In' : 'Sign Up'"
+          (click)="handleSubmit()"
+          [disabled]="authForm.invalid"
           ></button>
       </div>
     </div>

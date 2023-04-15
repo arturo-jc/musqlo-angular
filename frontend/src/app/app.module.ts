@@ -35,7 +35,7 @@ import { FixedFilterOptionsDirective } from './shared/fixed-filter/fixed-filter-
 import { FixedFilterOptionDirective } from './shared/fixed-filter/fixed-filter-option.directive';
 import { ColorPickerComponent } from './shared/color-picker/color-picker.component';
 import { LogInComponent } from './log-in/log-in.component';
-import { SignUpComponent } from './sign-up/sign-up.component';
+import { AuthComponent } from './auth/auth.component';
 import { ValidationErrorMessagePipe } from './shared/validation-error-message.pipe';
 import { GraphQLModule } from './graphql.module';
 import { HttpClientModule } from '@angular/common/http';
@@ -59,7 +59,7 @@ import { HttpClientModule } from '@angular/common/http';
     FixedFilterOptionDirective,
     ColorPickerComponent,
     LogInComponent,
-    SignUpComponent,
+    AuthComponent,
     ValidationErrorMessagePipe,
   ],
   imports: [
