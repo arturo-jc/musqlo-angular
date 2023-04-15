@@ -5,6 +5,7 @@ import jwt, { Algorithm, JsonWebTokenError } from 'jsonwebtoken';
 import dayjs from 'dayjs';
 import { Context, TokenPayload } from '../context';
 import { CookieOptions, Response } from 'express';
+import { getCurrentTimeSeconds } from '../utils/time';
 
 export const CUSTOM_ERROR_CODES = {
   INVALID_CREDENTIALS: 'INVALID_CREDENTIALS',
@@ -16,6 +17,11 @@ export interface SignUpInput {
   username?: string;
 }
 
+export interface SignUpOutput {
+  user: Omit<User, 'password'>;
+  tokenExpirationDate?: number;
+}
+
 export interface LogInInput extends SignUpInput {}
 
 export interface User extends SignUpInput {
@@ -24,7 +30,7 @@ export interface User extends SignUpInput {
 
 let users: User[] = [];
 
-async function signUp(_root: any, args: SignUpInput, ctx: Context): Promise<Omit<User, 'password'>> {
+async function signUp(_root: any, args: SignUpInput, ctx: Context): Promise<SignUpOutput> {
   const existingUser = users.find(u => u.email === args.email);
 
   if (existingUser) {
@@ -42,12 +48,17 @@ async function signUp(_root: any, args: SignUpInput, ctx: Context): Promise<Omit
 
   users = [ ...users, newUser ];
 
-  setToken(newUser, ctx.res);
+  const expiresIn = setToken(newUser, ctx.res);
 
-  return newUser;
+  const tokenExpirationDate = expiresIn ? getCurrentTimeSeconds() + expiresIn : undefined;
+
+  return {
+    user: newUser,
+    tokenExpirationDate,
+  };
 }
 
-function setToken(user: User, res: Response): void {
+function setToken(user: User, res: Response): number | undefined {
 
   const payload: TokenPayload = {
     userId: user.id,
@@ -71,6 +82,8 @@ function setToken(user: User, res: Response): void {
   }
 
   res.cookie('token', token, opts);
+
+  return expiresIn;
 }
 
 export function getJWTConfigs() {
@@ -101,9 +114,14 @@ async function logIn(_root: any, args: LogInInput): Promise<Omit<User, 'password
   return existingUser;
 }
 
+async function authenticate(_root: any, _args: any, ctx: Context) {
+  return users.find(u => u.id === ctx.userId);
+}
+
 export default {
   Query: {
     logIn,
+    authenticate,
   },
   Mutation: {
     signUp,

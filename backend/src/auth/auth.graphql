@@ -1,14 +1,20 @@
 extend type Query {
   logIn(email: String!, password: String!, username: String): User
+  authenticate: User
 }
 
 extend type Mutation {
-  signUp(email: String!, password: String!, username: String): User
+  signUp(email: String!, password: String!, username: String): SignUpOutput
 }
 
 type User {
   id: String
   username: String
   email: String
+}
+
+type SignUpOutput {
+  user: User
+  tokenExpirationDate: Int
 }
 

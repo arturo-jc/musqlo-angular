@@ -24,7 +24,7 @@ export type ExerciseItem = {
 export type Mutation = {
   __typename?: 'Mutation';
   _blank?: Maybe<Scalars['Boolean']>;
-  signUp?: Maybe<User>;
+  signUp?: Maybe<SignUpOutput>;
 };
 
 
@@ -37,6 +37,7 @@ export type MutationSignUpArgs = {
 export type Query = {
   __typename?: 'Query';
   _blank?: Maybe<Scalars['Boolean']>;
+  authenticate?: Maybe<User>;
   exerciseItems: Array<Maybe<ExerciseItem>>;
   logIn?: Maybe<User>;
 };
@@ -46,6 +47,12 @@ export type QueryLogInArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
   username?: InputMaybe<Scalars['String']>;
+};
+
+export type SignUpOutput = {
+  __typename?: 'SignUpOutput';
+  tokenExpirationDate?: Maybe<Scalars['Int']>;
+  user?: Maybe<User>;
 };
 
 export type User = {
@@ -68,6 +75,11 @@ export type LogInQueryVariables = Exact<{
 
 export type LogInQuery = { __typename?: 'Query', logIn?: { __typename?: 'User', id?: string | null, username?: string | null, email?: string | null } | null };
 
+export type AuthenticateQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AuthenticateQuery = { __typename?: 'Query', authenticate?: { __typename?: 'User', id?: string | null, username?: string | null, email?: string | null } | null };
+
 export type SignUpMutationVariables = Exact<{
   email: Scalars['String'];
   password: Scalars['String'];
@@ -75,7 +87,7 @@ export type SignUpMutationVariables = Exact<{
 }>;
 
 
-export type SignUpMutation = { __typename?: 'Mutation', signUp?: { __typename?: 'User', id?: string | null, username?: string | null, email?: string | null } | null };
+export type SignUpMutation = { __typename?: 'Mutation', signUp?: { __typename?: 'SignUpOutput', tokenExpirationDate?: number | null, user?: { __typename?: 'User', id?: string | null, username?: string | null, email?: string | null } | null } | null };
 
 export const ExerciseItemsDocument = gql`
     query ExerciseItems {
@@ -116,12 +128,35 @@ export const LogInDocument = gql`
       super(apollo);
     }
   }
-export const SignUpDocument = gql`
-    mutation SignUp($email: String!, $password: String!, $username: String) {
-  signUp(email: $email, password: $password, username: $username) {
+export const AuthenticateDocument = gql`
+    query Authenticate {
+  authenticate {
     id
     username
     email
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class AuthenticateGQL extends Apollo.Query<AuthenticateQuery, AuthenticateQueryVariables> {
+    override document = AuthenticateDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const SignUpDocument = gql`
+    mutation SignUp($email: String!, $password: String!, $username: String) {
+  signUp(email: $email, password: $password, username: $username) {
+    user {
+      id
+      username
+      email
+    }
+    tokenExpirationDate
   }
 }
     `;
