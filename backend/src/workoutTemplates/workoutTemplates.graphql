@@ -1,22 +1,22 @@
 extend type User {
-  workoutTemplates: [WorkoutTemplate]
+  workoutTemplates: [WorkoutTemplate!]
 }
 
 extend type Mutation {
-  createWorkoutTemplates(workoutTemplates: [CreateWorkoutTemplateInput]!): [WorkoutTemplate]!
+  createWorkoutTemplates(workoutTemplates: [CreateWorkoutTemplateInput!]!): [WorkoutTemplate]!
 }
 
 type WorkoutTemplate {
   id: String!
   name: String!
-  exercises: [ExerciseTemplate]
+  exercises: [ExerciseTemplate!]!
   backgroundColor: String
 }
 
 type ExerciseTemplate {
   id: String!
   exerciseType: String!
-  sets: [SetTemplate]
+  sets: [SetTemplate!]!
   order: Int
 }
 
@@ -28,13 +28,13 @@ type SetTemplate {
 
 input CreateWorkoutTemplateInput {
   name: String!
-  exercises: [CreateExerciseInput]!
+  exercises: [CreateExerciseInput!]!
   backgroundColor: String
 }
 
 input CreateExerciseInput {
   exerciseType: String!
-  sets: [CreateSetTemplateInput]!
+  sets: [CreateSetTemplateInput!]!
   order: Int!
 }
 

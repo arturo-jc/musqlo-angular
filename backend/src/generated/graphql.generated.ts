@@ -23,7 +23,7 @@ export type AuthenticateOutput = {
 export type CreateExerciseInput = {
   exerciseType: Scalars['String'];
   order: Scalars['Int'];
-  sets: Array<InputMaybe<CreateSetTemplateInput>>;
+  sets: Array<CreateSetTemplateInput>;
 };
 
 export type CreateSetTemplateInput = {
@@ -34,7 +34,7 @@ export type CreateSetTemplateInput = {
 
 export type CreateWorkoutTemplateInput = {
   backgroundColor?: InputMaybe<Scalars['String']>;
-  exercises: Array<InputMaybe<CreateExerciseInput>>;
+  exercises: Array<CreateExerciseInput>;
   name: Scalars['String'];
 };
 
@@ -49,7 +49,7 @@ export type ExerciseTemplate = {
   exerciseType: Scalars['String'];
   id: Scalars['String'];
   order?: Maybe<Scalars['Int']>;
-  sets?: Maybe<Array<Maybe<SetTemplate>>>;
+  sets: Array<SetTemplate>;
 };
 
 export type Mutation = {
@@ -61,7 +61,7 @@ export type Mutation = {
 
 
 export type MutationCreateWorkoutTemplatesArgs = {
-  workoutTemplates: Array<InputMaybe<CreateWorkoutTemplateInput>>;
+  workoutTemplates: Array<CreateWorkoutTemplateInput>;
 };
 
 
@@ -105,13 +105,13 @@ export type User = {
   email: Scalars['String'];
   id: Scalars['String'];
   username?: Maybe<Scalars['String']>;
-  workoutTemplates?: Maybe<Array<Maybe<WorkoutTemplate>>>;
+  workoutTemplates?: Maybe<Array<WorkoutTemplate>>;
 };
 
 export type WorkoutTemplate = {
   __typename?: 'WorkoutTemplate';
   backgroundColor?: Maybe<Scalars['String']>;
-  exercises?: Maybe<Array<Maybe<ExerciseTemplate>>>;
+  exercises: Array<ExerciseTemplate>;
   id: Scalars['String'];
   name: Scalars['String'];
 };
@@ -238,7 +238,7 @@ export type ExerciseTemplateResolvers<ContextType = any, ParentType extends Reso
   exerciseType?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   order?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  sets?: Resolver<Maybe<Array<Maybe<ResolversTypes['SetTemplate']>>>, ParentType, ContextType>;
+  sets?: Resolver<Array<ResolversTypes['SetTemplate']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -268,13 +268,13 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   username?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  workoutTemplates?: Resolver<Maybe<Array<Maybe<ResolversTypes['WorkoutTemplate']>>>, ParentType, ContextType>;
+  workoutTemplates?: Resolver<Maybe<Array<ResolversTypes['WorkoutTemplate']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type WorkoutTemplateResolvers<ContextType = any, ParentType extends ResolversParentTypes['WorkoutTemplate'] = ResolversParentTypes['WorkoutTemplate']> = ResolversObject<{
   backgroundColor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  exercises?: Resolver<Maybe<Array<Maybe<ResolversTypes['ExerciseTemplate']>>>, ParentType, ContextType>;
+  exercises?: Resolver<Array<ResolversTypes['ExerciseTemplate']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
