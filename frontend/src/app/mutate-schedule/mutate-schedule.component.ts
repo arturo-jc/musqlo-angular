@@ -112,7 +112,7 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   setMode() {
-    const [ , urlFragment ] = this.route.snapshot.url;
+    const [ urlFragment ] = this.route.snapshot.url;
     this.mode = urlFragment.path === 'new' ? 'create' : 'edit';
   }
 

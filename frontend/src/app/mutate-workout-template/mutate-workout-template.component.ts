@@ -59,7 +59,7 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
   }
 
   setMode() {
-    const [ , urlFragment ] = this.route.snapshot.url;
+    const [ urlFragment ] = this.route.snapshot.url;
     this.mode = urlFragment.path === 'new' ? 'create' : 'edit';
   }
 
