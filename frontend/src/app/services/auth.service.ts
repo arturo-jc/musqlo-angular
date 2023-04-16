@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, map, Subject } from 'rxjs';
 import { AuthenticateGQL, LogInGQL, LogInQuery, LogOutGQL, SignUpGQL, SignUpMutation, User } from '../../generated/graphql.generated';
 import { TimeService } from './time.service';
 
@@ -17,6 +17,8 @@ export class AuthService {
   private _onLogout = new Subject<null>();
 
   user = this._user.asObservable();
+
+  isAuthenticated = this._user.pipe(map(user => Boolean(user)));
 
   onAuthSuccess = this._onAuthSuccess.asObservable();
 
