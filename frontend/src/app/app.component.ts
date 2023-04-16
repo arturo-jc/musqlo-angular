@@ -23,7 +23,6 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.auth.autoAuthenticate();
     this.primeConfig.ripple = true;
   }
 }

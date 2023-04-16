@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map, Subject } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, map, Subject } from 'rxjs';
 import { AuthenticateGQL, LogInGQL, LogInQuery, LogOutGQL, SignUpGQL, SignUpMutation, User } from '../../generated/graphql.generated';
 import { TimeService } from './time.service';
 
@@ -83,13 +83,24 @@ export class AuthService {
     this._onLogout.next(null);
   }
 
-  autoAuthenticate() {
-    if (!this._tokenExpirationDate) { return; }
+  async checkAuth(): Promise<true> {
+    if (!this._tokenExpirationDate) {
+      return true;
+    }
+
     if (this.timeService.currentTimeSeconds > this._tokenExpirationDate) {
       this._tokenExpirationDate = undefined;
-      return;
+      return true;
     }
-    this.authenticate();
+
+    try {
+      const res = await firstValueFrom(this.authenticateGQL.fetch());
+      this.loadUser(res.data?.authenticate);
+    } catch(e) {
+      this._onAuthFail.next(null);
+    }
+
+    return true;
   }
 
   calculateExpirationDate(expiresIn: number | undefined | null) {
