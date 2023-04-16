@@ -83,7 +83,10 @@ export class AuthService {
 
   autoAuthenticate() {
     if (!this._tokenExpirationDate) { return; }
-    if (this.timeService.currentTimeSeconds > this._tokenExpirationDate) { return; }
+    if (this.timeService.currentTimeSeconds > this._tokenExpirationDate) {
+      this._tokenExpirationDate = undefined;
+      return;
+    }
     this.authenticate();
   }
 
