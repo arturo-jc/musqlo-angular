@@ -77,6 +77,8 @@ export class WorkoutTemplatesService {
 
   currentKey = 2;
 
+  constructor() {}
+
   addWorkoutTemplate(newWorkoutTemplate: WorkoutTemplate) {
     newWorkoutTemplate.key = this.currentKey;
     this.currentKey++;

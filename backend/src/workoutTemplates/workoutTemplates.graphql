@@ -1,0 +1,45 @@
+extend type User {
+  workoutTemplates: [WorkoutTemplate]
+}
+
+extend type Mutation {
+  createWorkoutTemplates(workoutTemplates: [CreateWorkoutTemplateInput]!): [WorkoutTemplate]!
+}
+
+type WorkoutTemplate {
+  id: String!
+  name: String!
+  exercises: [ExerciseTemplate]
+  backgroundColor: String
+}
+
+type ExerciseTemplate {
+  id: String!
+  exerciseType: String!
+  sets: [SetTemplate]
+  order: Int
+}
+
+type SetTemplate {
+  reps: Int
+  weight: Int
+  order: Int
+}
+
+input CreateWorkoutTemplateInput {
+  name: String!
+  exercises: [CreateExerciseInput]!
+  backgroundColor: String
+}
+
+input CreateExerciseInput {
+  exerciseType: String!
+  sets: [CreateSetTemplateInput]!
+  order: Int!
+}
+
+input CreateSetTemplateInput {
+  reps: Int
+  weight: Int
+  order: Int!
+}

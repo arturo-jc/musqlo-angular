@@ -5,7 +5,6 @@ import jwt, { Algorithm, JsonWebTokenError } from 'jsonwebtoken';
 import dayjs from 'dayjs';
 import { Context, TokenPayload } from '../context';
 import { CookieOptions, Response } from 'express';
-import { getCurrentTimeSeconds } from '../utils/time';
 
 export const CUSTOM_ERROR_CODES = {
   INVALID_CREDENTIALS: 'INVALID_CREDENTIALS',
@@ -28,7 +27,7 @@ export interface User extends SignUpInput {
   id: string;
 }
 
-let users: User[] = [];
+export let users: User[] = [];
 
 async function signUp(_root: any, args: SignUpInput, ctx: Context): Promise<AuthenticateOutput> {
   const existingUser = users.find(u => u.email === args.email);

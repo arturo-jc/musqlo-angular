@@ -28,12 +28,12 @@ const exerciseItems: ExerciseItem[] = [
   },
 ];
 
-async function getExerciseItems(_root: any, args: any) {
+async function listExerciseItems(_root: any, args: any) {
   return exerciseItems;
 }
 
 export default {
   Query: {
-    exerciseItems: getExerciseItems,
+    exerciseItems: listExerciseItems,
   },
 }

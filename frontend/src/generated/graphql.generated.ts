@@ -21,16 +21,47 @@ export type AuthenticateOutput = {
   user?: Maybe<User>;
 };
 
+export type CreateExerciseInput = {
+  exerciseType: Scalars['String'];
+  order: Scalars['Int'];
+  sets: Array<InputMaybe<CreateSetTemplateInput>>;
+};
+
+export type CreateSetTemplateInput = {
+  order: Scalars['Int'];
+  reps?: InputMaybe<Scalars['Int']>;
+  weight?: InputMaybe<Scalars['Int']>;
+};
+
+export type CreateWorkoutTemplateInput = {
+  backgroundColor?: InputMaybe<Scalars['String']>;
+  exercises: Array<InputMaybe<CreateExerciseInput>>;
+  name: Scalars['String'];
+};
+
 export type ExerciseItem = {
   __typename?: 'ExerciseItem';
   category: Scalars['String'];
   exerciseType: Scalars['String'];
 };
 
+export type ExerciseTemplate = {
+  __typename?: 'ExerciseTemplate';
+  exerciseType: Scalars['String'];
+  order?: Maybe<Scalars['Int']>;
+  sets?: Maybe<Array<Maybe<SetTemplate>>>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   _blank?: Maybe<Scalars['Boolean']>;
-  signUp?: Maybe<AuthenticateOutput>;
+  createWorkoutTemplates: Array<Maybe<WorkoutTemplate>>;
+  signUp: AuthenticateOutput;
+};
+
+
+export type MutationCreateWorkoutTemplatesArgs = {
+  workoutTemplates: Array<InputMaybe<CreateWorkoutTemplateInput>>;
 };
 
 
@@ -45,8 +76,8 @@ export type Query = {
   _blank?: Maybe<Scalars['Boolean']>;
   authenticate?: Maybe<User>;
   exerciseItems: Array<Maybe<ExerciseItem>>;
-  logIn?: Maybe<AuthenticateOutput>;
-  logOut?: Maybe<Scalars['Boolean']>;
+  logIn: AuthenticateOutput;
+  logOut: Scalars['Boolean'];
 };
 
 
@@ -56,11 +87,27 @@ export type QueryLogInArgs = {
   username?: InputMaybe<Scalars['String']>;
 };
 
+export type SetTemplate = {
+  __typename?: 'SetTemplate';
+  order?: Maybe<Scalars['Int']>;
+  reps?: Maybe<Scalars['Int']>;
+  weight?: Maybe<Scalars['Int']>;
+};
+
 export type User = {
   __typename?: 'User';
-  email?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['String']>;
+  email: Scalars['String'];
+  id: Scalars['String'];
   username?: Maybe<Scalars['String']>;
+  workoutTemplates?: Maybe<Array<Maybe<WorkoutTemplate>>>;
+};
+
+export type WorkoutTemplate = {
+  __typename?: 'WorkoutTemplate';
+  backgroundColor?: Maybe<Scalars['String']>;
+  exercises?: Maybe<Array<Maybe<ExerciseTemplate>>>;
+  id: Scalars['String'];
+  name: Scalars['String'];
 };
 
 export type ExerciseItemsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -74,17 +121,17 @@ export type LogInQueryVariables = Exact<{
 }>;
 
 
-export type LogInQuery = { __typename?: 'Query', logIn?: { __typename?: 'AuthenticateOutput', expiresIn?: number | null, user?: { __typename?: 'User', id?: string | null, username?: string | null, email?: string | null } | null } | null };
+export type LogInQuery = { __typename?: 'Query', logIn: { __typename?: 'AuthenticateOutput', expiresIn?: number | null, user?: { __typename?: 'User', id: string, username?: string | null, email: string } | null } };
 
 export type AuthenticateQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AuthenticateQuery = { __typename?: 'Query', authenticate?: { __typename?: 'User', id?: string | null, username?: string | null, email?: string | null } | null };
+export type AuthenticateQuery = { __typename?: 'Query', authenticate?: { __typename?: 'User', id: string, username?: string | null, email: string } | null };
 
 export type LogOutQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type LogOutQuery = { __typename?: 'Query', logOut?: boolean | null };
+export type LogOutQuery = { __typename?: 'Query', logOut: boolean };
 
 export type SignUpMutationVariables = Exact<{
   email: Scalars['String'];
@@ -93,7 +140,7 @@ export type SignUpMutationVariables = Exact<{
 }>;
 
 
-export type SignUpMutation = { __typename?: 'Mutation', signUp?: { __typename?: 'AuthenticateOutput', expiresIn?: number | null, user?: { __typename?: 'User', id?: string | null, username?: string | null, email?: string | null } | null } | null };
+export type SignUpMutation = { __typename?: 'Mutation', signUp: { __typename?: 'AuthenticateOutput', expiresIn?: number | null, user?: { __typename?: 'User', id: string, username?: string | null, email: string } | null } };
 
 export const ExerciseItemsDocument = gql`
     query ExerciseItems {

@@ -9,12 +9,12 @@ import { checkAuth, isAuthenticated, isDeauthenticated } from './services/auth.g
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
   { path: '', canActivate: [ checkAuth ], children: [
-    { path: 'dashboard', component: DashboardComponent, canActivate: [ isAuthenticated ] },
-    { path: 'workouts', canActivateChild: [ isAuthenticated ], children: [
+    { path: 'dashboard', component: DashboardComponent },
+    { path: 'workouts', children: [
       { path: 'new', component: MutateWorkoutTemplateComponent },
       { path: 'edit', component: MutateWorkoutTemplateComponent },
     ]},
-    { path: 'schedules', canActivateChild: [ isAuthenticated ], children: [
+    { path: 'schedules', children: [
       { path: 'new', component: MutateScheduleComponent },
       { path: 'edit', component: MutateScheduleComponent },
     ] },

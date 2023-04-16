@@ -63,7 +63,7 @@ export class AuthService {
     })
   }
 
-  handleAuthSuccess(handleAuthSuccess: SignUpMutation['signUp'] | LogInQuery['logIn']) {
+  handleAuthSuccess(handleAuthSuccess: SignUpMutation['signUp'] | LogInQuery['logIn'] | undefined) {
     this.loadUser(handleAuthSuccess?.user);
     this._tokenExpirationDate = this.calculateExpirationDate(handleAuthSuccess?.expiresIn);
   }
