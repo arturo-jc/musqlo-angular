@@ -6,6 +6,7 @@ import { MutateWorkoutTemplateComponent } from './mutate-workout-template/mutate
 import { AuthComponent } from './auth/auth.component';
 
 const routes: Routes = [
+  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'workouts/new', component: MutateWorkoutTemplateComponent },
   { path: 'workouts/edit', component: MutateWorkoutTemplateComponent },
