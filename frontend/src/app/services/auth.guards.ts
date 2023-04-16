@@ -13,7 +13,7 @@ export const checkAuth: CanActivateFn = (
 
 export const isAuthenticated: CanActivateFn = (
   _route = inject(ActivatedRouteSnapshot),
-  _state = inject(RouterStateSnapshot),
+  state = inject(RouterStateSnapshot),
   authService = inject(AuthService),
   router = inject(Router)
 ) => {
@@ -23,6 +23,7 @@ export const isAuthenticated: CanActivateFn = (
       if (isAuthenticated) {
         return true;
       }
+      authService.redirectUrl = state.url;
       return router.createUrlTree([ '/login' ]);
     }),
   );

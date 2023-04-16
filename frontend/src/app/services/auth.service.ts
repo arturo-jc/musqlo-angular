@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { BehaviorSubject, firstValueFrom, map, Subject } from 'rxjs';
 import { AuthenticateGQL, LogInGQL, LogInQuery, LogOutGQL, SignUpGQL, SignUpMutation, User } from '../../generated/graphql.generated';
 import { TimeService } from './time.service';
@@ -26,6 +27,8 @@ export class AuthService {
 
   onLogout = this._onAuthFail.asObservable();
 
+  redirectUrl: string | undefined;
+
   lsKeys = {
     tokenExpirationDate: 'tokenExpirationDate',
   }
@@ -36,6 +39,7 @@ export class AuthService {
     private signUpGQL: SignUpGQL,
     private logOutGQL: LogOutGQL,
     private timeService: TimeService,
+    private router: Router,
   ) { }
 
   signUp(email: string, password: string, username?: string | null) {
@@ -48,13 +52,6 @@ export class AuthService {
   logIn(email: string, password: string) {
     this.logInGQL.fetch({ email, password }).subscribe({
       next: res => this.handleAuthSuccess(res.data?.logIn),
-      error: () => this._onAuthFail.next(null),
-    })
-  }
-
-  authenticate() {
-    this.authenticateGQL.fetch().subscribe({
-      next: res => this.loadUser(res.data?.authenticate),
       error: () => this._onAuthFail.next(null),
     })
   }
@@ -81,6 +78,7 @@ export class AuthService {
     this._user.next(null);
     this._tokenExpirationDate = undefined;
     this._onLogout.next(null);
+    this.router.navigate([ '/login' ]);
   }
 
   async checkAuth(): Promise<true> {

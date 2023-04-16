@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
 type AuthType = 'login' | 'signup';
@@ -28,6 +28,7 @@ export class AuthComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private route: ActivatedRoute,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -36,6 +37,12 @@ export class AuthComponent implements OnInit {
     if (this.authType === 'signup') {
       this.authForm.addControl('username', new FormControl(''));
     };
+
+    this.authService.onAuthSuccess.subscribe(() => {
+      const redirectUrl = this.authService.redirectUrl || '/dashboard';
+      this.authService.redirectUrl = undefined;
+      this.router.navigate([ redirectUrl ]);
+    });
   }
 
   setAuthType() {
