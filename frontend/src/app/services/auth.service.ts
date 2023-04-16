@@ -57,7 +57,7 @@ export class AuthService {
   }
 
   logOut() {
-    this.logOutGQL.mutate().subscribe({
+    this.logOutGQL.fetch().subscribe({
       next: () => this.handleLogout(),
       error: () => this._onAuthFail.next(null),
     })

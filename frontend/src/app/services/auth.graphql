@@ -17,6 +17,10 @@ query Authenticate {
     }
   }
 
+query LogOut {
+  logOut
+}
+
 mutation SignUp($email: String!, $password: String!, $username: String) {
   signUp(email: $email, password: $password, username: $username) {
     user {
@@ -26,8 +30,4 @@ mutation SignUp($email: String!, $password: String!, $username: String) {
       }
     expiresIn
   }
-}
-
-mutation LogOut {
-  logOut
 }

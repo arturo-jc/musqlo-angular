@@ -130,9 +130,9 @@ export default {
   Query: {
     logIn,
     authenticate,
+    logOut,
   },
   Mutation: {
     signUp,
-    logOut,
   },
 }
