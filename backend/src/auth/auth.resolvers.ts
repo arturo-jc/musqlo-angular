@@ -5,31 +5,17 @@ import jwt, { Algorithm, JsonWebTokenError } from 'jsonwebtoken';
 import dayjs from 'dayjs';
 import { Context, TokenPayload } from '../context';
 import { CookieOptions, Response } from 'express';
+import { User, QueryResolvers, MutationResolvers, Resolvers } from '../generated/graphql.generated';
 
 export const CUSTOM_ERROR_CODES = {
   INVALID_CREDENTIALS: 'INVALID_CREDENTIALS',
 };
 
-export interface SignUpInput {
-  email: string;
-  password: string;
-  username?: string;
-}
+export type UserWithPassword = User & { password: string };
 
-export interface AuthenticateOutput {
-  user: Omit<User, 'password'>;
-  expiresIn?: number;
-}
+export let users: UserWithPassword[] = [];
 
-export interface LogInInput extends SignUpInput {}
-
-export interface User extends SignUpInput {
-  id: string;
-}
-
-export let users: User[] = [];
-
-async function signUp(_root: any, args: SignUpInput, ctx: Context): Promise<AuthenticateOutput> {
+const signUp: MutationResolvers<Context>['signUp'] = async (_parent, args, ctx) => {
   const existingUser = users.find(u => u.email === args.email);
 
   if (existingUser) {
@@ -39,7 +25,7 @@ async function signUp(_root: any, args: SignUpInput, ctx: Context): Promise<Auth
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(args.password, salt);
 
-  const newUser: User = {
+  const newUser: UserWithPassword = {
     ...args,
     password: hash,
     id: uuid(),
@@ -55,7 +41,7 @@ async function signUp(_root: any, args: SignUpInput, ctx: Context): Promise<Auth
   };
 }
 
-async function logIn(_root: any, args: LogInInput, ctx: Context): Promise<AuthenticateOutput> {
+const logIn: QueryResolvers<Context>['logIn'] = async (_parent, args, ctx) => {
   const existingUser = users.find(u => u.email === args.email);
 
   if (!existingUser) {
@@ -76,16 +62,26 @@ async function logIn(_root: any, args: LogInInput, ctx: Context): Promise<Authen
   };
 }
 
-async function authenticate(_root: any, _args: any, ctx: Context) {
-  return users.find(u => u.id === ctx.userId);
+const authenticate: QueryResolvers<Context>['authenticate'] = async (_parent, _args, ctx) => {
+  const user = users.find(u => u.id === ctx.userId);
+
+  if (!user) { return null; }
+
+  const userWithoutPassword: User = {
+    id: user.id,
+    email: user.email,
+    username: user?.username,
+  };
+
+  return userWithoutPassword;
 }
 
-async function logOut(_root: any, _args: any, ctx: Context) {
+const logOut: QueryResolvers<Context>['logOut'] = async (_parent, _args, ctx) => {
   ctx.res.clearCookie('token');
   return true;
 }
 
-function setToken(user: User, res: Response): number | undefined {
+function setToken(user: UserWithPassword, res: Response): number | undefined {
 
   const payload: TokenPayload = {
     userId: user.id,
@@ -125,7 +121,7 @@ export function getJWTConfigs() {
   return { secret, algorithm, expiresIn: Number(lifetime) };
 }
 
-export default {
+const resolvers: Resolvers<Context> = {
   Query: {
     logIn,
     authenticate,
@@ -135,3 +131,5 @@ export default {
     signUp,
   },
 }
+
+export default resolvers;

@@ -1,69 +1,32 @@
-import { User } from '../auth/auth.resolvers';
-import { Context } from '../context';
-import { v1 as uuid } from 'uuid';
-
-export interface WorkoutTemplate {
-  name: string;
-  exercises: ExerciseTemplate[];
-  backgroundColor: string;
-}
-
-export interface ExerciseTemplate {
-  exerciseType: string;
-  sets: SetTemplate[];
-  order: number;
-}
-
-export interface SetTemplate {
-  reps?: number;
-  weight?: number;
-  order: number;
-}
-
-export interface SetTemplate {
-  reps?: number;
-  weight?: number;
-  order: number;
-}
-
-export interface CreateWorkoutTemplateInput {
-  name: string;
-  exercises: CreateExerciseInput[];
-  backgroundColor?: string;
-}
-
-export interface CreateExerciseInput {
-  exerciseType: string;
-  sets: CreateSetTemplateInput[];
-  order: number;
-}
-
-export interface CreateSetTemplateInput {
-  reps?: number;
-  weight?: number;
-  order: number;
-}
+import { Context } from "../context";
+import { MutationResolvers, Resolvers, UserResolvers, WorkoutTemplate } from "../generated/graphql.generated";
+// import { v1 as uuid } from 'uuid';
 
 const workoutTemplates: { [ userId: string ]: WorkoutTemplate[]} = {};
 
-async function listWorkoutTemplates(root: User): Promise<WorkoutTemplate[]>{
-  console.log(root);
-  return workoutTemplates[root.id] || [];
+const getWorkoutTemplates: UserResolvers<Context>['workoutTemplates'] = (parent) => {
+  return workoutTemplates[parent.id] || [];
 }
 
-async function createWorkoutTemplates(_root: undefined, args: { workoutTemplates: CreateSetTemplateInput[]}, ctx: Context): Promise<WorkoutTemplate[]> {
+const createWorkoutTemplates: MutationResolvers<Context>['createWorkoutTemplates'] = (_parent, _args, ctx) => {
   if (!ctx.userId) {
     throw new Error('User not authenticated');
   }
 
-  return workoutTemplates[ctx.userId] || [];
+  const newWorkoutTempltates: WorkoutTemplate[] = [];
+
+  workoutTemplates[ctx.userId] = newWorkoutTempltates;
+
+  return newWorkoutTempltates;
 }
 
-export default {
+const resolvers: Resolvers<Context> = {
   User: {
-    workoutTemplates: listWorkoutTemplates,
+    workoutTemplates: getWorkoutTemplates,
   },
   Mutation: {
     createWorkoutTemplates,
-  }
+  },
 }
+
+export default resolvers;

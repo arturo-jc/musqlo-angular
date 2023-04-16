@@ -1,9 +1,5 @@
-export type Category = 'Cardio' | 'Back' | 'Legs';
-
-export interface ExerciseItem {
-  exerciseType: string;
-  category: Category;
-}
+import { QueryResolvers, ExerciseItem, Resolvers } from '../generated/graphql.generated';
+import { Context } from '../context';
 
 const exerciseItems: ExerciseItem[] = [
   {
@@ -28,12 +24,14 @@ const exerciseItems: ExerciseItem[] = [
   },
 ];
 
-async function listExerciseItems(_root: any, args: any) {
+const listExerciseItems: QueryResolvers['exerciseItems'] = () => {
   return exerciseItems;
 }
 
-export default {
+const resolvers: Resolvers<Context> = {
   Query: {
-    exerciseItems: listExerciseItems,
-  },
+    exerciseItems: listExerciseItems
+  }
 }
+
+export default resolvers;
