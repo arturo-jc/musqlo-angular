@@ -9,7 +9,7 @@ const getWorkoutTemplates: UserResolvers<Context>['workoutTemplates'] = (parent)
 }
 
 const createWorkoutTemplates: MutationResolvers<Context>['createWorkoutTemplates'] = (_parent, args, ctx) => {
-    
+
   if (!ctx.userId) {
     throw new Error('User not authenticated');
   }

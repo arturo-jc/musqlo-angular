@@ -48,7 +48,7 @@ export type ExerciseTemplate = {
   __typename?: 'ExerciseTemplate';
   exerciseType: Scalars['String'];
   id: Scalars['String'];
-  order?: Maybe<Scalars['Int']>;
+  order: Scalars['Int'];
   sets: Array<SetTemplate>;
 };
 
@@ -95,7 +95,7 @@ export type QueryUserArgs = {
 
 export type SetTemplate = {
   __typename?: 'SetTemplate';
-  order?: Maybe<Scalars['Int']>;
+  order: Scalars['Int'];
   reps?: Maybe<Scalars['Int']>;
   weight?: Maybe<Scalars['Int']>;
 };
@@ -237,7 +237,7 @@ export type ExerciseItemResolvers<ContextType = any, ParentType extends Resolver
 export type ExerciseTemplateResolvers<ContextType = any, ParentType extends ResolversParentTypes['ExerciseTemplate'] = ResolversParentTypes['ExerciseTemplate']> = ResolversObject<{
   exerciseType?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  order?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  order?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   sets?: Resolver<Array<ResolversTypes['SetTemplate']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -258,7 +258,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 }>;
 
 export type SetTemplateResolvers<ContextType = any, ParentType extends ResolversParentTypes['SetTemplate'] = ResolversParentTypes['SetTemplate']> = ResolversObject<{
-  order?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  order?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   reps?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   weight?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

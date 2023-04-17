@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ExerciseTemplate } from '../mutate-workout-template.component';
+import { CollapsableExerciseTemplate } from '../mutate-workout-template.component';
 
 @Component({
   selector: 'app-exercise-template',
@@ -20,14 +20,14 @@ export class ExerciseTemplateComponent {
 
   @Input() hideSets = false;
 
-  @Input() template!: ExerciseTemplate;
+  @Input() template!: CollapsableExerciseTemplate;
 
-  @Output() onAddSet = new EventEmitter<ExerciseTemplate>();
+  @Output() onAddSet = new EventEmitter<CollapsableExerciseTemplate>();
 
   @Output() onDeleteTemplate = new EventEmitter<number>();
 
-  @Output() onReorderSets = new EventEmitter<ExerciseTemplate>();
+  @Output() onReorderSets = new EventEmitter<CollapsableExerciseTemplate>();
 
-  @Output() onDeleteSet = new EventEmitter<{ template: ExerciseTemplate, index: number }>();
+  @Output() onDeleteSet = new EventEmitter<{ template: CollapsableExerciseTemplate, index: number }>();
 
 }

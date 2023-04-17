@@ -17,13 +17,13 @@ type ExerciseTemplate {
   id: String!
   exerciseType: String!
   sets: [SetTemplate!]!
-  order: Int
+  order: Int!
 }
 
 type SetTemplate {
   reps: Int
   weight: Int
-  order: Int
+  order: Int!
 }
 
 input CreateWorkoutTemplateInput {

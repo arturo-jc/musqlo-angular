@@ -1,6 +1,7 @@
 import { TitleCasePipe } from '@angular/common';
-import { Component, ContentChild, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Listbox } from 'primeng/listbox';
+import { DEFAULT_BG_COLOR } from '../../mutate-workout-template/mutate-workout-template.component';
 
 export const COLOR_NAMES = [
   'blue',
@@ -40,7 +41,7 @@ export const LIGHT_DARK_THRESHOLD = 200;
 })
 export class ColorPickerComponent implements OnInit {
 
-  @Input() color = 'var(--primary-color)';
+  @Input() color = DEFAULT_BG_COLOR;
 
   @Output() colorChange = new EventEmitter<string>();
 

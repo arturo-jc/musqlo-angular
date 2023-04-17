@@ -2,22 +2,14 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { cloneDeep } from 'lodash-es';
-import { ExerciseItem } from '../../generated/graphql.generated';
-import { WorkoutTemplate, WorkoutTemplatesService } from '../workout-templates/workout-templates.service';
+import { ExerciseItem, ExerciseTemplate, SetTemplate, WorkoutTemplate } from '../../generated/graphql.generated';
+import { OptionalId } from '../shared/utils';
+import { WorkoutTemplatesService } from '../workout-templates/workout-templates.service';
 import { ExerciseItemsComponent } from './exercise-items/exercise-items.component';
 
-export interface SetTemplate {
-  reps?: number;
-  weight?: number;
-  order: number;
-}
+export const DEFAULT_BG_COLOR = 'var(--primary-color)';
 
-export interface ExerciseTemplate {
-  exerciseType: string;
-  sets: SetTemplate[];
-  order: number;
-  collapsed?: boolean;
-}
+export type CollapsableExerciseTemplate = OptionalId<ExerciseTemplate> & { collapsed: boolean };
 
 @Component({
   selector: 'app-mutate-workout-template',
@@ -38,7 +30,7 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
 
   reorderMode = false;
 
-  exerciseTemplates: ExerciseTemplate[] = [];
+  exerciseTemplates: CollapsableExerciseTemplate[] = [];
 
   constructor(
     private workoutTemplates: WorkoutTemplatesService,
@@ -69,11 +61,20 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
     if (!workoutTemplateToEdit) { return; }
 
     this.title = workoutTemplateToEdit.name;
-    this.color = workoutTemplateToEdit.backgroundColor;
-    this.exerciseTemplates = workoutTemplateToEdit.exercises;
+    this.color = workoutTemplateToEdit.backgroundColor || DEFAULT_BG_COLOR;
+
+    const exerciseTemplates: CollapsableExerciseTemplate[] = workoutTemplateToEdit.exercises.map(e => ({ ...e, collapsed: false }));
+
+    this.exerciseTemplates = exerciseTemplates;
   }
 
-  drop(event: CdkDragDrop<ExerciseTemplate[], ExerciseItem[] | ExerciseTemplate[], ExerciseItem | ExerciseTemplate>) {
+  drop(
+    event: CdkDragDrop< |
+      CollapsableExerciseTemplate[], ExerciseItem[] |
+      CollapsableExerciseTemplate[], ExerciseItem |
+      CollapsableExerciseTemplate
+    >
+  ) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       this.reorderTemplates();
@@ -94,7 +95,7 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
       reps: 1,
     };
 
-    const newTemplate: ExerciseTemplate = {
+    const newTemplate: CollapsableExerciseTemplate = {
       exerciseType: exercise.exerciseType,
       sets: [ firstSet ],
       order: index + 1,
@@ -121,7 +122,7 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
     this.reorderTemplates();
   }
 
-  addSet(template: ExerciseTemplate) {
+  addSet(template: CollapsableExerciseTemplate) {
     const delay = template.collapsed ? 400 : 0;
 
     template.collapsed = false;
@@ -143,13 +144,13 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
     }, delay);
   }
 
-  reorderSets(template: ExerciseTemplate) {
+  reorderSets(template: CollapsableExerciseTemplate) {
     template.sets.forEach((set, index) => {
       set.order = index + 1;
     });
   }
 
-  deleteSet(input: { template: ExerciseTemplate, index: number }) {
+  deleteSet(input: { template: CollapsableExerciseTemplate, index: number }) {
     const { template, index } = input;
 
     const updatedTemplates = [ ...template.sets ];
@@ -170,7 +171,7 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
 
   saveWorkout() {
 
-    const workoutTemplateToSave: WorkoutTemplate = {
+    const workoutTemplateToSave: OptionalId<WorkoutTemplate> = {
       name: this.title,
       exercises: this.exerciseTemplates,
       backgroundColor: this.color,

@@ -1,0 +1,25 @@
+query UserWorkoutTemplates($userId: String!) {
+  user(userId: $userId) {
+    workoutTemplates {
+      id
+      name
+      backgroundColor
+      exercises {
+        id
+        exerciseType
+        order
+        sets {
+          reps
+          weight
+          order
+        }
+      }
+    }
+  }
+}
+
+mutation CreateWorkoutTemplates($workoutTemplates: [CreateWorkoutTemplateInput!]!) {
+  createWorkoutTemplates(workoutTemplates: $workoutTemplates) {
+    id
+  }
+}

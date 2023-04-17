@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { EventContentArg, EventInput } from '@fullcalendar/core';
 import { EventImpl } from '@fullcalendar/core/internal';
-import * as dayjs from 'dayjs';
-import { ExerciseTemplate } from '../mutate-workout-template/mutate-workout-template.component';
-import { WorkoutTemplate, WorkoutTemplatesService } from '../workout-templates/workout-templates.service';
+import dayjs from 'dayjs';
+import { DEFAULT_BG_COLOR } from '../mutate-workout-template/mutate-workout-template.component';
+import { WorkoutTemplatesService } from '../workout-templates/workout-templates.service';
 import { LIGHT_DARK_THRESHOLD } from '../shared/color-picker/color-picker.component';
+import { Frontend, OptionalId } from '../shared/utils';
+import { WorkoutTemplate, ExerciseTemplate } from '../../generated/graphql.generated';
 
 @Injectable({
   providedIn: 'root'
@@ -77,7 +79,7 @@ export class FullCalendarService {
     return bodyEl;
   }
 
-  createExerciseEl(exercise: ExerciseTemplate): HTMLDivElement {
+  createExerciseEl(exercise: OptionalId<ExerciseTemplate>): HTMLDivElement {
     const exerciseEl = document.createElement('div');
     this.applyStyle(this.exerciseStyle, exerciseEl);
 
@@ -99,30 +101,33 @@ export class FullCalendarService {
     }
   }
 
-  getEventInput(workoutTemplate: WorkoutTemplate): EventInput {
+  getEventInput(workoutTemplate: Frontend<WorkoutTemplate>): EventInput {
+
+    const backgroundColor = workoutTemplate?.backgroundColor || DEFAULT_BG_COLOR;
+
     return {
       title: workoutTemplate.name,
       extendedProps: {
         key: workoutTemplate.key,
       },
-      backgroundColor: workoutTemplate.backgroundColor,
-      borderColor: workoutTemplate.backgroundColor,
-      textColor: this.getTextColor(workoutTemplate),
+      backgroundColor,
+      borderColor: backgroundColor,
+      textColor: this.getTextColor(backgroundColor),
     }
   }
 
-  getTextColor(workoutTemplate: WorkoutTemplate): string {
+  getTextColor(backgroundColor: string): string {
 
     const lightTextColor = 'var(--gray-50)';
     const darkTextColor = 'var(--gray-800)';
 
     const consecutiveNumbersRegex = new RegExp(/[.*!\d](\d+)[.*!\d]/g);
 
-    const regexMatches = workoutTemplate.backgroundColor.match(consecutiveNumbersRegex);
+    const regexMatches = backgroundColor.match(consecutiveNumbersRegex);
 
     const bgColorIntensity = regexMatches?.length ? Number(regexMatches[0]) : undefined;
 
-    const isBgColorDark = (bgColorIntensity && bgColorIntensity > LIGHT_DARK_THRESHOLD) || workoutTemplate.backgroundColor.includes('--primary-color');
+    const isBgColorDark = (bgColorIntensity && bgColorIntensity > LIGHT_DARK_THRESHOLD) || backgroundColor.includes('--primary-color');
 
     const textColor = isBgColorDark ? lightTextColor : darkTextColor;
 

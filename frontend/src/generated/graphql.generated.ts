@@ -49,7 +49,7 @@ export type ExerciseTemplate = {
   __typename?: 'ExerciseTemplate';
   exerciseType: Scalars['String'];
   id: Scalars['String'];
-  order?: Maybe<Scalars['Int']>;
+  order: Scalars['Int'];
   sets: Array<SetTemplate>;
 };
 
@@ -96,7 +96,7 @@ export type QueryUserArgs = {
 
 export type SetTemplate = {
   __typename?: 'SetTemplate';
-  order?: Maybe<Scalars['Int']>;
+  order: Scalars['Int'];
   reps?: Maybe<Scalars['Int']>;
   weight?: Maybe<Scalars['Int']>;
 };
@@ -148,6 +148,20 @@ export type SignUpMutationVariables = Exact<{
 
 
 export type SignUpMutation = { __typename?: 'Mutation', signUp: { __typename?: 'AuthenticateOutput', expiresIn?: number | null, user?: { __typename?: 'User', id: string, username?: string | null, email: string } | null } };
+
+export type UserWorkoutTemplatesQueryVariables = Exact<{
+  userId: Scalars['String'];
+}>;
+
+
+export type UserWorkoutTemplatesQuery = { __typename?: 'Query', user?: { __typename?: 'User', workoutTemplates?: Array<{ __typename?: 'WorkoutTemplate', id: string, name: string, backgroundColor?: string | null, exercises: Array<{ __typename?: 'ExerciseTemplate', id: string, exerciseType: string, order: number, sets: Array<{ __typename?: 'SetTemplate', reps?: number | null, weight?: number | null, order: number }> }> }> | null } | null };
+
+export type CreateWorkoutTemplatesMutationVariables = Exact<{
+  workoutTemplates: Array<CreateWorkoutTemplateInput> | CreateWorkoutTemplateInput;
+}>;
+
+
+export type CreateWorkoutTemplatesMutation = { __typename?: 'Mutation', createWorkoutTemplates: Array<{ __typename?: 'WorkoutTemplate', id: string } | null> };
 
 export const ExerciseItemsDocument = gql`
     query ExerciseItems {
@@ -245,6 +259,56 @@ export const SignUpDocument = gql`
   })
   export class SignUpGQL extends Apollo.Mutation<SignUpMutation, SignUpMutationVariables> {
     override document = SignUpDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const UserWorkoutTemplatesDocument = gql`
+    query UserWorkoutTemplates($userId: String!) {
+  user(userId: $userId) {
+    workoutTemplates {
+      id
+      name
+      backgroundColor
+      exercises {
+        id
+        exerciseType
+        order
+        sets {
+          reps
+          weight
+          order
+        }
+      }
+    }
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class UserWorkoutTemplatesGQL extends Apollo.Query<UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables> {
+    override document = UserWorkoutTemplatesDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const CreateWorkoutTemplatesDocument = gql`
+    mutation CreateWorkoutTemplates($workoutTemplates: [CreateWorkoutTemplateInput!]!) {
+  createWorkoutTemplates(workoutTemplates: $workoutTemplates) {
+    id
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class CreateWorkoutTemplatesGQL extends Apollo.Mutation<CreateWorkoutTemplatesMutation, CreateWorkoutTemplatesMutationVariables> {
+    override document = CreateWorkoutTemplatesDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

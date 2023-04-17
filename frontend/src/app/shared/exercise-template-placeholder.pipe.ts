@@ -1,13 +1,13 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { ExerciseItem } from '../../generated/graphql.generated';
-import { ExerciseTemplate } from '../mutate-workout-template/mutate-workout-template.component';
+import { CollapsableExerciseTemplate } from '../mutate-workout-template/mutate-workout-template.component';
 
 @Pipe({
   name: 'exerciseTemplatePlaceholder'
 })
 export class ExerciseTemplatePlaceholderPipe implements PipeTransform {
 
-  transform(exerciseItem: ExerciseItem): ExerciseTemplate {
+  transform(exerciseItem: ExerciseItem): CollapsableExerciseTemplate {
     return {
       exerciseType: exerciseItem.exerciseType,
       collapsed: false,

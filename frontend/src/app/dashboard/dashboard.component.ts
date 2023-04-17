@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { WorkoutTemplate } from '../../generated/graphql.generated';
 import { Schedule, SchedulesService } from '../services/schedules.service';
-import { WorkoutTemplate, WorkoutTemplatesService } from '../workout-templates/workout-templates.service';
+import { Frontend } from '../shared/utils';
+import { WorkoutTemplatesService } from '../workout-templates/workout-templates.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,7 +17,7 @@ export class DashboardComponent {
     private router: Router,
   ) {}
 
-  editWorkout(workoutTemplate: WorkoutTemplate) {
+  editWorkout(workoutTemplate: Frontend<WorkoutTemplate>) {
     this.workoutTemplatesService.editWorkoutTemplateKey = workoutTemplate.key;
     this.router.navigate([ 'workouts', 'edit' ]);
   }

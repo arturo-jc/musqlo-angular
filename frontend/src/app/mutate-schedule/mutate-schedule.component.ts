@@ -7,7 +7,7 @@ import interaction from '@fullcalendar/interaction';
 import { FullCalendarService } from '../full-calendar/full-calendar.service';
 import { WorkoutTemplatesComponent } from '../workout-templates/workout-templates.component';
 import { Schedule, SchedulesService, ScheduleWorkout } from '../services/schedules.service';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { EventImpl } from '@fullcalendar/core/internal';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WorkoutTemplatesService } from '../workout-templates/workout-templates.service';

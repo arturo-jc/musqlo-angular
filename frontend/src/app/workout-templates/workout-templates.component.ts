@@ -2,8 +2,10 @@ import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import { Calendar } from '@fullcalendar/core';
 import { Draggable } from '@fullcalendar/interaction';
-import { WorkoutTemplate, WorkoutTemplatesService } from '../workout-templates/workout-templates.service';
+import { WorkoutTemplatesService } from '../workout-templates/workout-templates.service';
 import { FixedFilterComponent } from '../shared/fixed-filter/fixed-filter.component';
+import { Frontend } from '../shared/utils';
+import { WorkoutTemplate } from '../../generated/graphql.generated';
 
 @Component({
   selector: 'app-workout-templates',
@@ -16,11 +18,11 @@ export class WorkoutTemplatesComponent implements AfterViewInit {
 
   @ViewChild('workoutsRef') workouts?: ElementRef;
 
-  @ViewChild(FixedFilterComponent) fixedFilter?: FixedFilterComponent<WorkoutTemplate>;
+  @ViewChild(FixedFilterComponent) fixedFilter?: FixedFilterComponent<Frontend<WorkoutTemplate>>;
 
   calendarApi?: Calendar;
 
-  filteredWorkoutTemplates: WorkoutTemplate[] = [];
+  filteredWorkoutTemplates: Frontend<WorkoutTemplate>[] = [];
 
   draggableSelector = 'fc-workout';
 
@@ -41,7 +43,7 @@ export class WorkoutTemplatesComponent implements AfterViewInit {
     })
   }
 
-  setFilteredWorkoutTemplates(updatedWorkoutTemplates: WorkoutTemplate[]) {
+  setFilteredWorkoutTemplates(updatedWorkoutTemplates: Frontend<WorkoutTemplate>[]) {
     this.filteredWorkoutTemplates = updatedWorkoutTemplates;
   }
 
