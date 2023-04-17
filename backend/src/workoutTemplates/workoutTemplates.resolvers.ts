@@ -23,6 +23,7 @@ const createWorkoutTemplates: MutationResolvers<Context>['createWorkoutTemplates
         id: uuid(),
         exerciseType: e.exerciseType,
         sets: e.sets,
+        order: e.order,
       }))
 
     const newTemplate: WorkoutTemplate = {

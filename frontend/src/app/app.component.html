@@ -12,6 +12,13 @@
           icon="pi pi-user"
           (click)="menu.toggle($event)"
           ></p-button>
+        <p-button
+          *ngIf="!(auth.user | async)"
+          styleClass="p-button-text my-2"
+          label="Log In"
+          icon="pi pi-sign-in"
+          [routerLink]="[ '/login' ]"
+          ></p-button>
       </div>
     </div>
     <div class="main-container">

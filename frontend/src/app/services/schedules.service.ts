@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 export interface ScheduleWorkout {
-  workoutTemplateKey?: number;
+  workoutTemplateKey?: string;
   dow: number;
   allDay: boolean;
   start?: string;

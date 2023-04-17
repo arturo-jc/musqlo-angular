@@ -180,7 +180,7 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
     if (this.mode === 'create') {
       this.workoutTemplates.addWorkoutTemplate(workoutTemplateToSave);
     } else if (this.mode === 'edit') {
-      this.workoutTemplates.updateWorkoutTemplate(workoutTemplateToSave);
+      this.workoutTemplates.editWorkoutTemplate(workoutTemplateToSave);
     }
 
     this.router.navigate([ 'dashboard' ]);

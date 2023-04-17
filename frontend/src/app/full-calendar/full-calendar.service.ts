@@ -64,7 +64,7 @@ export class FullCalendarService {
     return titleEl;
   }
 
-  createBody(workoutTemplateKey: number): HTMLDivElement {
+  createBody(workoutTemplateKey: string): HTMLDivElement {
 
     const bodyEl = document.createElement('div');
     this.applyStyle(this.bodyStyle, bodyEl);

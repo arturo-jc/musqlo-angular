@@ -11,5 +11,5 @@ export type OptionalId<T extends { id: string }> = PartialBy<{
         T[P] extends { id: string } ? OptionalId<T[P]> : T[P]
 }, 'id'>;
 
-export type WithKey<T> = T & { key: number; };
+export type WithKey<T> = T & { key: string; };
 export type Frontend<T extends { id: string }> = WithKey<OptionalId<T>>;

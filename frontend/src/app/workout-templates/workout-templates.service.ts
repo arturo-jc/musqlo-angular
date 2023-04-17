@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
-import { CreateWorkoutTemplatesGQL, UserWorkoutTemplatesGQL } from '../../generated/graphql.generated';
+import { QueryRef } from 'apollo-angular';
+import { switchMap } from 'rxjs';
+import { SubSink } from 'subsink';
+import { CreateWorkoutTemplatesGQL, UserWorkoutTemplatesGQL, UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables } from '../../generated/graphql.generated';
 import { WorkoutTemplate } from '../../generated/graphql.generated';
 import { Frontend, OptionalId } from '../shared/utils';
 
@@ -10,20 +13,24 @@ export class WorkoutTemplatesService {
 
   workoutTemplates: Frontend<WorkoutTemplate>[] = []
 
-  editWorkoutTemplateKey?: number;
+  editWorkoutTemplateKey?: string;
 
   currentKey = 0;
 
+  subs = new SubSink();
+
+  userWorkoutTemplatesQuery!: QueryRef<UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables>;
+
   constructor(
-    private userWorkoutTemplates: UserWorkoutTemplatesGQL,
-    private createWorkoutTemplates: CreateWorkoutTemplatesGQL,
+    private userWorkoutTemplatesGQL: UserWorkoutTemplatesGQL,
+    private createWorkoutTemplatesGQL: CreateWorkoutTemplatesGQL,
   ) {}
 
   addWorkoutTemplate(input: OptionalId<WorkoutTemplate>) {
 
     const newWorkoutTemplate: Frontend<WorkoutTemplate> = {
       ...input,
-      key: this.currentKey,
+      key: this.currentKey.toString(),
     }
 
     this.currentKey++;
@@ -33,7 +40,7 @@ export class WorkoutTemplatesService {
     this.workoutTemplates = updatedWorkoutTemplates;
   }
 
-  updateWorkoutTemplate(input: OptionalId<WorkoutTemplate>) {
+  editWorkoutTemplate(input: OptionalId<WorkoutTemplate>) {
     if (this.editWorkoutTemplateKey === undefined) { return; }
 
     const updatedWorkoutTemplate: Frontend<WorkoutTemplate> = {
@@ -56,8 +63,40 @@ export class WorkoutTemplatesService {
     return this.workoutTemplates.findIndex(t => t.key === this.editWorkoutTemplateKey);
   }
 
-  createUnsavedWorkoutTemplates() {
-    // const unsavedWorkoutTemplates = this.workoutTemplates.filter(t => !t.id);
+  createUnsavedWorkoutTemplates(userId: string) {
+    const unsavedWorkoutTemplates: OptionalId<WorkoutTemplate>[] = [];
+
+    for (const template of this.workoutTemplates) {
+      if (template.id) { continue; }
+
+      const templateExercises: OptionalId<WorkoutTemplate>['exercises'] = template.exercises
+        .map(e => ({
+          exerciseType: e.exerciseType,
+          order: e.order,
+          sets: e.sets,
+        }));
+
+      const unsavedTemplate: OptionalId<WorkoutTemplate> = {
+        name: template.name,
+        exercises: templateExercises,
+        backgroundColor: template.backgroundColor,
+      };
+
+      unsavedWorkoutTemplates.push(unsavedTemplate)
+    }
+
+    this.userWorkoutTemplatesQuery = this.userWorkoutTemplatesGQL.watch({ userId });
+
+    this.subs.sink = this.createWorkoutTemplatesGQL.mutate({ workoutTemplates: unsavedWorkoutTemplates })
+      .pipe(switchMap(() => this.userWorkoutTemplatesQuery.valueChanges))
+      .subscribe((res) => {
+        if (res.loading) { return; }
+        const userWorkoutTemplates = res.data.user?.workoutTemplates || [];
+        this.workoutTemplates = userWorkoutTemplates.map(t => ({
+          ...t,
+          key: t.id,
+        }));
+      })
   }
 
 }
