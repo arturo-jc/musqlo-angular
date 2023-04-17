@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { WorkoutTemplate } from '../services/workout-templates.service';
+import { WorkoutTemplate } from '../workout-templates/workout-templates.service';
 import { FullCalendarService } from './full-calendar.service';
 
 @Pipe({

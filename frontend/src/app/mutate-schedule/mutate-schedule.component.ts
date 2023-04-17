@@ -10,7 +10,7 @@ import { Schedule, SchedulesService, ScheduleWorkout } from '../services/schedul
 import * as dayjs from 'dayjs';
 import { EventImpl } from '@fullcalendar/core/internal';
 import { ActivatedRoute, Router } from '@angular/router';
-import { WorkoutTemplatesService } from '../services/workout-templates.service';
+import { WorkoutTemplatesService } from '../workout-templates/workout-templates.service';
 
 export type CalendarView = 'weekly' | 'biweekly';
 

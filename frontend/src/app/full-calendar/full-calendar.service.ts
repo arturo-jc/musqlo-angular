@@ -3,7 +3,7 @@ import { EventContentArg, EventInput } from '@fullcalendar/core';
 import { EventImpl } from '@fullcalendar/core/internal';
 import * as dayjs from 'dayjs';
 import { ExerciseTemplate } from '../mutate-workout-template/mutate-workout-template.component';
-import { WorkoutTemplate, WorkoutTemplatesService } from '../services/workout-templates.service';
+import { WorkoutTemplate, WorkoutTemplatesService } from '../workout-templates/workout-templates.service';
 import { LIGHT_DARK_THRESHOLD } from '../shared/color-picker/color-picker.component';
 
 @Injectable({

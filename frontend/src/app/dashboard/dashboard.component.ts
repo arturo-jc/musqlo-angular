@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Schedule, SchedulesService } from '../services/schedules.service';
-import { WorkoutTemplate, WorkoutTemplatesService } from '../services/workout-templates.service';
+import { WorkoutTemplate, WorkoutTemplatesService } from '../workout-templates/workout-templates.service';
 
 @Component({
   selector: 'app-dashboard',

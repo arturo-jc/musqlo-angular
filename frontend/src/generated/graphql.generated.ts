@@ -24,7 +24,7 @@ export type AuthenticateOutput = {
 export type CreateExerciseInput = {
   exerciseType: Scalars['String'];
   order: Scalars['Int'];
-  sets: Array<InputMaybe<CreateSetTemplateInput>>;
+  sets: Array<CreateSetTemplateInput>;
 };
 
 export type CreateSetTemplateInput = {
@@ -35,7 +35,7 @@ export type CreateSetTemplateInput = {
 
 export type CreateWorkoutTemplateInput = {
   backgroundColor?: InputMaybe<Scalars['String']>;
-  exercises: Array<InputMaybe<CreateExerciseInput>>;
+  exercises: Array<CreateExerciseInput>;
   name: Scalars['String'];
 };
 
@@ -48,8 +48,9 @@ export type ExerciseItem = {
 export type ExerciseTemplate = {
   __typename?: 'ExerciseTemplate';
   exerciseType: Scalars['String'];
+  id: Scalars['String'];
   order?: Maybe<Scalars['Int']>;
-  sets?: Maybe<Array<Maybe<SetTemplate>>>;
+  sets: Array<SetTemplate>;
 };
 
 export type Mutation = {
@@ -61,7 +62,7 @@ export type Mutation = {
 
 
 export type MutationCreateWorkoutTemplatesArgs = {
-  workoutTemplates: Array<InputMaybe<CreateWorkoutTemplateInput>>;
+  workoutTemplates: Array<CreateWorkoutTemplateInput>;
 };
 
 
@@ -78,6 +79,7 @@ export type Query = {
   exerciseItems: Array<Maybe<ExerciseItem>>;
   logIn: AuthenticateOutput;
   logOut: Scalars['Boolean'];
+  user?: Maybe<User>;
 };
 
 
@@ -85,6 +87,11 @@ export type QueryLogInArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
   username?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryUserArgs = {
+  userId: Scalars['String'];
 };
 
 export type SetTemplate = {
@@ -99,13 +106,13 @@ export type User = {
   email: Scalars['String'];
   id: Scalars['String'];
   username?: Maybe<Scalars['String']>;
-  workoutTemplates?: Maybe<Array<Maybe<WorkoutTemplate>>>;
+  workoutTemplates?: Maybe<Array<WorkoutTemplate>>;
 };
 
 export type WorkoutTemplate = {
   __typename?: 'WorkoutTemplate';
   backgroundColor?: Maybe<Scalars['String']>;
-  exercises?: Maybe<Array<Maybe<ExerciseTemplate>>>;
+  exercises: Array<ExerciseTemplate>;
   id: Scalars['String'];
   name: Scalars['String'];
 };

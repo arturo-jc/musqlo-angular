@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import { Calendar } from '@fullcalendar/core';
 import { Draggable } from '@fullcalendar/interaction';
-import { WorkoutTemplate, WorkoutTemplatesService } from '../services/workout-templates.service';
+import { WorkoutTemplate, WorkoutTemplatesService } from '../workout-templates/workout-templates.service';
 import { FixedFilterComponent } from '../shared/fixed-filter/fixed-filter.component';
 
 @Component({
