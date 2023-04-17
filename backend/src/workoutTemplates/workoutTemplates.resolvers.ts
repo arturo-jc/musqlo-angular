@@ -14,6 +14,8 @@ const createWorkoutTemplates: MutationResolvers<Context>['createWorkoutTemplates
     throw new Error('User not authenticated');
   }
 
+  const existingWorkoutTemplates = workoutTemplates[ctx.userId] || [];
+
   const newWorkoutTemplates: WorkoutTemplate[] = [];
 
   for (const template of args.workoutTemplates) {
@@ -36,7 +38,7 @@ const createWorkoutTemplates: MutationResolvers<Context>['createWorkoutTemplates
     newWorkoutTemplates.push(newTemplate);
   }
 
-  workoutTemplates[ctx.userId] = newWorkoutTemplates;
+  workoutTemplates[ctx.userId] = [ ...existingWorkoutTemplates, ...newWorkoutTemplates];
 
   return newWorkoutTemplates;
 }
