@@ -18,13 +18,30 @@ export type Scalars = {
 export type AuthenticateOutput = {
   __typename?: 'AuthenticateOutput';
   expiresIn?: Maybe<Scalars['Int']>;
-  user?: Maybe<User>;
+  userEmail: Scalars['String'];
+  userId: Scalars['String'];
+  username?: Maybe<Scalars['String']>;
 };
 
 export type CreateExerciseInput = {
   exerciseType: Scalars['String'];
   order: Scalars['Int'];
   sets: Array<CreateSetTemplateInput>;
+};
+
+export type CreateScheduleInput = {
+  id: Scalars['String'];
+  key?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
+  workouts: Array<CreateScheduleWorkoutInput>;
+};
+
+export type CreateScheduleWorkoutInput = {
+  allDay?: InputMaybe<Scalars['Boolean']>;
+  dow?: InputMaybe<Scalars['Int']>;
+  end?: InputMaybe<Scalars['String']>;
+  start?: InputMaybe<Scalars['String']>;
+  workoutTemplateKey: Scalars['String'];
 };
 
 export type CreateSetTemplateInput = {
@@ -57,8 +74,14 @@ export type ExerciseTemplate = {
 export type Mutation = {
   __typename?: 'Mutation';
   _blank?: Maybe<Scalars['Boolean']>;
-  createWorkoutTemplates: Array<Maybe<WorkoutTemplate>>;
+  createSchedules: Array<Schedule>;
+  createWorkoutTemplates: Array<WorkoutTemplate>;
   signUp: AuthenticateOutput;
+};
+
+
+export type MutationCreateSchedulesArgs = {
+  schedules: Array<CreateScheduleInput>;
 };
 
 
@@ -76,7 +99,7 @@ export type MutationSignUpArgs = {
 export type Query = {
   __typename?: 'Query';
   _blank?: Maybe<Scalars['Boolean']>;
-  authenticate?: Maybe<User>;
+  authenticate?: Maybe<AuthenticateOutput>;
   exerciseItems: Array<Maybe<ExerciseItem>>;
   logIn: AuthenticateOutput;
   logOut: Scalars['Boolean'];
@@ -95,6 +118,23 @@ export type QueryUserArgs = {
   userId: Scalars['String'];
 };
 
+export type Schedule = {
+  __typename?: 'Schedule';
+  id: Scalars['String'];
+  key?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  workouts?: Maybe<Array<ScheduleWorkout>>;
+};
+
+export type ScheduleWorkout = {
+  __typename?: 'ScheduleWorkout';
+  allDay?: Maybe<Scalars['Boolean']>;
+  dow?: Maybe<Scalars['Int']>;
+  end?: Maybe<Scalars['String']>;
+  start?: Maybe<Scalars['String']>;
+  workoutTemplateKey: Scalars['String'];
+};
+
 export type SetTemplate = {
   __typename?: 'SetTemplate';
   order: Scalars['Int'];
@@ -106,6 +146,7 @@ export type User = {
   __typename?: 'User';
   email: Scalars['String'];
   id: Scalars['String'];
+  schedules?: Maybe<Array<Schedule>>;
   username?: Maybe<Scalars['String']>;
   workoutTemplates?: Maybe<Array<WorkoutTemplate>>;
 };
@@ -130,12 +171,12 @@ export type LogInQueryVariables = Exact<{
 }>;
 
 
-export type LogInQuery = { __typename?: 'Query', logIn: { __typename?: 'AuthenticateOutput', expiresIn?: number | null, user?: { __typename?: 'User', id: string, username?: string | null, email: string } | null } };
+export type LogInQuery = { __typename?: 'Query', logIn: { __typename?: 'AuthenticateOutput', userId: string, userEmail: string, username?: string | null, expiresIn?: number | null } };
 
 export type AuthenticateQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AuthenticateQuery = { __typename?: 'Query', authenticate?: { __typename?: 'User', id: string, username?: string | null, email: string } | null };
+export type AuthenticateQuery = { __typename?: 'Query', authenticate?: { __typename?: 'AuthenticateOutput', userId: string, userEmail: string, username?: string | null, expiresIn?: number | null } | null };
 
 export type LogOutQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -149,7 +190,7 @@ export type SignUpMutationVariables = Exact<{
 }>;
 
 
-export type SignUpMutation = { __typename?: 'Mutation', signUp: { __typename?: 'AuthenticateOutput', expiresIn?: number | null, user?: { __typename?: 'User', id: string, username?: string | null, email: string } | null } };
+export type SignUpMutation = { __typename?: 'Mutation', signUp: { __typename?: 'AuthenticateOutput', userId: string, userEmail: string, username?: string | null, expiresIn?: number | null } };
 
 export type UserWorkoutTemplatesQueryVariables = Exact<{
   userId: Scalars['String'];
@@ -163,7 +204,7 @@ export type CreateWorkoutTemplatesMutationVariables = Exact<{
 }>;
 
 
-export type CreateWorkoutTemplatesMutation = { __typename?: 'Mutation', createWorkoutTemplates: Array<{ __typename?: 'WorkoutTemplate', id: string, key?: string | null } | null> };
+export type CreateWorkoutTemplatesMutation = { __typename?: 'Mutation', createWorkoutTemplates: Array<{ __typename?: 'WorkoutTemplate', id: string, key?: string | null }> };
 
 export const ExerciseItemsDocument = gql`
     query ExerciseItems {
@@ -187,11 +228,9 @@ export const ExerciseItemsDocument = gql`
 export const LogInDocument = gql`
     query LogIn($email: String!, $password: String!) {
   logIn(email: $email, password: $password) {
-    user {
-      id
-      username
-      email
-    }
+    userId
+    userEmail
+    username
     expiresIn
   }
 }
@@ -210,9 +249,10 @@ export const LogInDocument = gql`
 export const AuthenticateDocument = gql`
     query Authenticate {
   authenticate {
-    id
+    userId
+    userEmail
     username
-    email
+    expiresIn
   }
 }
     `;
@@ -246,11 +286,9 @@ export const LogOutDocument = gql`
 export const SignUpDocument = gql`
     mutation SignUp($email: String!, $password: String!, $username: String) {
   signUp(email: $email, password: $password, username: $username) {
-    user {
-      id
-      username
-      email
-    }
+    userId
+    userEmail
+    username
     expiresIn
   }
 }

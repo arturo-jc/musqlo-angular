@@ -5,15 +5,17 @@ import jwt, { Algorithm, JsonWebTokenError } from 'jsonwebtoken';
 import dayjs from 'dayjs';
 import { Context, TokenPayload } from '../context';
 import { CookieOptions, Response } from 'express';
-import { User, QueryResolvers, MutationResolvers, Resolvers } from '../generated/graphql.generated';
+import { QueryResolvers, MutationResolvers, Resolvers, MutationSignUpArgs } from '../generated/graphql.generated';
 
 export const CUSTOM_ERROR_CODES = {
   INVALID_CREDENTIALS: 'INVALID_CREDENTIALS',
 };
 
-export type UserWithPassword = User & { password: string };
+export interface RegisteredUser extends MutationSignUpArgs {
+  id: string;
+};
 
-export let users: UserWithPassword[] = [];
+export let users: RegisteredUser[] = [];
 
 const signUp: MutationResolvers<Context>['signUp'] = async (_parent, args, ctx) => {
   const existingUser = users.find(u => u.email === args.email);
@@ -25,7 +27,7 @@ const signUp: MutationResolvers<Context>['signUp'] = async (_parent, args, ctx) 
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(args.password, salt);
 
-  const newUser: UserWithPassword = {
+  const newUser: RegisteredUser = {
     ...args,
     password: hash,
     id: uuid(),
@@ -36,7 +38,9 @@ const signUp: MutationResolvers<Context>['signUp'] = async (_parent, args, ctx) 
   const expiresIn = setToken(newUser, ctx.res);
 
   return {
-    user: newUser,
+    userId: newUser.id,
+    userEmail: newUser.email,
+    username: newUser.username,
     expiresIn,
   };
 }
@@ -57,7 +61,9 @@ const logIn: QueryResolvers<Context>['logIn'] = async (_parent, args, ctx) => {
   const expiresIn = setToken(existingUser, ctx.res);
 
   return {
-    user: existingUser,
+    userId: existingUser.id,
+    userEmail: existingUser.email,
+    username: existingUser.username,
     expiresIn,
   };
 }
@@ -67,13 +73,12 @@ const authenticate: QueryResolvers<Context>['authenticate'] = async (_parent, _a
 
   if (!user) { return null; }
 
-  const userWithoutPassword: User = {
-    id: user.id,
-    email: user.email,
-    username: user?.username,
+  return {
+    userId: user.id,
+    userEmail: user.email,
+    username: user.username,
+    expiresIn: ctx.exp,
   };
-
-  return userWithoutPassword;
 }
 
 const logOut: QueryResolvers<Context>['logOut'] = async (_parent, _args, ctx) => {
@@ -81,7 +86,7 @@ const logOut: QueryResolvers<Context>['logOut'] = async (_parent, _args, ctx) =>
   return true;
 }
 
-function setToken(user: UserWithPassword, res: Response): number | undefined {
+function setToken(user: RegisteredUser, res: Response): number | undefined {
 
   const payload: TokenPayload = {
     userId: user.id,

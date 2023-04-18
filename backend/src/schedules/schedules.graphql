@@ -1,0 +1,37 @@
+type Schedule {
+  id: String!
+  key: String
+  name: String!
+  workouts: [ScheduleWorkout!]
+}
+
+type ScheduleWorkout {
+  workoutTemplateKey: String!
+  dow: Int
+  allDay: Boolean
+  start: String
+  end: String
+}
+
+extend type User {
+  schedules: [Schedule!]
+}
+
+extend type Mutation {
+  createSchedules(schedules: [CreateScheduleInput!]!): [Schedule!]!
+}
+
+input CreateScheduleInput {
+  id: String!
+  key: String
+  name: String!
+  workouts: [CreateScheduleWorkoutInput!]!
+}
+
+input CreateScheduleWorkoutInput {
+  workoutTemplateKey: String!
+  dow: Int
+  allDay: Boolean
+  start: String
+  end: String
+}

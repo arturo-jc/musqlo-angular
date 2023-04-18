@@ -1,6 +1,6 @@
 extend type Query {
   logIn(email: String!, password: String!, username: String): AuthenticateOutput!
-  authenticate: User
+  authenticate: AuthenticateOutput
   logOut: Boolean!
 }
 
@@ -9,7 +9,9 @@ extend type Mutation {
 }
 
 type AuthenticateOutput {
-  user: User
+  userId: String!
+  userEmail: String!
+  username: String
   expiresIn: Int
 }
 

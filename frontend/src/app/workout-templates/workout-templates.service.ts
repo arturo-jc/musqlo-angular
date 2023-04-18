@@ -97,11 +97,15 @@ export class WorkoutTemplatesService {
       .pipe(switchMap(() => this.userWorkoutTemplatesQuery.valueChanges))
       .subscribe((res) => {
         if (res.loading) { return; }
+
         const userWorkoutTemplates = res.data.user?.workoutTemplates || [];
+
         this.workoutTemplates = userWorkoutTemplates.map(t => ({
           ...t,
           key: t.id,
         }));
+
+        this.currentKey = 0;
       })
   }
 

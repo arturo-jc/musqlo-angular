@@ -1,11 +1,3 @@
-extend type User {
-  workoutTemplates: [WorkoutTemplate!]
-}
-
-extend type Mutation {
-  createWorkoutTemplates(workoutTemplates: [CreateWorkoutTemplateInput!]!): [WorkoutTemplate]!
-}
-
 type WorkoutTemplate {
   id: String!
   key: String
@@ -25,6 +17,14 @@ type SetTemplate {
   reps: Int
   weight: Int
   order: Int!
+}
+
+extend type User {
+  workoutTemplates: [WorkoutTemplate!]
+}
+
+extend type Mutation {
+  createWorkoutTemplates(workoutTemplates: [CreateWorkoutTemplateInput!]!): [WorkoutTemplate!]!
 }
 
 input CreateWorkoutTemplateInput {

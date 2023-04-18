@@ -17,13 +17,30 @@ export type Scalars = {
 export type AuthenticateOutput = {
   __typename?: 'AuthenticateOutput';
   expiresIn?: Maybe<Scalars['Int']>;
-  user?: Maybe<User>;
+  userEmail: Scalars['String'];
+  userId: Scalars['String'];
+  username?: Maybe<Scalars['String']>;
 };
 
 export type CreateExerciseInput = {
   exerciseType: Scalars['String'];
   order: Scalars['Int'];
   sets: Array<CreateSetTemplateInput>;
+};
+
+export type CreateScheduleInput = {
+  id: Scalars['String'];
+  key?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
+  workouts: Array<CreateScheduleWorkoutInput>;
+};
+
+export type CreateScheduleWorkoutInput = {
+  allDay?: InputMaybe<Scalars['Boolean']>;
+  dow?: InputMaybe<Scalars['Int']>;
+  end?: InputMaybe<Scalars['String']>;
+  start?: InputMaybe<Scalars['String']>;
+  workoutTemplateKey: Scalars['String'];
 };
 
 export type CreateSetTemplateInput = {
@@ -56,8 +73,14 @@ export type ExerciseTemplate = {
 export type Mutation = {
   __typename?: 'Mutation';
   _blank?: Maybe<Scalars['Boolean']>;
-  createWorkoutTemplates: Array<Maybe<WorkoutTemplate>>;
+  createSchedules: Array<Schedule>;
+  createWorkoutTemplates: Array<WorkoutTemplate>;
   signUp: AuthenticateOutput;
+};
+
+
+export type MutationCreateSchedulesArgs = {
+  schedules: Array<CreateScheduleInput>;
 };
 
 
@@ -75,7 +98,7 @@ export type MutationSignUpArgs = {
 export type Query = {
   __typename?: 'Query';
   _blank?: Maybe<Scalars['Boolean']>;
-  authenticate?: Maybe<User>;
+  authenticate?: Maybe<AuthenticateOutput>;
   exerciseItems: Array<Maybe<ExerciseItem>>;
   logIn: AuthenticateOutput;
   logOut: Scalars['Boolean'];
@@ -94,6 +117,23 @@ export type QueryUserArgs = {
   userId: Scalars['String'];
 };
 
+export type Schedule = {
+  __typename?: 'Schedule';
+  id: Scalars['String'];
+  key?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  workouts?: Maybe<Array<ScheduleWorkout>>;
+};
+
+export type ScheduleWorkout = {
+  __typename?: 'ScheduleWorkout';
+  allDay?: Maybe<Scalars['Boolean']>;
+  dow?: Maybe<Scalars['Int']>;
+  end?: Maybe<Scalars['String']>;
+  start?: Maybe<Scalars['String']>;
+  workoutTemplateKey: Scalars['String'];
+};
+
 export type SetTemplate = {
   __typename?: 'SetTemplate';
   order: Scalars['Int'];
@@ -105,6 +145,7 @@ export type User = {
   __typename?: 'User';
   email: Scalars['String'];
   id: Scalars['String'];
+  schedules?: Maybe<Array<Schedule>>;
   username?: Maybe<Scalars['String']>;
   workoutTemplates?: Maybe<Array<WorkoutTemplate>>;
 };
@@ -193,6 +234,8 @@ export type ResolversTypes = ResolversObject<{
   AuthenticateOutput: ResolverTypeWrapper<AuthenticateOutput>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   CreateExerciseInput: CreateExerciseInput;
+  CreateScheduleInput: CreateScheduleInput;
+  CreateScheduleWorkoutInput: CreateScheduleWorkoutInput;
   CreateSetTemplateInput: CreateSetTemplateInput;
   CreateWorkoutTemplateInput: CreateWorkoutTemplateInput;
   ExerciseItem: ResolverTypeWrapper<ExerciseItem>;
@@ -200,6 +243,8 @@ export type ResolversTypes = ResolversObject<{
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
+  Schedule: ResolverTypeWrapper<Schedule>;
+  ScheduleWorkout: ResolverTypeWrapper<ScheduleWorkout>;
   SetTemplate: ResolverTypeWrapper<SetTemplate>;
   String: ResolverTypeWrapper<Scalars['String']>;
   User: ResolverTypeWrapper<User>;
@@ -211,6 +256,8 @@ export type ResolversParentTypes = ResolversObject<{
   AuthenticateOutput: AuthenticateOutput;
   Boolean: Scalars['Boolean'];
   CreateExerciseInput: CreateExerciseInput;
+  CreateScheduleInput: CreateScheduleInput;
+  CreateScheduleWorkoutInput: CreateScheduleWorkoutInput;
   CreateSetTemplateInput: CreateSetTemplateInput;
   CreateWorkoutTemplateInput: CreateWorkoutTemplateInput;
   ExerciseItem: ExerciseItem;
@@ -218,6 +265,8 @@ export type ResolversParentTypes = ResolversObject<{
   Int: Scalars['Int'];
   Mutation: {};
   Query: {};
+  Schedule: Schedule;
+  ScheduleWorkout: ScheduleWorkout;
   SetTemplate: SetTemplate;
   String: Scalars['String'];
   User: User;
@@ -226,7 +275,9 @@ export type ResolversParentTypes = ResolversObject<{
 
 export type AuthenticateOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes['AuthenticateOutput'] = ResolversParentTypes['AuthenticateOutput']> = ResolversObject<{
   expiresIn?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  userEmail?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  userId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  username?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -246,17 +297,35 @@ export type ExerciseTemplateResolvers<ContextType = any, ParentType extends Reso
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   _blank?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  createWorkoutTemplates?: Resolver<Array<Maybe<ResolversTypes['WorkoutTemplate']>>, ParentType, ContextType, RequireFields<MutationCreateWorkoutTemplatesArgs, 'workoutTemplates'>>;
+  createSchedules?: Resolver<Array<ResolversTypes['Schedule']>, ParentType, ContextType, RequireFields<MutationCreateSchedulesArgs, 'schedules'>>;
+  createWorkoutTemplates?: Resolver<Array<ResolversTypes['WorkoutTemplate']>, ParentType, ContextType, RequireFields<MutationCreateWorkoutTemplatesArgs, 'workoutTemplates'>>;
   signUp?: Resolver<ResolversTypes['AuthenticateOutput'], ParentType, ContextType, RequireFields<MutationSignUpArgs, 'email' | 'password'>>;
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   _blank?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  authenticate?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  authenticate?: Resolver<Maybe<ResolversTypes['AuthenticateOutput']>, ParentType, ContextType>;
   exerciseItems?: Resolver<Array<Maybe<ResolversTypes['ExerciseItem']>>, ParentType, ContextType>;
   logIn?: Resolver<ResolversTypes['AuthenticateOutput'], ParentType, ContextType, RequireFields<QueryLogInArgs, 'email' | 'password'>>;
   logOut?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'userId'>>;
+}>;
+
+export type ScheduleResolvers<ContextType = any, ParentType extends ResolversParentTypes['Schedule'] = ResolversParentTypes['Schedule']> = ResolversObject<{
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  key?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  workouts?: Resolver<Maybe<Array<ResolversTypes['ScheduleWorkout']>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type ScheduleWorkoutResolvers<ContextType = any, ParentType extends ResolversParentTypes['ScheduleWorkout'] = ResolversParentTypes['ScheduleWorkout']> = ResolversObject<{
+  allDay?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  dow?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  end?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  start?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  workoutTemplateKey?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type SetTemplateResolvers<ContextType = any, ParentType extends ResolversParentTypes['SetTemplate'] = ResolversParentTypes['SetTemplate']> = ResolversObject<{
@@ -269,6 +338,7 @@ export type SetTemplateResolvers<ContextType = any, ParentType extends Resolvers
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  schedules?: Resolver<Maybe<Array<ResolversTypes['Schedule']>>, ParentType, ContextType>;
   username?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   workoutTemplates?: Resolver<Maybe<Array<ResolversTypes['WorkoutTemplate']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -289,6 +359,8 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   ExerciseTemplate?: ExerciseTemplateResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Schedule?: ScheduleResolvers<ContextType>;
+  ScheduleWorkout?: ScheduleWorkoutResolvers<ContextType>;
   SetTemplate?: SetTemplateResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   WorkoutTemplate?: WorkoutTemplateResolvers<ContextType>;

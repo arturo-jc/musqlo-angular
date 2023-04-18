@@ -2,7 +2,7 @@ import { Context } from "../context";
 import { ExerciseTemplate, MutationResolvers, Resolvers, UserResolvers, WorkoutTemplate } from "../generated/graphql.generated";
 import { v1 as uuid } from 'uuid';
 
-const workoutTemplates: { [ userId: string ]: WorkoutTemplate[]} = {};
+const workoutTemplates: { [ userId: string ]: WorkoutTemplate[] } = {};
 
 const getWorkoutTemplates: UserResolvers<Context>['workoutTemplates'] = (parent) => {
   return workoutTemplates[parent.id] || [];

@@ -7,6 +7,7 @@ import { Response } from 'express';
 export interface Context {
   res: Response;
   userId?: string;
+  exp?: number;
 }
 
 export interface TokenPayload extends JwtPayload {
@@ -20,6 +21,7 @@ export const context: ContextFunction<[ExpressContextFunctionArgument], BaseCont
   const context: Context = {
     res,
     userId: payload?.userId,
+    exp: payload?.exp,
   };
 
   return context;

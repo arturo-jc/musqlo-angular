@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, firstValueFrom, map, Subject } from 'rxjs';
-import { AuthenticateGQL, LogInGQL, LogInQuery, LogOutGQL, SignUpGQL, SignUpMutation, User } from '../../generated/graphql.generated';
+import { AuthenticateGQL, AuthenticateOutput, LogInGQL, LogInQuery, LogOutGQL, SignUpGQL, SignUpMutation as res, User } from '../../generated/graphql.generated';
 import { TimeService } from './time.service';
 
 @Injectable({
@@ -61,18 +61,20 @@ export class AuthService {
     })
   }
 
-  handleAuthSuccess(handleAuthSuccess: SignUpMutation['signUp'] | LogInQuery['logIn'] | undefined) {
-    this.loadUser(handleAuthSuccess?.user);
-    this._tokenExpirationDate = this.calculateExpirationDate(handleAuthSuccess?.expiresIn);
+  handleAuthSuccess(authenticateOutput: AuthenticateOutput | undefined | null) {
+    if (!authenticateOutput) { return; }
+
+    const authenticatedUser = this.getAuthenticatedUser(authenticateOutput);
+
+    this.loadUser(authenticatedUser);
+
+    this._tokenExpirationDate = this.calculateExpirationDate(authenticateOutput?.expiresIn);
   }
 
   loadUser(loadUser?: User | null ) {
     if (!loadUser) { return; }
     this._user.next(loadUser);
     this._onAuthSuccess.next(loadUser);
-  }
-
-  handleLogout() {
   }
 
   async checkAuth(): Promise<true> {
@@ -87,7 +89,9 @@ export class AuthService {
 
     try {
       const res = await firstValueFrom(this.authenticateGQL.fetch());
-      this.loadUser(res.data?.authenticate);
+
+      this.handleAuthSuccess(res.data?.authenticate);
+
     } catch(e) {
       this._onAuthFail.next(null);
     }
@@ -115,5 +119,14 @@ export class AuthService {
   reset() {
     this._user.next(null);
     this._tokenExpirationDate = undefined;
+  }
+
+  getAuthenticatedUser(authenticateOutput: AuthenticateOutput | null | undefined): User | null {
+    if (!authenticateOutput) { return null; }
+    return {
+      id: authenticateOutput.userId,
+      email: authenticateOutput.userEmail,
+      username: authenticateOutput.username,
+    }
   }
 }

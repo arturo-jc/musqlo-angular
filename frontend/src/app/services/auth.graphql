@@ -1,19 +1,18 @@
 query LogIn($email: String!, $password: String!) {
   logIn(email: $email, password: $password) {
-    user {
-      id
-      username
-      email
-      }
+    userId
+    userEmail
+    username
     expiresIn
   }
 }
 
 query Authenticate {
     authenticate {
-      id
+      userId
+      userEmail
       username
-      email
+      expiresIn
     }
   }
 
@@ -23,11 +22,9 @@ query LogOut {
 
 mutation SignUp($email: String!, $password: String!, $username: String) {
   signUp(email: $email, password: $password, username: $username) {
-    user {
-      id
-      username
-      email
-      }
+    userId
+    userEmail
+    username
     expiresIn
   }
 }
