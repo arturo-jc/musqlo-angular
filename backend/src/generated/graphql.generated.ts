@@ -113,6 +113,7 @@ export type WorkoutTemplate = {
   backgroundColor?: Maybe<Scalars['String']>;
   exercises: Array<ExerciseTemplate>;
   id: Scalars['String'];
+  key?: Maybe<Scalars['String']>;
   name: Scalars['String'];
 };
 
@@ -276,6 +277,7 @@ export type WorkoutTemplateResolvers<ContextType = any, ParentType extends Resol
   backgroundColor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   exercises?: Resolver<Array<ResolversTypes['ExerciseTemplate']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  key?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;

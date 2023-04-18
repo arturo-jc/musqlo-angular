@@ -4,14 +4,14 @@ import { switchMap } from 'rxjs';
 import { SubSink } from 'subsink';
 import { CreateWorkoutTemplatesGQL, UserWorkoutTemplatesGQL, UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables } from '../../generated/graphql.generated';
 import { WorkoutTemplate } from '../../generated/graphql.generated';
-import { Frontend, OptionalId } from '../shared/utils';
+import { OptionalId } from '../shared/utils';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WorkoutTemplatesService {
 
-  workoutTemplates: Frontend<WorkoutTemplate>[] = []
+  workoutTemplates: OptionalId<WorkoutTemplate>[] = []
 
   editWorkoutTemplateKey?: string;
 
@@ -26,12 +26,9 @@ export class WorkoutTemplatesService {
     private createWorkoutTemplatesGQL: CreateWorkoutTemplatesGQL,
   ) {}
 
-  addWorkoutTemplate(input: OptionalId<WorkoutTemplate>) {
+  addWorkoutTemplate(newWorkoutTemplate: OptionalId<WorkoutTemplate>) {
 
-    const newWorkoutTemplate: Frontend<WorkoutTemplate> = {
-      ...input,
-      key: this.currentKey.toString(),
-    }
+    newWorkoutTemplate.key = this.currentKey.toString();
 
     this.currentKey++;
 
@@ -40,17 +37,15 @@ export class WorkoutTemplatesService {
     this.workoutTemplates = updatedWorkoutTemplates;
   }
 
-  editWorkoutTemplate(input: OptionalId<WorkoutTemplate>) {
+  editWorkoutTemplate(editedWorkoutTemplate: OptionalId<WorkoutTemplate>) {
+
     if (this.editWorkoutTemplateKey === undefined) { return; }
 
-    const updatedWorkoutTemplate: Frontend<WorkoutTemplate> = {
-      ...input,
-      key: this.editWorkoutTemplateKey,
-    }
+    editedWorkoutTemplate.key = this.editWorkoutTemplateKey;
 
     const updatedWorkoutTemplates = [ ...this.workoutTemplates ];
 
-    updatedWorkoutTemplates.splice(this.workoutTemplateToEditIndex, 1, updatedWorkoutTemplate);
+    updatedWorkoutTemplates.splice(this.workoutTemplateToEditIndex, 1, editedWorkoutTemplate);
 
     this.workoutTemplates = updatedWorkoutTemplates;
   }
@@ -97,6 +92,13 @@ export class WorkoutTemplatesService {
           key: t.id,
         }));
       })
+  }
+
+  reset() {
+    this.workoutTemplates = [];
+    this.editWorkoutTemplateKey = undefined;
+    this.currentKey = 0;
+    this.subs.unsubscribe();
   }
 
 }

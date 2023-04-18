@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import { BehaviorSubject, firstValueFrom, map, Subject } from 'rxjs';
 import { AuthenticateGQL, LogInGQL, LogInQuery, LogOutGQL, SignUpGQL, SignUpMutation, User } from '../../generated/graphql.generated';
 import { TimeService } from './time.service';
@@ -39,7 +38,6 @@ export class AuthService {
     private signUpGQL: SignUpGQL,
     private logOutGQL: LogOutGQL,
     private timeService: TimeService,
-    private router: Router,
   ) { }
 
   signUp(email: string, password: string, username?: string | null) {
@@ -58,7 +56,7 @@ export class AuthService {
 
   logOut() {
     this.logOutGQL.fetch().subscribe({
-      next: () => this.handleLogout(),
+      next: () => this._onLogout.next(null),
       error: () => this._onAuthFail.next(null),
     })
   }
@@ -75,10 +73,6 @@ export class AuthService {
   }
 
   handleLogout() {
-    this._user.next(null);
-    this._tokenExpirationDate = undefined;
-    this._onLogout.next(null);
-    this.router.navigate([ '/login' ]);
   }
 
   async checkAuth(): Promise<true> {
@@ -118,4 +112,8 @@ export class AuthService {
     return Number(localStorage.getItem(this.lsKeys.tokenExpirationDate));
   }
 
+  reset() {
+    this._user.next(null);
+    this._tokenExpirationDate = undefined;
+  }
 }

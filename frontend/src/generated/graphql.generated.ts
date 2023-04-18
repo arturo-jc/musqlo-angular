@@ -114,6 +114,7 @@ export type WorkoutTemplate = {
   backgroundColor?: Maybe<Scalars['String']>;
   exercises: Array<ExerciseTemplate>;
   id: Scalars['String'];
+  key?: Maybe<Scalars['String']>;
   name: Scalars['String'];
 };
 

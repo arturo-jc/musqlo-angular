@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import { DEFAULT_BG_COLOR } from '../mutate-workout-template/mutate-workout-template.component';
 import { WorkoutTemplatesService } from '../workout-templates/workout-templates.service';
 import { LIGHT_DARK_THRESHOLD } from '../shared/color-picker/color-picker.component';
-import { Frontend, OptionalId } from '../shared/utils';
+import { OptionalId } from '../shared/utils';
 import { WorkoutTemplate, ExerciseTemplate } from '../../generated/graphql.generated';
 
 @Injectable({
@@ -101,7 +101,7 @@ export class FullCalendarService {
     }
   }
 
-  getEventInput(workoutTemplate: Frontend<WorkoutTemplate>): EventInput {
+  getEventInput(workoutTemplate: OptionalId<WorkoutTemplate>): EventInput {
 
     const backgroundColor = workoutTemplate?.backgroundColor || DEFAULT_BG_COLOR;
 
