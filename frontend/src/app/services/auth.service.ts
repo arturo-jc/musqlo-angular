@@ -24,7 +24,7 @@ export class AuthService {
 
   onAuthFail = this._onAuthFail.asObservable();
 
-  onLogout = this._onAuthFail.asObservable();
+  onLogout = this._onLogout.asObservable();
 
   redirectUrl: string | undefined;
 

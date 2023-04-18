@@ -17,6 +17,7 @@ const createWorkoutTemplates: MutationResolvers<Context>['createWorkoutTemplates
   const existingWorkoutTemplates = workoutTemplates[ctx.userId] || [];
 
   const newWorkoutTemplates: WorkoutTemplate[] = [];
+  const output: WorkoutTemplate[] = [];
 
   for (const template of args.workoutTemplates) {
 
@@ -36,11 +37,15 @@ const createWorkoutTemplates: MutationResolvers<Context>['createWorkoutTemplates
     }
 
     newWorkoutTemplates.push(newTemplate);
+
+    newTemplate.key = template.key;
+
+    output.push(newTemplate);
   }
 
   workoutTemplates[ctx.userId] = [ ...existingWorkoutTemplates, ...newWorkoutTemplates];
 
-  return newWorkoutTemplates;
+  return output;
 }
 
 const resolvers: Resolvers<Context> = {

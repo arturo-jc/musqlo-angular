@@ -36,6 +36,7 @@ export type CreateSetTemplateInput = {
 export type CreateWorkoutTemplateInput = {
   backgroundColor?: InputMaybe<Scalars['String']>;
   exercises: Array<CreateExerciseInput>;
+  key: Scalars['String'];
   name: Scalars['String'];
 };
 
@@ -155,14 +156,14 @@ export type UserWorkoutTemplatesQueryVariables = Exact<{
 }>;
 
 
-export type UserWorkoutTemplatesQuery = { __typename?: 'Query', user?: { __typename?: 'User', workoutTemplates?: Array<{ __typename?: 'WorkoutTemplate', id: string, name: string, backgroundColor?: string | null, exercises: Array<{ __typename?: 'ExerciseTemplate', id: string, exerciseType: string, order: number, sets: Array<{ __typename?: 'SetTemplate', reps?: number | null, weight?: number | null, order: number }> }> }> | null } | null };
+export type UserWorkoutTemplatesQuery = { __typename?: 'Query', user?: { __typename?: 'User', workoutTemplates?: Array<{ __typename?: 'WorkoutTemplate', id: string, name: string, backgroundColor?: string | null, key?: string | null, exercises: Array<{ __typename?: 'ExerciseTemplate', id: string, exerciseType: string, order: number, sets: Array<{ __typename?: 'SetTemplate', reps?: number | null, weight?: number | null, order: number }> }> }> | null } | null };
 
 export type CreateWorkoutTemplatesMutationVariables = Exact<{
   workoutTemplates: Array<CreateWorkoutTemplateInput> | CreateWorkoutTemplateInput;
 }>;
 
 
-export type CreateWorkoutTemplatesMutation = { __typename?: 'Mutation', createWorkoutTemplates: Array<{ __typename?: 'WorkoutTemplate', id: string } | null> };
+export type CreateWorkoutTemplatesMutation = { __typename?: 'Mutation', createWorkoutTemplates: Array<{ __typename?: 'WorkoutTemplate', id: string, key?: string | null } | null> };
 
 export const ExerciseItemsDocument = gql`
     query ExerciseItems {
@@ -272,6 +273,7 @@ export const UserWorkoutTemplatesDocument = gql`
       id
       name
       backgroundColor
+      key
       exercises {
         id
         exerciseType
@@ -301,6 +303,7 @@ export const CreateWorkoutTemplatesDocument = gql`
     mutation CreateWorkoutTemplates($workoutTemplates: [CreateWorkoutTemplateInput!]!) {
   createWorkoutTemplates(workoutTemplates: $workoutTemplates) {
     id
+    key
   }
 }
     `;

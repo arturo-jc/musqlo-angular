@@ -35,6 +35,7 @@ export type CreateSetTemplateInput = {
 export type CreateWorkoutTemplateInput = {
   backgroundColor?: InputMaybe<Scalars['String']>;
   exercises: Array<CreateExerciseInput>;
+  key: Scalars['String'];
   name: Scalars['String'];
 };
 

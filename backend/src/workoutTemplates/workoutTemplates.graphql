@@ -29,6 +29,7 @@ type SetTemplate {
 
 input CreateWorkoutTemplateInput {
   name: String!
+  key: String!
   exercises: [CreateExerciseInput!]!
   backgroundColor: String
 }
