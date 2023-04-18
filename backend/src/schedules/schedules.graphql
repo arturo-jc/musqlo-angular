@@ -6,7 +6,7 @@ type Schedule {
 }
 
 type ScheduleWorkout {
-  workoutTemplateKey: String!
+  workoutTemplateKey: String
   dow: Int
   allDay: Boolean
   start: String
@@ -29,7 +29,7 @@ input CreateScheduleInput {
 }
 
 input CreateScheduleWorkoutInput {
-  workoutTemplateKey: String!
+  workoutTemplateId: String!
   dow: Int
   allDay: Boolean
   start: String

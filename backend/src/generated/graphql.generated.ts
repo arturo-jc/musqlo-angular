@@ -40,7 +40,7 @@ export type CreateScheduleWorkoutInput = {
   dow?: InputMaybe<Scalars['Int']>;
   end?: InputMaybe<Scalars['String']>;
   start?: InputMaybe<Scalars['String']>;
-  workoutTemplateKey: Scalars['String'];
+  workoutTemplateId: Scalars['String'];
 };
 
 export type CreateSetTemplateInput = {
@@ -131,7 +131,7 @@ export type ScheduleWorkout = {
   dow?: Maybe<Scalars['Int']>;
   end?: Maybe<Scalars['String']>;
   start?: Maybe<Scalars['String']>;
-  workoutTemplateKey: Scalars['String'];
+  workoutTemplateKey?: Maybe<Scalars['String']>;
 };
 
 export type SetTemplate = {
@@ -324,7 +324,7 @@ export type ScheduleWorkoutResolvers<ContextType = any, ParentType extends Resol
   dow?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   end?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   start?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  workoutTemplateKey?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  workoutTemplateKey?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
