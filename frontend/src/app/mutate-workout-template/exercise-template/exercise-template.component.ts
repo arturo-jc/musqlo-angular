@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CollapsableExerciseTemplate } from '../mutate-workout-template.component';
+import { FrontendExerciseTemplate } from '../mutate-workout-template.component';
 
 @Component({
   selector: 'app-exercise-template',
@@ -20,19 +20,19 @@ export class ExerciseTemplateComponent {
 
   @Input() hideSets = false;
 
-  @Input() template!: CollapsableExerciseTemplate;
+  @Input() template!: FrontendExerciseTemplate;
 
   @Input() collapsed!: boolean;
 
   @Output() collapsedChange = new EventEmitter<boolean>();
 
-  @Output() onAddSet = new EventEmitter<CollapsableExerciseTemplate>();
+  @Output() onAddSet = new EventEmitter<FrontendExerciseTemplate>();
 
   @Output() onDeleteTemplate = new EventEmitter<number>();
 
-  @Output() onReorderSets = new EventEmitter<CollapsableExerciseTemplate>();
+  @Output() onReorderSets = new EventEmitter<FrontendExerciseTemplate>();
 
-  @Output() onDeleteSet = new EventEmitter<{ template: CollapsableExerciseTemplate, index: number }>();
+  @Output() onDeleteSet = new EventEmitter<{ template: FrontendExerciseTemplate, index: number }>();
 
   toggleCollapsed() {
     if (this.reorderMode) { return; }

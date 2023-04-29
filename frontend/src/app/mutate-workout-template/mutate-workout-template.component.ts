@@ -1,7 +1,7 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { cloneDeep, template } from 'lodash-es';
+import { cloneDeep } from 'lodash-es';
 import { ExerciseItem, ExerciseTemplate, SetTemplate, WorkoutTemplate } from '../../generated/graphql.generated';
 import { OptionalId, RequiredKey } from '../shared/utils';
 import { WorkoutTemplatesService } from '../workout-templates/workout-templates.service';
@@ -9,7 +9,7 @@ import { ExerciseItemsComponent } from './exercise-items/exercise-items.componen
 
 export const DEFAULT_BG_COLOR = 'var(--primary-color)';
 
-export type CollapsableExerciseTemplate = OptionalId<RequiredKey<ExerciseTemplate>> & { collapsed: boolean };
+export type FrontendExerciseTemplate = OptionalId<RequiredKey<ExerciseTemplate>>;
 
 @Component({
   selector: 'app-mutate-workout-template',
@@ -32,9 +32,9 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
 
   currentKey = 0;
 
-  exerciseTemplates: CollapsableExerciseTemplate[] = [];
+  exerciseTemplates: FrontendExerciseTemplate[] = [];
 
-  expandedTemplates: { [ templateOrder: string ]: boolean } = {};
+  collapsedTemplates: { [ templateOrder: string ]: boolean } = {};
 
   constructor(
     private workoutTemplates: WorkoutTemplatesService,
@@ -67,18 +67,17 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
     this.title = workoutTemplateToEdit.name;
     this.color = workoutTemplateToEdit.backgroundColor || DEFAULT_BG_COLOR;
 
-    const exerciseTemplates: CollapsableExerciseTemplate[] = [];
+    const exerciseTemplates: FrontendExerciseTemplate[] = [];
 
     for (const exercise of workoutTemplateToEdit.exercises) {
-      const collapsableExercise: CollapsableExerciseTemplate = {
+      const collapsableExercise: FrontendExerciseTemplate = {
         ...exercise,
         key: this.currentKey.toString(),
-        collapsed: false,
       }
 
       exerciseTemplates.push(collapsableExercise);
 
-      this.expandedTemplates[collapsableExercise.key] = true;
+      this.collapsedTemplates[collapsableExercise.key] = true;
     }
 
     this.exerciseTemplates = exerciseTemplates;
@@ -86,9 +85,9 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
 
   drop(
     event: CdkDragDrop< |
-      CollapsableExerciseTemplate[], ExerciseItem[] |
-      CollapsableExerciseTemplate[], ExerciseItem |
-      CollapsableExerciseTemplate
+      FrontendExerciseTemplate[], ExerciseItem[] |
+      FrontendExerciseTemplate[], ExerciseItem |
+      FrontendExerciseTemplate
     >
   ) {
     if (event.previousContainer === event.container) {
@@ -111,11 +110,10 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
       reps: 1,
     };
 
-    const newTemplate: CollapsableExerciseTemplate = {
+    const newTemplate: FrontendExerciseTemplate = {
       exerciseType: exercise.exerciseType,
       sets: [ firstSet ],
       order: index + 1,
-      collapsed: false,
       key: this.currentKey.toString(),
     };
 
@@ -141,10 +139,10 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
     this.reorderTemplates();
   }
 
-  addSet(template: CollapsableExerciseTemplate) {
-    const delay = template.collapsed ? 400 : 0;
+  addSet(template: FrontendExerciseTemplate) {
+    const delay = this.collapsedTemplates[template.key] ? 400 : 0;
 
-    template.collapsed = false;
+    this.collapsedTemplates[template.key] = false;
 
     setTimeout(() => {
       let lastExistingSet;
@@ -163,13 +161,13 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
     }, delay);
   }
 
-  reorderSets(template: CollapsableExerciseTemplate) {
+  reorderSets(template: FrontendExerciseTemplate) {
     template.sets.forEach((set, index) => {
       set.order = index + 1;
     });
   }
 
-  deleteSet(input: { template: CollapsableExerciseTemplate, index: number }) {
+  deleteSet(input: { template: FrontendExerciseTemplate, index: number }) {
     const { template, index } = input;
 
     const updatedTemplates = [ ...template.sets ];
