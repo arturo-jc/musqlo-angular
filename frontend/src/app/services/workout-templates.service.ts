@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
-import { switchMap } from 'rxjs';
+import { filter, map, switchMap, tap } from 'rxjs';
 import { SubSink } from 'subsink';
 import { CreateWorkoutTemplatesGQL, UserWorkoutTemplatesGQL, UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables, ExerciseTemplate, CreateWorkoutTemplatesMutationVariables } from '../../generated/graphql.generated';
 import { WorkoutTemplate } from '../../generated/graphql.generated';
@@ -93,20 +93,22 @@ export class WorkoutTemplatesService {
 
     this.userWorkoutTemplatesQuery = this.userWorkoutTemplatesGQL.watch(workoutTemplatesQueryVariables);
 
-    this.subs.sink = this.createWorkoutTemplatesGQL.mutate(mutationVariables)
-      .pipe(switchMap(() => this.userWorkoutTemplatesQuery.valueChanges))
-      .subscribe((res) => {
-        if (res.loading) { return; }
+    return this.createWorkoutTemplatesGQL.mutate(mutationVariables)
+      .pipe(
+        switchMap(() => this.userWorkoutTemplatesQuery.valueChanges),
+        filter(res => !res.loading),
+        map(res => res.data.user?.workoutTemplates || []),
+        tap(userWorkoutTemplates => {
 
-        const userWorkoutTemplates = res.data.user?.workoutTemplates || [];
+          this.workoutTemplates = userWorkoutTemplates.map(t => ({
+            ...t,
+            key: t.id,
+          }));
 
-        this.workoutTemplates = userWorkoutTemplates.map(t => ({
-          ...t,
-          key: t.id,
-        }));
+          this.currentKey = 0;
 
-        this.currentKey = 0;
-      })
+        })
+      );
   }
 
   reset() {

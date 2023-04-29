@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MenuItem, PrimeNGConfig } from 'primeng/api';
+import { switchMap } from 'rxjs';
 import { AuthService } from './services/auth.service';
 import { WorkoutTemplatesService } from './services/workout-templates.service';
 
@@ -33,7 +34,8 @@ export class AppComponent implements OnInit {
   }
 
   onAuthSuccess(userId: string) {
-    this.workoutTemplates.createUnsavedWorkoutTemplates(userId);
+    this.workoutTemplates.createUnsavedWorkoutTemplates(userId)
+      .subscribe(userWorkoutTemplates => console.log(userWorkoutTemplates));
   }
 
   onLogout() {
