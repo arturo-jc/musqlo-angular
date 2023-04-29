@@ -41,7 +41,7 @@ export type CreateScheduleWorkoutInput = {
   dow?: InputMaybe<Scalars['Int']>;
   end?: InputMaybe<Scalars['String']>;
   start?: InputMaybe<Scalars['String']>;
-  workoutTemplateKey: Scalars['String'];
+  workoutTemplateId: Scalars['String'];
 };
 
 export type CreateSetTemplateInput = {
@@ -67,6 +67,7 @@ export type ExerciseTemplate = {
   __typename?: 'ExerciseTemplate';
   exerciseType: Scalars['String'];
   id: Scalars['String'];
+  key?: Maybe<Scalars['String']>;
   order: Scalars['Int'];
   sets: Array<SetTemplate>;
 };
@@ -132,7 +133,7 @@ export type ScheduleWorkout = {
   dow?: Maybe<Scalars['Int']>;
   end?: Maybe<Scalars['String']>;
   start?: Maybe<Scalars['String']>;
-  workoutTemplateKey: Scalars['String'];
+  workoutTemplateKey?: Maybe<Scalars['String']>;
 };
 
 export type SetTemplate = {

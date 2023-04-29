@@ -22,6 +22,10 @@ export class ExerciseTemplateComponent {
 
   @Input() template!: CollapsableExerciseTemplate;
 
+  @Input() collapsed!: boolean;
+
+  @Output() collapsedChange = new EventEmitter<boolean>();
+
   @Output() onAddSet = new EventEmitter<CollapsableExerciseTemplate>();
 
   @Output() onDeleteTemplate = new EventEmitter<number>();
@@ -29,5 +33,11 @@ export class ExerciseTemplateComponent {
   @Output() onReorderSets = new EventEmitter<CollapsableExerciseTemplate>();
 
   @Output() onDeleteSet = new EventEmitter<{ template: CollapsableExerciseTemplate, index: number }>();
+
+  toggleCollapsed() {
+    if (this.reorderMode) { return; }
+    this.collapsed = !this.collapsed;
+    this.collapsedChange.emit(this.collapsed);
+  }
 
 }

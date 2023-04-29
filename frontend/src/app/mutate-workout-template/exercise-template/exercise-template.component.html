@@ -3,8 +3,8 @@
         pButton
         pRipple
         type="button"
-        (click)="!reorderMode && template.collapsed = !template.collapsed"
-        [icon]=" reorderMode ? 'pi pi-arrows-alt' : template.collapsed ? 'pi pi-chevron-right' : 'pi pi-chevron-down'"
+        (click)="toggleCollapsed()"
+        [icon]=" reorderMode ? 'pi pi-arrows-alt' : collapsed ? 'pi pi-chevron-right' : 'pi pi-chevron-down'"
         class="p-button-rounded p-button-text p-button-plain mr-2"
         >
         <ng-content></ng-content>
@@ -24,7 +24,7 @@
         styleClass="p-button-sm p-button-danger"
         ></p-button>
 </div>
-<div [@collapse]="(template.collapsed || hideSets) ? 'hidden' : 'visible'" style="overflow: hidden;">
+<div [@collapse]="(collapsed || hideSets) ? 'hidden' : 'visible'" style="overflow: hidden;">
     <p-table
         [value]="template.sets"
         (onRowReorder)="onReorderSets.emit(template)"

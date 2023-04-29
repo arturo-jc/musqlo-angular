@@ -19,6 +19,7 @@ export class ExerciseTemplatePlaceholderPipe implements PipeTransform {
           weight: 0,
         }
       ],
+      key: 'placeholder',
     };
   }
 

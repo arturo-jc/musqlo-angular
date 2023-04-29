@@ -66,6 +66,7 @@ export type ExerciseTemplate = {
   __typename?: 'ExerciseTemplate';
   exerciseType: Scalars['String'];
   id: Scalars['String'];
+  key?: Maybe<Scalars['String']>;
   order: Scalars['Int'];
   sets: Array<SetTemplate>;
 };
@@ -290,6 +291,7 @@ export type ExerciseItemResolvers<ContextType = any, ParentType extends Resolver
 export type ExerciseTemplateResolvers<ContextType = any, ParentType extends ResolversParentTypes['ExerciseTemplate'] = ResolversParentTypes['ExerciseTemplate']> = ResolversObject<{
   exerciseType?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  key?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   order?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   sets?: Resolver<Array<ResolversTypes['SetTemplate']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

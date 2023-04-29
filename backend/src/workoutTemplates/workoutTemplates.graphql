@@ -8,6 +8,7 @@ type WorkoutTemplate {
 
 type ExerciseTemplate {
   id: String!
+  key: String
   exerciseType: String!
   sets: [SetTemplate!]!
   order: Int!

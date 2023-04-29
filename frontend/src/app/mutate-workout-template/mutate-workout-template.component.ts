@@ -1,15 +1,15 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep, template } from 'lodash-es';
 import { ExerciseItem, ExerciseTemplate, SetTemplate, WorkoutTemplate } from '../../generated/graphql.generated';
-import { OptionalId } from '../shared/utils';
+import { OptionalId, RequiredKey } from '../shared/utils';
 import { WorkoutTemplatesService } from '../workout-templates/workout-templates.service';
 import { ExerciseItemsComponent } from './exercise-items/exercise-items.component';
 
 export const DEFAULT_BG_COLOR = 'var(--primary-color)';
 
-export type CollapsableExerciseTemplate = OptionalId<ExerciseTemplate> & { collapsed: boolean };
+export type CollapsableExerciseTemplate = OptionalId<RequiredKey<ExerciseTemplate>> & { collapsed: boolean };
 
 @Component({
   selector: 'app-mutate-workout-template',
@@ -30,7 +30,11 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
 
   reorderMode = false;
 
+  currentKey = 0;
+
   exerciseTemplates: CollapsableExerciseTemplate[] = [];
+
+  expandedTemplates: { [ templateOrder: string ]: boolean } = {};
 
   constructor(
     private workoutTemplates: WorkoutTemplatesService,
@@ -63,7 +67,19 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
     this.title = workoutTemplateToEdit.name;
     this.color = workoutTemplateToEdit.backgroundColor || DEFAULT_BG_COLOR;
 
-    const exerciseTemplates: CollapsableExerciseTemplate[] = workoutTemplateToEdit.exercises.map(e => ({ ...e, collapsed: false }));
+    const exerciseTemplates: CollapsableExerciseTemplate[] = [];
+
+    for (const exercise of workoutTemplateToEdit.exercises) {
+      const collapsableExercise: CollapsableExerciseTemplate = {
+        ...exercise,
+        key: this.currentKey.toString(),
+        collapsed: false,
+      }
+
+      exerciseTemplates.push(collapsableExercise);
+
+      this.expandedTemplates[collapsableExercise.key] = true;
+    }
 
     this.exerciseTemplates = exerciseTemplates;
   }
@@ -100,7 +116,10 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
       sets: [ firstSet ],
       order: index + 1,
       collapsed: false,
+      key: this.currentKey.toString(),
     };
+
+    this.currentKey++;
 
     const updatedTemplates = [ ...this.exerciseTemplates ]; 
     updatedTemplates.splice(index, 0, newTemplate);
