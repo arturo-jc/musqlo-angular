@@ -6,6 +6,8 @@ type Schedule {
 }
 
 type ScheduleWorkout {
+  id: String!
+  workoutTemplateId: String
   workoutTemplateKey: String
   dow: Int
   allDay: Boolean
@@ -22,14 +24,13 @@ extend type Mutation {
 }
 
 input CreateScheduleInput {
-  id: String!
-  key: String
   name: String!
   workouts: [CreateScheduleWorkoutInput!]!
 }
 
 input CreateScheduleWorkoutInput {
-  workoutTemplateId: String!
+  workoutTemplateId: String
+  workoutTemplateKey: String
   dow: Int
   allDay: Boolean
   start: String

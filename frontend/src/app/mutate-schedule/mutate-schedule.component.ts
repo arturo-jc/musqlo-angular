@@ -152,6 +152,8 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
       workouts: this.getScheduleWorkouts(this.calendarApi.getEvents()),
     }
 
+    console.log(scheduleToSave);
+
     if (this.mode === 'create') {
       this.schedulesService.addSchedule(scheduleToSave);
     } else if (this.mode === 'edit') {

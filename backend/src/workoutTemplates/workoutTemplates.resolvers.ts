@@ -2,10 +2,17 @@ import { Context } from "../context";
 import { ExerciseTemplate, MutationResolvers, Resolvers, UserResolvers, WorkoutTemplate } from "../generated/graphql.generated";
 import { v1 as uuid } from 'uuid';
 
-export const workoutTemplates: { [ userId: string ]: WorkoutTemplate[] } = {};
+export interface UserTemplates {
+  userId: string;
+  workoutTemplates: WorkoutTemplate[];
+}
+
+export type SavedWorkoutTemplate = WorkoutTemplate & { userId: string };
+
+export const savedWorkoutTemplates: SavedWorkoutTemplate[] = [];
 
 const getWorkoutTemplates: UserResolvers<Context>['workoutTemplates'] = (parent) => {
-  return workoutTemplates[parent.id] || [];
+  return savedWorkoutTemplates.filter(t => t.userId === parent.id);
 }
 
 const createWorkoutTemplates: MutationResolvers<Context>['createWorkoutTemplates'] = (_parent, args, ctx) => {
@@ -14,9 +21,6 @@ const createWorkoutTemplates: MutationResolvers<Context>['createWorkoutTemplates
     throw new Error('User not authenticated');
   }
 
-  const existingWorkoutTemplates = workoutTemplates[ctx.userId] || [];
-
-  const newWorkoutTemplates: WorkoutTemplate[] = [];
   const output: WorkoutTemplate[] = [];
 
   for (const template of args.workoutTemplates) {
@@ -36,16 +40,10 @@ const createWorkoutTemplates: MutationResolvers<Context>['createWorkoutTemplates
       backgroundColor: template.backgroundColor,
     }
 
-    newWorkoutTemplates.push(newTemplate);
+    output.push({ ...newTemplate, key: template.key });
 
-    const copy = { ...newTemplate };
-
-    copy.key = template.key;
-
-    output.push(copy);
+    savedWorkoutTemplates.push({ ...newTemplate, userId: ctx.userId });
   }
-
-  workoutTemplates[ctx.userId] = [ ...existingWorkoutTemplates, ...newWorkoutTemplates];
 
   return output;
 }

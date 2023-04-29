@@ -1,34 +1,28 @@
 import { Context } from "../context";
-import { MutationResolvers, Resolvers, Schedule, ScheduleResolvers, UserResolvers } from "../generated/graphql.generated";
+import { CreateScheduleWorkoutInput, MutationResolvers, Resolvers, Schedule, ScheduleResolvers, ScheduleWorkout, UserResolvers } from "../generated/graphql.generated";
 import { v1 as uuid } from 'uuid';
-// import { workoutTemplates } from "../workoutTemplates/workoutTemplates.resolvers";
-// import { flatten } from 'lodash';
 
-export type StorageSchedule = Omit<Schedule, 'workouts'> & { workoutIds: string[] }
+export type SavedSchedule = Omit<Schedule, 'workouts'> & { userId: string; workoutIds: string[] };
 
-const schedules: { [ userId: string ]: StorageSchedule[] } = {};
+const savedSchedules: SavedSchedule[] = [];
 
-// const scheduleWorkouts: any[] = [];
+const savedScheduleWorkouts: ScheduleWorkout[] = [];
 
 const getSchedules: UserResolvers<Context>['schedules'] = (parent) => {
-  const userSchedules = schedules[parent.id] || [];
 
-  const output: Schedule[] = userSchedules.map(s => ({
-    id: s.id,
-    name: s.name,
-  }));
+  const userSchedules = savedSchedules.filter(s => s.userId === parent.id);
 
-  return output;
+  return userSchedules;
 }
 
-const workouts: ScheduleResolvers<Context>['workouts'] = (_parent, _args, _ctx) => {
-  // const allSchedules = flatten(Object.values(schedules));
-  // const parentSchedule = allSchedules.find(s => s.id === parent.id);
-  // const workoutIds = parentSchedule?.workoutIds;
+const workouts: ScheduleResolvers<Context>['workouts'] = (parent, _args, _ctx) => {
+  const schedule = savedSchedules.find(s => s.id === parent.id);
 
-  // const allWorkoutTemplates = flatten(Object.values(workoutTemplates));
-  // return allWorkoutTemplates.filter(w => workoutIds?.includes(w.id));
-  return [];
+  if (!schedule) {
+    throw new Error(`Could not resolve schedule: ${parent.id}`);
+  }
+
+  return savedScheduleWorkouts.filter(w => schedule.workoutIds.includes(w.id));
 }
 
 const createSchedules: MutationResolvers<Context>['createSchedules'] = (_parent, args, ctx) => {
@@ -37,28 +31,46 @@ const createSchedules: MutationResolvers<Context>['createSchedules'] = (_parent,
     throw new Error('User not authenticated');
   }
 
-  const existingSchedules = schedules[ctx.userId] || [];
-
-  const newSchedules: StorageSchedule[] = [];
   const output: Schedule[] = [];
 
   for (const schedule of args.schedules) {
 
+    const savedScheduleWorkouts = saveScheduleWorkouts(schedule.workouts);
+
     const newSchedule: Schedule = {
       id: uuid(),
       name: schedule.name,
+      workouts: savedScheduleWorkouts,
     };
 
-    const storageSchedule: StorageSchedule = {
-      ...newSchedule,
-      workoutIds: schedule.workouts.map(w => w.workoutTemplateId),
-    };
-
-    newSchedules.push(storageSchedule);
     output.push(newSchedule);
+
+    const savedSchedule: SavedSchedule = {
+      id: newSchedule.id,
+      name: schedule.name,
+      userId: ctx.userId,
+      workoutIds: savedScheduleWorkouts.map(w => w.id),
+    };
+
+    savedSchedules.push(savedSchedule);
+
   }
 
-  schedules[ctx.userId] = [ ...existingSchedules, ...newSchedules ];
+  return output;
+}
+
+function saveScheduleWorkouts(scheduleWorkouts: CreateScheduleWorkoutInput[]): ScheduleWorkout[] {
+
+  const output: ScheduleWorkout[] = [];
+
+  for (const workout of scheduleWorkouts) {
+
+    const newWorkout: ScheduleWorkout = { ...workout, id: uuid() };
+
+    savedScheduleWorkouts.push(newWorkout);
+
+    output.push(newWorkout);
+  }
 
   return output;
 }
