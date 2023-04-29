@@ -22,7 +22,7 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
 
   title = 'New Workout';
 
-  color = 'var(--primary-color)';
+  color = DEFAULT_BG_COLOR;
 
   mode!: 'create' | 'edit';
 
@@ -75,9 +75,11 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
         key: this.currentKey.toString(),
       }
 
+      this.currentKey++;
+
       exerciseTemplates.push(collapsableExercise);
 
-      this.collapsedTemplates[collapsableExercise.key] = true;
+      this.collapsedTemplates[collapsableExercise.key] = false;
     }
 
     this.exerciseTemplates = exerciseTemplates;

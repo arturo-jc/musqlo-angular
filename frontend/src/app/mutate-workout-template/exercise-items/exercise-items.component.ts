@@ -40,10 +40,7 @@ export class ExerciseItemsComponent implements OnInit {
       .pipe(
         tap((res) => this.loading = res.loading),
         filter(res => Boolean(res.data) && Boolean(res.data.exerciseItems)),
-        map((res: ApolloQueryResult<ExerciseItemsQuery>) => {
-          const exerciseItems = res.data.exerciseItems.filter(notEmpty);
-          return exerciseItems;
-        }),
+        map((res: ApolloQueryResult<ExerciseItemsQuery>) => res.data.exerciseItems.filter(notEmpty)),
       )
     ;
   };
