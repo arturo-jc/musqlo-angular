@@ -30,8 +30,6 @@ export type CreateExerciseInput = {
 };
 
 export type CreateScheduleInput = {
-  id: Scalars['String'];
-  key?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   workouts: Array<CreateScheduleWorkoutInput>;
 };
@@ -41,7 +39,8 @@ export type CreateScheduleWorkoutInput = {
   dow?: InputMaybe<Scalars['Int']>;
   end?: InputMaybe<Scalars['String']>;
   start?: InputMaybe<Scalars['String']>;
-  workoutTemplateId: Scalars['String'];
+  workoutTemplateId?: InputMaybe<Scalars['String']>;
+  workoutTemplateKey?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateSetTemplateInput = {
@@ -132,7 +131,9 @@ export type ScheduleWorkout = {
   allDay?: Maybe<Scalars['Boolean']>;
   dow?: Maybe<Scalars['Int']>;
   end?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
   start?: Maybe<Scalars['String']>;
+  workoutTemplateId?: Maybe<Scalars['String']>;
   workoutTemplateKey?: Maybe<Scalars['String']>;
 };
 
@@ -192,6 +193,20 @@ export type SignUpMutationVariables = Exact<{
 
 
 export type SignUpMutation = { __typename?: 'Mutation', signUp: { __typename?: 'AuthenticateOutput', userId: string, userEmail: string, username?: string | null, expiresIn?: number | null } };
+
+export type UserSchedulesQueryVariables = Exact<{
+  userId: Scalars['String'];
+}>;
+
+
+export type UserSchedulesQuery = { __typename?: 'Query', user?: { __typename?: 'User', schedules?: Array<{ __typename?: 'Schedule', id: string, key?: string | null, name: string, workouts?: Array<{ __typename?: 'ScheduleWorkout', id: string, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null }> | null }> | null } | null };
+
+export type CreateSchedulesMutationVariables = Exact<{
+  schedules: Array<CreateScheduleInput> | CreateScheduleInput;
+}>;
+
+
+export type CreateSchedulesMutation = { __typename?: 'Mutation', createSchedules: Array<{ __typename?: 'Schedule', id: string, key?: string | null, name: string, workouts?: Array<{ __typename?: 'ScheduleWorkout', allDay?: boolean | null, dow?: number | null, end?: string | null, id: string, workoutTemplateId?: string | null, start?: string | null, workoutTemplateKey?: string | null }> | null }> };
 
 export type UserWorkoutTemplatesQueryVariables = Exact<{
   userId: Scalars['String'];
@@ -300,6 +315,66 @@ export const SignUpDocument = gql`
   })
   export class SignUpGQL extends Apollo.Mutation<SignUpMutation, SignUpMutationVariables> {
     override document = SignUpDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const UserSchedulesDocument = gql`
+    query UserSchedules($userId: String!) {
+  user(userId: $userId) {
+    schedules {
+      id
+      key
+      name
+      workouts {
+        id
+        workoutTemplateId
+        workoutTemplateKey
+        dow
+        allDay
+        start
+        end
+      }
+    }
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class UserSchedulesGQL extends Apollo.Query<UserSchedulesQuery, UserSchedulesQueryVariables> {
+    override document = UserSchedulesDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const CreateSchedulesDocument = gql`
+    mutation CreateSchedules($schedules: [CreateScheduleInput!]!) {
+  createSchedules(schedules: $schedules) {
+    id
+    key
+    name
+    workouts {
+      allDay
+      dow
+      end
+      id
+      workoutTemplateId
+      start
+      workoutTemplateKey
+    }
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class CreateSchedulesGQL extends Apollo.Mutation<CreateSchedulesMutation, CreateSchedulesMutationVariables> {
+    override document = CreateSchedulesDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

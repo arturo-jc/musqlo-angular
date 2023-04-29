@@ -1,0 +1,35 @@
+query UserSchedules($userId: String!) {
+  user(userId: $userId) {
+    schedules {
+      id
+        key
+        name
+        workouts {
+          id
+          workoutTemplateId
+          workoutTemplateKey
+          dow
+          allDay
+          start
+          end
+        }
+    }
+  }
+}
+
+mutation CreateSchedules($schedules: [CreateScheduleInput!]!) {
+  createSchedules(schedules: $schedules) {
+    id
+    key
+    name
+    workouts {
+      allDay
+      dow
+      end
+      id
+      workoutTemplateId
+      start
+      workoutTemplateKey
+    }
+  }
+}
