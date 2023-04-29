@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { WorkoutTemplate } from '../../generated/graphql.generated';
 import { Schedule, SchedulesService } from '../services/schedules.service';
 import { OptionalId } from '../shared/utils';
-import { WorkoutTemplatesService } from '../workout-templates/workout-templates.service';
+import { WorkoutTemplatesService } from '../services/workout-templates.service';
 
 @Component({
   selector: 'app-dashboard',

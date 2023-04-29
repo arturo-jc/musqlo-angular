@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { WorkoutTemplate } from '../../generated/graphql.generated';
 import { OptionalId } from '../shared/utils';
-import { FullCalendarService } from './full-calendar.service';
+import { FullCalendarService } from '../services/full-calendar.service';
 
 @Pipe({
   name: 'workoutTemplateEventData'

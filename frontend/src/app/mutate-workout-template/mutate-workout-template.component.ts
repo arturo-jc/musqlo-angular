@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { cloneDeep } from 'lodash-es';
 import { ExerciseItem, ExerciseTemplate, SetTemplate, WorkoutTemplate } from '../../generated/graphql.generated';
 import { OptionalId, RequiredKey } from '../shared/utils';
-import { WorkoutTemplatesService } from '../workout-templates/workout-templates.service';
+import { WorkoutTemplatesService } from '../services/workout-templates.service';
 import { ExerciseItemsComponent } from './exercise-items/exercise-items.component';
 
 export const DEFAULT_BG_COLOR = 'var(--primary-color)';

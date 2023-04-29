@@ -4,13 +4,13 @@ import dayGridWeek from '@fullcalendar/daygrid';
 import timeGridWeek from '@fullcalendar/timegrid';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import interaction from '@fullcalendar/interaction';
-import { FullCalendarService } from '../full-calendar/full-calendar.service';
+import { FullCalendarService } from '../services/full-calendar.service';
 import { WorkoutTemplatesComponent } from '../workout-templates/workout-templates.component';
 import { Schedule, SchedulesService, ScheduleWorkout } from '../services/schedules.service';
 import dayjs from 'dayjs';
 import { EventImpl } from '@fullcalendar/core/internal';
 import { ActivatedRoute, Router } from '@angular/router';
-import { WorkoutTemplatesService } from '../workout-templates/workout-templates.service';
+import { WorkoutTemplatesService } from '../services/workout-templates.service';
 
 export type CalendarView = 'weekly' | 'biweekly';
 

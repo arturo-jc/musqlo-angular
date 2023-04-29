@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MenuItem, PrimeNGConfig } from 'primeng/api';
 import { AuthService } from './services/auth.service';
-import { WorkoutTemplatesService } from './workout-templates/workout-templates.service';
+import { WorkoutTemplatesService } from './services/workout-templates.service';
 
 @Component({
   selector: 'app-root',

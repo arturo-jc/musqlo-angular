@@ -3,7 +3,7 @@ import { EventContentArg, EventInput } from '@fullcalendar/core';
 import { EventImpl } from '@fullcalendar/core/internal';
 import dayjs from 'dayjs';
 import { DEFAULT_BG_COLOR } from '../mutate-workout-template/mutate-workout-template.component';
-import { WorkoutTemplatesService } from '../workout-templates/workout-templates.service';
+import { WorkoutTemplatesService } from './workout-templates.service';
 import { LIGHT_DARK_THRESHOLD } from '../shared/color-picker/color-picker.component';
 import { OptionalId } from '../shared/utils';
 import { WorkoutTemplate, ExerciseTemplate } from '../../generated/graphql.generated';
