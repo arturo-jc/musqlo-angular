@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
+import { cloneDeep } from 'lodash-es';
 import { filter, map, of, tap } from 'rxjs';
-import { CreateScheduleInput, CreateSchedulesGQL, CreateSchedulesMutationVariables, CreateScheduleWorkoutInput, Schedule, UserSchedulesQuery, UserSchedulesQueryVariables } from '../../generated/graphql.generated';
+import { CreateScheduleInput, CreateSchedulesGQL, CreateSchedulesMutationVariables, CreateScheduleWorkoutInput, Schedule, UserSchedulesGQL, UserSchedulesQuery, UserSchedulesQueryVariables } from '../../generated/graphql.generated';
 import { OptionalId } from '../shared/utils';
 import { WorkoutTemplatesService } from './workout-templates.service';
 
@@ -12,6 +13,7 @@ export class SchedulesService {
 
   constructor(
     private workoutTemplates: WorkoutTemplatesService,
+    private userSchedulesGQL: UserSchedulesGQL,
     private createSchedulesGQL: CreateSchedulesGQL,
   ) { }
 
@@ -35,19 +37,44 @@ export class SchedulesService {
 
   updateSchedule(updatedSchedule: OptionalId<Schedule>) {
 
-    console.log({ updatedSchedule, editScheduleKey: this.editScheduleKey });
-
     if (!this.editScheduleKey) { return; }
 
     updatedSchedule.key = this.editScheduleKey.toString();
 
     const updatedSchedules = [ ...this.schedules ];
 
-    console.log({ updatedSchedules, updatedSchedule });
-
     updatedSchedules.splice(this.scheduleToEditIndex, 1, updatedSchedule);
 
     this.schedules = updatedSchedules;
+  }
+
+  watchUserSchedules(userId: string) {
+    const watchQueryVariables: UserSchedulesQueryVariables = { userId };
+
+    this.userSchedulesQuery = this.userSchedulesGQL.watch(watchQueryVariables, { fetchPolicy: 'cache-and-network' });
+
+    return this.userSchedulesQuery.valueChanges.pipe(
+      filter(res => !res.loading),
+      map(res => cloneDeep(res.data.user?.schedules) || []),
+      tap(userSchedules => this.setKeys(userSchedules)),
+      tap(userSchedules => this.schedules = userSchedules),
+    )
+  }
+
+  setKeys(userSchedules: Schedule[]) {
+    for (const schedule of userSchedules) {
+
+      if (schedule.key) { continue; }
+
+      const loadedSchedule = this.schedules.find(s => s.id === schedule.id);
+
+      if (loadedSchedule?.key) {
+        schedule.key = loadedSchedule.key;
+      } else {
+        schedule.key = this.currentKey.toString();
+        this.currentKey++;
+      }
+    }
   }
 
   createUnsavedSchedules() {
@@ -90,9 +117,15 @@ export class SchedulesService {
     return this.createSchedulesGQL.mutate(mutationVariables)
       .pipe(
         filter(res => !res.loading),
-        map(res => res.data?.createSchedules),
-        tap(userSchedules => this.schedules = userSchedules || [])
+        map(res => res.data?.createSchedules || []),
+        tap(userSchedules => this.schedules = userSchedules)
       );
+  }
+
+  reset() {
+    this.schedules = [];
+    this.editScheduleKey = undefined;
+    this.currentKey = 0;
   }
 
   get scheduleToEdit() {
@@ -101,11 +134,5 @@ export class SchedulesService {
 
   get scheduleToEditIndex() {
     return this.schedules.findIndex(t => t.key === this.editScheduleKey);
-  }
-
-  reset() {
-    this.schedules = [];
-    this.editScheduleKey = undefined;
-    this.currentKey = 0;
   }
 }

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
+import { cloneDeep } from 'lodash-es';
 import { filter, map, of, tap } from 'rxjs';
-import { CreateWorkoutTemplatesGQL, UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables, CreateWorkoutTemplatesMutationVariables, CreateWorkoutTemplateInput, CreateExerciseInput } from '../../generated/graphql.generated';
+import { CreateWorkoutTemplatesGQL, UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables, CreateWorkoutTemplatesMutationVariables, CreateWorkoutTemplateInput, CreateExerciseInput, UserWorkoutTemplatesGQL } from '../../generated/graphql.generated';
 import { WorkoutTemplate } from '../../generated/graphql.generated';
 import { OptionalId, RequiredKey } from '../shared/utils';
 
@@ -22,6 +23,7 @@ export class WorkoutTemplatesService {
 
   constructor(
     private createWorkoutTemplatesGQL: CreateWorkoutTemplatesGQL,
+    private userWorkoutTemplatesGQL: UserWorkoutTemplatesGQL,
   ) {}
 
   addWorkoutTemplate(newWorkoutTemplate: OptionalId<WorkoutTemplate>) {
@@ -48,12 +50,33 @@ export class WorkoutTemplatesService {
     this.workoutTemplates = updatedWorkoutTemplates;
   }
 
-  get workoutTemplateToEdit() {
-    return this.workoutTemplates.find(t => t.key === this.editWorkoutTemplateKey);
+  watchUserWorkoutTemplates(userId: string) {
+    const watchQueryVariables: UserWorkoutTemplatesQueryVariables = { userId };
+
+    this.userWorkoutTemplatesQuery = this.userWorkoutTemplatesGQL.watch(watchQueryVariables, { fetchPolicy: 'cache-and-network' });
+
+    return this.userWorkoutTemplatesQuery.valueChanges.pipe(
+      filter(res => !res.loading),
+      map(res => cloneDeep(res.data.user?.workoutTemplates) || []),
+      tap(userTemplates => this.setKeys(userTemplates)),
+      tap(userTemplates => this.workoutTemplates = userTemplates),
+    )
   }
 
-  get workoutTemplateToEditIndex() {
-    return this.workoutTemplates.findIndex(t => t.key === this.editWorkoutTemplateKey);
+  setKeys(workoutTemplates: WorkoutTemplate[]) {
+    for (const template of workoutTemplates) {
+
+      if (template.key) { continue; }
+
+      const loadedTemplate = this.workoutTemplates.find(t => t.id === template.id);
+
+      if (loadedTemplate?.key) {
+        template.key = loadedTemplate.key;
+      } else {
+        template.key = this.currentKey.toString();
+        this.currentKey++;
+      }
+    }
   }
 
   createUnsavedWorkoutTemplates() {
@@ -94,8 +117,8 @@ export class WorkoutTemplatesService {
     return this.createWorkoutTemplatesGQL.mutate(mutationVariables)
       .pipe(
         filter(res => !res.loading),
-        map(res => res.data?.createWorkoutTemplates),
-        tap(userWorkoutTemplates => this.workoutTemplates = userWorkoutTemplates || []),
+        map(res => res.data?.createWorkoutTemplates || []),
+        tap(userWorkoutTemplates => this.workoutTemplates = userWorkoutTemplates),
       );
   }
 
@@ -105,4 +128,11 @@ export class WorkoutTemplatesService {
     this.currentKey = 0;
   }
 
+  get workoutTemplateToEdit() {
+    return this.workoutTemplates.find(t => t.key === this.editWorkoutTemplateKey);
+  }
+
+  get workoutTemplateToEditIndex() {
+    return this.workoutTemplates.findIndex(t => t.key === this.editWorkoutTemplateKey);
+  }
 }

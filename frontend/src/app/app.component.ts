@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MenuItem, PrimeNGConfig } from 'primeng/api';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, switchMap } from 'rxjs';
+import { SubSink } from 'subsink';
 import { AuthService } from './services/auth.service';
 import { SchedulesService } from './services/schedules.service';
 import { WorkoutTemplatesService } from './services/workout-templates.service';
@@ -21,6 +22,8 @@ export class AppComponent implements OnInit {
     ,}
   ];
 
+  subs = new SubSink();
+
   constructor(
     private primeConfig: PrimeNGConfig,
     public auth: AuthService,
@@ -31,13 +34,16 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.primeConfig.ripple = true;
-    this.auth.onAuthSuccess.subscribe(() => this.onAuthSuccess())
+    this.auth.onAuthSuccess.subscribe(user => this.onAuthSuccess(user.id))
     this.auth.onLogout.subscribe(() => this.onLogout());
   }
 
-  async onAuthSuccess() {
+  async onAuthSuccess(userId: string) {
     await firstValueFrom(this.workoutTemplates.createUnsavedWorkoutTemplates())
     await firstValueFrom(this.schedules.createUnsavedSchedules());
+    this.subs.sink = this.workoutTemplates.watchUserWorkoutTemplates(userId)
+      .pipe(switchMap(() => this.schedules.watchUserSchedules(userId)))
+      .subscribe(console.log);
   }
 
   onLogout() {
