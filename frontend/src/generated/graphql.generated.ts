@@ -220,7 +220,7 @@ export type CreateWorkoutTemplatesMutationVariables = Exact<{
 }>;
 
 
-export type CreateWorkoutTemplatesMutation = { __typename?: 'Mutation', createWorkoutTemplates: Array<{ __typename?: 'WorkoutTemplate', id: string, key?: string | null }> };
+export type CreateWorkoutTemplatesMutation = { __typename?: 'Mutation', createWorkoutTemplates: Array<{ __typename?: 'WorkoutTemplate', id: string, name: string, backgroundColor?: string | null, key?: string | null, exercises: Array<{ __typename?: 'ExerciseTemplate', id: string, exerciseType: string, order: number, sets: Array<{ __typename?: 'SetTemplate', reps?: number | null, weight?: number | null, order: number }> }> }> };
 
 export const ExerciseItemsDocument = gql`
     query ExerciseItems {
@@ -417,7 +417,19 @@ export const CreateWorkoutTemplatesDocument = gql`
     mutation CreateWorkoutTemplates($workoutTemplates: [CreateWorkoutTemplateInput!]!) {
   createWorkoutTemplates(workoutTemplates: $workoutTemplates) {
     id
+    name
+    backgroundColor
     key
+    exercises {
+      id
+      exerciseType
+      order
+      sets {
+        reps
+        weight
+        order
+      }
+    }
   }
 }
     `;

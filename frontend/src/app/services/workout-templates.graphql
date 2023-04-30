@@ -22,6 +22,18 @@ query UserWorkoutTemplates($userId: String!) {
 mutation CreateWorkoutTemplates($workoutTemplates: [CreateWorkoutTemplateInput!]!) {
   createWorkoutTemplates(workoutTemplates: $workoutTemplates) {
     id
+    name
+    backgroundColor
     key
+    exercises {
+      id
+      exerciseType
+      order
+      sets {
+        reps
+        weight
+        order
+      }
+    }
   }
 }

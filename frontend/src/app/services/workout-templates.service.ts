@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
-import { filter, map, switchMap, tap } from 'rxjs';
-import { CreateWorkoutTemplatesGQL, UserWorkoutTemplatesGQL, UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables, CreateWorkoutTemplatesMutationVariables, CreateWorkoutTemplateInput, CreateExerciseInput } from '../../generated/graphql.generated';
+import { EMPTY, filter, map, of, tap } from 'rxjs';
+import { CreateWorkoutTemplatesGQL, UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables, CreateWorkoutTemplatesMutationVariables, CreateWorkoutTemplateInput, CreateExerciseInput } from '../../generated/graphql.generated';
 import { WorkoutTemplate } from '../../generated/graphql.generated';
 import { OptionalId, RequiredKey } from '../shared/utils';
 
@@ -21,7 +21,6 @@ export class WorkoutTemplatesService {
   userWorkoutTemplatesQuery?: QueryRef<UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables>;
 
   constructor(
-    private userWorkoutTemplatesGQL: UserWorkoutTemplatesGQL,
     private createWorkoutTemplatesGQL: CreateWorkoutTemplatesGQL,
   ) {}
 
@@ -57,7 +56,7 @@ export class WorkoutTemplatesService {
     return this.workoutTemplates.findIndex(t => t.key === this.editWorkoutTemplateKey);
   }
 
-  createUnsavedWorkoutTemplates(userId: string) {
+  createUnsavedWorkoutTemplates() {
     const unsavedWorkoutTemplates: CreateWorkoutTemplateInput[] = [];
 
     for (const template of this.workoutTemplates) {
@@ -84,31 +83,17 @@ export class WorkoutTemplatesService {
       unsavedWorkoutTemplates.push(unsavedTemplate)
     }
 
+    if (!unsavedWorkoutTemplates.length) { return of([]); }
+
     const mutationVariables: CreateWorkoutTemplatesMutationVariables = {
       workoutTemplates: unsavedWorkoutTemplates,
     };
 
-    const workoutTemplatesQueryVariables: UserWorkoutTemplatesQueryVariables = { userId };
-
-    this.userWorkoutTemplatesQuery = this.userWorkoutTemplatesGQL.watch(workoutTemplatesQueryVariables);
-
-    const { valueChanges: queryValueChanges } = this.userWorkoutTemplatesQuery;
-
     return this.createWorkoutTemplatesGQL.mutate(mutationVariables)
       .pipe(
-        switchMap(() => queryValueChanges),
         filter(res => !res.loading),
-        map(res => res.data.user?.workoutTemplates || []),
-        tap(userWorkoutTemplates => {
-
-          this.workoutTemplates = userWorkoutTemplates.map(t => ({
-            ...t,
-            key: t.id,
-          }));
-
-          this.currentKey = 0;
-
-        })
+        map(res => res.data?.createWorkoutTemplates),
+        tap(userWorkoutTemplates => this.workoutTemplates = userWorkoutTemplates || []),
       );
   }
 

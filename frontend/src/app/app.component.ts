@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MenuItem, PrimeNGConfig } from 'primeng/api';
-import { switchMap } from 'rxjs';
+import { firstValueFrom, switchMap } from 'rxjs';
 import { AuthService } from './services/auth.service';
 import { SchedulesService } from './services/schedules.service';
 import { WorkoutTemplatesService } from './services/workout-templates.service';
@@ -31,14 +31,13 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.primeConfig.ripple = true;
-    this.auth.onAuthSuccess.subscribe(user => this.onAuthSuccess(user.id))
+    this.auth.onAuthSuccess.subscribe(() => this.onAuthSuccess())
     this.auth.onLogout.subscribe(() => this.onLogout());
   }
 
-  onAuthSuccess(userId: string) {
-    this.workoutTemplates.createUnsavedWorkoutTemplates(userId)
-      .pipe(switchMap(() => this.schedules.createUnsavedSchedules(userId)))
-      .subscribe(userSchedules => console.log(userSchedules));
+  async onAuthSuccess() {
+    await firstValueFrom(this.workoutTemplates.createUnsavedWorkoutTemplates())
+    await firstValueFrom(this.schedules.createUnsavedSchedules());
   }
 
   onLogout() {

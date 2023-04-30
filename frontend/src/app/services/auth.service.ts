@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, firstValueFrom, map, Subject } from 'rxjs';
-import { AuthenticateGQL, AuthenticateOutput, LogInGQL, LogInQuery, LogOutGQL, SignUpGQL, SignUpMutation as res, User } from '../../generated/graphql.generated';
+import { AuthenticateGQL, AuthenticateOutput, LogInGQL, LogOutGQL, SignUpGQL, User } from '../../generated/graphql.generated';
 import { TimeService } from './time.service';
 
 @Injectable({

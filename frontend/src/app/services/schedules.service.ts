@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
-import { filter, map, switchMap, tap } from 'rxjs';
-import { CreateScheduleInput, CreateSchedulesGQL, CreateSchedulesMutationVariables, CreateScheduleWorkoutInput, Schedule, UserSchedulesGQL, UserSchedulesQuery, UserSchedulesQueryVariables } from '../../generated/graphql.generated';
+import { filter, map, of, tap } from 'rxjs';
+import { CreateScheduleInput, CreateSchedulesGQL, CreateSchedulesMutationVariables, CreateScheduleWorkoutInput, Schedule, UserSchedulesQuery, UserSchedulesQueryVariables } from '../../generated/graphql.generated';
 import { OptionalId } from '../shared/utils';
+import { WorkoutTemplatesService } from './workout-templates.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,8 +11,8 @@ import { OptionalId } from '../shared/utils';
 export class SchedulesService {
 
   constructor(
+    private workoutTemplates: WorkoutTemplatesService,
     private createSchedulesGQL: CreateSchedulesGQL,
-    private userSchedulesGQL: UserSchedulesGQL,
   ) { }
 
   schedules: OptionalId<Schedule>[] = [];
@@ -44,7 +45,7 @@ export class SchedulesService {
     this.schedules = updatedSchedules;
   }
 
-  createUnsavedSchedules(userId: string) {
+  createUnsavedSchedules() {
 
     const unsavedSchedules: CreateScheduleInput[] = [];
 
@@ -55,7 +56,16 @@ export class SchedulesService {
         throw new Error('Cannot save a schedule without a key');
       }
 
-      const unsavedScheduleWorkouts: CreateScheduleWorkoutInput[] = schedule.workouts;
+      const unsavedScheduleWorkouts: CreateScheduleWorkoutInput[] = [];
+
+      for (const workout of schedule.workouts) {
+
+        const workoutTemplateId = this.workoutTemplates.workoutTemplates.find(t => t.key === workout.workoutTemplateKey)?.id;
+
+        const unsavedScheduleWorkout: CreateScheduleWorkoutInput = { ...workout, workoutTemplateId };
+
+        unsavedScheduleWorkouts.push(unsavedScheduleWorkout);
+      }
 
       const unsavedSchedule: CreateScheduleInput = {
         name: schedule.name,
@@ -65,25 +75,18 @@ export class SchedulesService {
       unsavedSchedules.push(unsavedSchedule);
     }
 
+    if (!unsavedSchedules.length) { return of([]); }
+
     const mutationVariables: CreateSchedulesMutationVariables = {
       schedules: unsavedSchedules,
     }
 
-    const userSchedulesQueryVariables: UserSchedulesQueryVariables = { userId };
-
-    this.userSchedulesQuery = this.userSchedulesGQL.watch(userSchedulesQueryVariables);
-
-    const { valueChanges: queryValueChanges } = this.userSchedulesQuery;
-
     return this.createSchedulesGQL.mutate(mutationVariables)
       .pipe(
-        switchMap(() => queryValueChanges),
-          filter(res => !res.loading),
-          map(res => res.data.user?.schedules || []),
-          tap(userSchedules => {
-            this.schedules = userSchedules;
-            this.currentKey = 0;
-        }));
+        filter(res => !res.loading),
+        map(res => res.data?.createSchedules),
+        tap(userSchedules => this.schedules = userSchedules || [])
+      );
   }
 
   get scheduleToEdit() {
