@@ -9,7 +9,9 @@ export type Demaybefy<T> = { [P in keyof T ]: T[P] extends Maybe<infer V> ? V : 
 export type RequiredBy<T, K extends keyof T> = Omit<T, K> & Required<Demaybefy<Pick<T, K>>>;
 
 export type OptionalId<T extends { id: string }> = PartialBy<{
-    [P in keyof T]: T[P] extends Array<infer Item> ?
+    [P in keyof T]:
+        T[P] extends Maybe<Array<infer V>> ? V extends { id: string } ? Maybe<Array<OptionalId<V>>> : T[P] :
+        T[P] extends Array<infer Item> ?
         Item extends { id: string } ? Array<OptionalId<Item>> : T[P]
         :
         T[P] extends { id: string } ? OptionalId<T[P]> : T[P]

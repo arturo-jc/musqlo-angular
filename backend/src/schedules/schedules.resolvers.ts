@@ -9,10 +9,7 @@ const savedSchedules: SavedSchedule[] = [];
 const savedScheduleWorkouts: ScheduleWorkout[] = [];
 
 const getSchedules: UserResolvers<Context>['schedules'] = (parent) => {
-
-  const userSchedules = savedSchedules.filter(s => s.userId === parent.id);
-
-  return userSchedules;
+  return savedSchedules.filter(s => s.userId === parent.id);
 }
 
 const workouts: ScheduleResolvers<Context>['workouts'] = (parent, _args, _ctx) => {
@@ -41,6 +38,7 @@ const createSchedules: MutationResolvers<Context>['createSchedules'] = (_parent,
       id: uuid(),
       name: schedule.name,
       workouts: savedScheduleWorkouts,
+      key: schedule.key,
     };
 
     output.push(newSchedule);

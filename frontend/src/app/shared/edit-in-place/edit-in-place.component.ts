@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { Inplace } from 'primeng/inplace';
 
@@ -7,7 +7,7 @@ import { Inplace } from 'primeng/inplace';
   templateUrl: './edit-in-place.component.html',
   styleUrls: ['./edit-in-place.component.scss']
 })
-export class EditInPlaceComponent implements OnInit, AfterViewInit {
+export class EditInPlaceComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() text!: string;
 
   @Input() placeholder!: string;
@@ -40,6 +40,12 @@ export class EditInPlaceComponent implements OnInit, AfterViewInit {
     this.reset()
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if ('text' in changes) {
+      this.reset();
+    }
+  }
+
   ngAfterViewInit(): void {
     this.autoFocusOnActivate();
   }
@@ -53,11 +59,6 @@ export class EditInPlaceComponent implements OnInit, AfterViewInit {
 
   reset() {
     this.editedText = this.text;
-  }
-
-  forwardActivate() {
-    this.onActivate.emit();
-    this.reset();
   }
 
   updateText() {

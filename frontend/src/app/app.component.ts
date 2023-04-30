@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MenuItem, PrimeNGConfig } from 'primeng/api';
-import { firstValueFrom, switchMap } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { AuthService } from './services/auth.service';
 import { SchedulesService } from './services/schedules.service';
 import { WorkoutTemplatesService } from './services/workout-templates.service';

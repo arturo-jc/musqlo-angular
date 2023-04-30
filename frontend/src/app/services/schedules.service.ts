@@ -34,11 +34,16 @@ export class SchedulesService {
   }
 
   updateSchedule(updatedSchedule: OptionalId<Schedule>) {
+
+    console.log({ updatedSchedule, editScheduleKey: this.editScheduleKey });
+
     if (!this.editScheduleKey) { return; }
 
     updatedSchedule.key = this.editScheduleKey.toString();
 
     const updatedSchedules = [ ...this.schedules ];
+
+    console.log({ updatedSchedules, updatedSchedule });
 
     updatedSchedules.splice(this.scheduleToEditIndex, 1, updatedSchedule);
 
@@ -58,7 +63,7 @@ export class SchedulesService {
 
       const unsavedScheduleWorkouts: CreateScheduleWorkoutInput[] = [];
 
-      for (const workout of schedule.workouts) {
+      for (const workout of schedule.workouts || []) {
 
         const workoutTemplateId = this.workoutTemplates.workoutTemplates.find(t => t.key === workout.workoutTemplateKey)?.id;
 
@@ -70,6 +75,7 @@ export class SchedulesService {
       const unsavedSchedule: CreateScheduleInput = {
         name: schedule.name,
         workouts: unsavedScheduleWorkouts,
+        key: schedule.key,
       }
 
       unsavedSchedules.push(unsavedSchedule);

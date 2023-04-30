@@ -69,7 +69,7 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
 
     const exerciseTemplates: FrontendExerciseTemplate[] = [];
 
-    for (const exercise of workoutTemplateToEdit.exercises) {
+    for (const exercise of (workoutTemplateToEdit.exercises || [])) {
       const frontendExercise: FrontendExerciseTemplate = {
         ...exercise,
         key: this.currentKey.toString(),

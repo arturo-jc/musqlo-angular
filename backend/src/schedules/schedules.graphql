@@ -2,7 +2,7 @@ type Schedule {
   id: String!
   key: String
   name: String!
-  workouts: [ScheduleWorkout!]!
+  workouts: [ScheduleWorkout!]
 }
 
 type ScheduleWorkout {
@@ -25,6 +25,7 @@ extend type Mutation {
 
 input CreateScheduleInput {
   name: String!
+  key: String!
   workouts: [CreateScheduleWorkoutInput!]!
 }
 

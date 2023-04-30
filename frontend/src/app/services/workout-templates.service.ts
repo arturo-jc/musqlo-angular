@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
-import { EMPTY, filter, map, of, tap } from 'rxjs';
+import { filter, map, of, tap } from 'rxjs';
 import { CreateWorkoutTemplatesGQL, UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables, CreateWorkoutTemplatesMutationVariables, CreateWorkoutTemplateInput, CreateExerciseInput } from '../../generated/graphql.generated';
 import { WorkoutTemplate } from '../../generated/graphql.generated';
 import { OptionalId, RequiredKey } from '../shared/utils';
@@ -65,6 +65,8 @@ export class WorkoutTemplatesService {
       if (!template.key) {
         throw new Error('Cannot save a workout template without a key');
       }
+
+      template.exercises = template.exercises || [];
 
       const templateExercises: CreateExerciseInput[] = template.exercises
         .map(e => ({

@@ -247,7 +247,7 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
 
   setCalendarView(scheduleToEdit: OptionalId<Schedule>, showTimes: boolean) {
 
-    const latestWorkoutDow = this.getLatestWorkoutDow(scheduleToEdit.workouts);
+    const latestWorkoutDow = this.getLatestWorkoutDow(scheduleToEdit.workouts || []);
 
     if (latestWorkoutDow > 6) {
       this.selectedCalendarView = 'biweekly';

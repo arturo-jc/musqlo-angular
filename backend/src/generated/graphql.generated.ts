@@ -29,6 +29,7 @@ export type CreateExerciseInput = {
 };
 
 export type CreateScheduleInput = {
+  key: Scalars['String'];
   name: Scalars['String'];
   workouts: Array<CreateScheduleWorkoutInput>;
 };
