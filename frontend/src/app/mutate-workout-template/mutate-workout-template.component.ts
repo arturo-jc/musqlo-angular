@@ -70,16 +70,16 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
     const exerciseTemplates: FrontendExerciseTemplate[] = [];
 
     for (const exercise of workoutTemplateToEdit.exercises) {
-      const collapsableExercise: FrontendExerciseTemplate = {
+      const frontendExercise: FrontendExerciseTemplate = {
         ...exercise,
         key: this.currentKey.toString(),
       }
 
       this.currentKey++;
 
-      exerciseTemplates.push(collapsableExercise);
+      exerciseTemplates.push(frontendExercise);
 
-      this.collapsedTemplates[collapsableExercise.key] = false;
+      this.collapsedTemplates[frontendExercise.key] = false;
     }
 
     this.exerciseTemplates = exerciseTemplates;

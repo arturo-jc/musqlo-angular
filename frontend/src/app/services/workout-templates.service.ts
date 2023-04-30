@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
 import { filter, map, switchMap, tap } from 'rxjs';
-import { SubSink } from 'subsink';
 import { CreateWorkoutTemplatesGQL, UserWorkoutTemplatesGQL, UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables, CreateWorkoutTemplatesMutationVariables, CreateWorkoutTemplateInput, CreateExerciseInput } from '../../generated/graphql.generated';
 import { WorkoutTemplate } from '../../generated/graphql.generated';
 import { OptionalId, RequiredKey } from '../shared/utils';
@@ -18,8 +17,6 @@ export class WorkoutTemplatesService {
   editWorkoutTemplateKey?: string;
 
   currentKey = 0;
-
-  subs = new SubSink();
 
   userWorkoutTemplatesQuery?: QueryRef<UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables>;
 
@@ -119,7 +116,6 @@ export class WorkoutTemplatesService {
     this.workoutTemplates = [];
     this.editWorkoutTemplateKey = undefined;
     this.currentKey = 0;
-    this.subs.unsubscribe();
   }
 
 }

@@ -93,4 +93,10 @@ export class SchedulesService {
   get scheduleToEditIndex() {
     return this.schedules.findIndex(t => t.key === this.editScheduleKey);
   }
+
+  reset() {
+    this.schedules = [];
+    this.editScheduleKey = undefined;
+    this.currentKey = 0;
+  }
 }

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { MenuItem, PrimeNGConfig } from 'primeng/api';
 import { switchMap } from 'rxjs';
 import { AuthService } from './services/auth.service';
+import { SchedulesService } from './services/schedules.service';
 import { WorkoutTemplatesService } from './services/workout-templates.service';
 
 @Component({
@@ -23,8 +24,9 @@ export class AppComponent implements OnInit {
   constructor(
     private primeConfig: PrimeNGConfig,
     public auth: AuthService,
-    private workoutTemplates: WorkoutTemplatesService,
     private router: Router,
+    private workoutTemplates: WorkoutTemplatesService,
+    private schedules: SchedulesService,
   ) {}
 
   ngOnInit(): void {
@@ -35,11 +37,13 @@ export class AppComponent implements OnInit {
 
   onAuthSuccess(userId: string) {
     this.workoutTemplates.createUnsavedWorkoutTemplates(userId)
-      .subscribe(userWorkoutTemplates => console.log(userWorkoutTemplates));
+      .pipe(switchMap(() => this.schedules.createUnsavedSchedules(userId)))
+      .subscribe(userSchedules => console.log(userSchedules));
   }
 
   onLogout() {
     this.workoutTemplates.reset();
+    this.schedules.reset();
     this.auth.reset();
     this.router.navigate([ '/login' ]);
   }
