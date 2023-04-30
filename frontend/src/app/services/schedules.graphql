@@ -1,5 +1,6 @@
 query UserSchedules($userId: String!) {
   user(userId: $userId) {
+    id
     schedules {
       id
         key

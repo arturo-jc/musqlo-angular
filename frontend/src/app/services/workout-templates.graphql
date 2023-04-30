@@ -1,5 +1,6 @@
 query UserWorkoutTemplates($userId: String!) {
   user(userId: $userId) {
+    id
     workoutTemplates {
       id
       name

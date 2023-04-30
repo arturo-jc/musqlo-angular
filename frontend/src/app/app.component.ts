@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Apollo } from 'apollo-angular';
 import { MenuItem, PrimeNGConfig } from 'primeng/api';
-import { firstValueFrom, switchMap } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { SubSink } from 'subsink';
 import { AuthService } from './services/auth.service';
 import { SchedulesService } from './services/schedules.service';
@@ -27,6 +28,7 @@ export class AppComponent implements OnInit {
   constructor(
     private primeConfig: PrimeNGConfig,
     public auth: AuthService,
+    private apollo: Apollo,
     private router: Router,
     private workoutTemplates: WorkoutTemplatesService,
     private schedules: SchedulesService,
@@ -49,6 +51,7 @@ export class AppComponent implements OnInit {
     this.workoutTemplates.reset();
     this.schedules.reset();
     this.auth.reset();
+    this.apollo.client.clearStore();
     this.router.navigate([ '/login' ]);
   }
 }

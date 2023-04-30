@@ -200,7 +200,7 @@ export type UserSchedulesQueryVariables = Exact<{
 }>;
 
 
-export type UserSchedulesQuery = { __typename?: 'Query', user?: { __typename?: 'User', schedules?: Array<{ __typename?: 'Schedule', id: string, key?: string | null, name: string, workouts?: Array<{ __typename?: 'ScheduleWorkout', id: string, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null }> | null }> | null } | null };
+export type UserSchedulesQuery = { __typename?: 'Query', user?: { __typename?: 'User', id: string, schedules?: Array<{ __typename?: 'Schedule', id: string, key?: string | null, name: string, workouts?: Array<{ __typename?: 'ScheduleWorkout', id: string, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null }> | null }> | null } | null };
 
 export type CreateSchedulesMutationVariables = Exact<{
   schedules: Array<CreateScheduleInput> | CreateScheduleInput;
@@ -214,7 +214,7 @@ export type UserWorkoutTemplatesQueryVariables = Exact<{
 }>;
 
 
-export type UserWorkoutTemplatesQuery = { __typename?: 'Query', user?: { __typename?: 'User', workoutTemplates?: Array<{ __typename?: 'WorkoutTemplate', id: string, name: string, backgroundColor?: string | null, key?: string | null, exercises: Array<{ __typename?: 'ExerciseTemplate', id: string, exerciseType: string, order: number, sets: Array<{ __typename?: 'SetTemplate', reps?: number | null, weight?: number | null, order: number }> }> }> | null } | null };
+export type UserWorkoutTemplatesQuery = { __typename?: 'Query', user?: { __typename?: 'User', id: string, workoutTemplates?: Array<{ __typename?: 'WorkoutTemplate', id: string, name: string, backgroundColor?: string | null, key?: string | null, exercises: Array<{ __typename?: 'ExerciseTemplate', id: string, exerciseType: string, order: number, sets: Array<{ __typename?: 'SetTemplate', reps?: number | null, weight?: number | null, order: number }> }> }> | null } | null };
 
 export type CreateWorkoutTemplatesMutationVariables = Exact<{
   workoutTemplates: Array<CreateWorkoutTemplateInput> | CreateWorkoutTemplateInput;
@@ -324,6 +324,7 @@ export const SignUpDocument = gql`
 export const UserSchedulesDocument = gql`
     query UserSchedules($userId: String!) {
   user(userId: $userId) {
+    id
     schedules {
       id
       key
@@ -384,6 +385,7 @@ export const CreateSchedulesDocument = gql`
 export const UserWorkoutTemplatesDocument = gql`
     query UserWorkoutTemplates($userId: String!) {
   user(userId: $userId) {
+    id
     workoutTemplates {
       id
       name
