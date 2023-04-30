@@ -123,7 +123,7 @@ export type Schedule = {
   id: Scalars['String'];
   key?: Maybe<Scalars['String']>;
   name: Scalars['String'];
-  workouts?: Maybe<Array<ScheduleWorkout>>;
+  workouts: Array<ScheduleWorkout>;
 };
 
 export type ScheduleWorkout = {
@@ -199,14 +199,14 @@ export type UserSchedulesQueryVariables = Exact<{
 }>;
 
 
-export type UserSchedulesQuery = { __typename?: 'Query', user?: { __typename?: 'User', schedules?: Array<{ __typename?: 'Schedule', id: string, key?: string | null, name: string, workouts?: Array<{ __typename?: 'ScheduleWorkout', id: string, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null }> | null }> | null } | null };
+export type UserSchedulesQuery = { __typename?: 'Query', user?: { __typename?: 'User', schedules?: Array<{ __typename?: 'Schedule', id: string, key?: string | null, name: string, workouts: Array<{ __typename?: 'ScheduleWorkout', id: string, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null }> }> | null } | null };
 
 export type CreateSchedulesMutationVariables = Exact<{
   schedules: Array<CreateScheduleInput> | CreateScheduleInput;
 }>;
 
 
-export type CreateSchedulesMutation = { __typename?: 'Mutation', createSchedules: Array<{ __typename?: 'Schedule', id: string, key?: string | null, name: string, workouts?: Array<{ __typename?: 'ScheduleWorkout', allDay?: boolean | null, dow?: number | null, end?: string | null, id: string, workoutTemplateId?: string | null, start?: string | null, workoutTemplateKey?: string | null }> | null }> };
+export type CreateSchedulesMutation = { __typename?: 'Mutation', createSchedules: Array<{ __typename?: 'Schedule', id: string, key?: string | null, name: string, workouts: Array<{ __typename?: 'ScheduleWorkout', allDay?: boolean | null, dow?: number | null, end?: string | null, id: string, workoutTemplateId?: string | null, start?: string | null, workoutTemplateKey?: string | null }> }> };
 
 export type UserWorkoutTemplatesQueryVariables = Exact<{
   userId: Scalars['String'];

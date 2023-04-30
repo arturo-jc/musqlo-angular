@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { WorkoutTemplate } from '../../generated/graphql.generated';
-import { Schedule, SchedulesService } from '../services/schedules.service';
+import { Schedule, WorkoutTemplate } from '../../generated/graphql.generated';
+import { SchedulesService } from '../services/schedules.service';
 import { OptionalId } from '../shared/utils';
 import { WorkoutTemplatesService } from '../services/workout-templates.service';
 
@@ -23,7 +23,7 @@ export class DashboardComponent {
     this.router.navigate([ 'workouts', 'edit' ]);
   }
 
-  editSchedule(schedule: Schedule) {
+  editSchedule(schedule: OptionalId<Schedule>) {
     this.schedulesService.editScheduleKey = schedule.key;
     this.router.navigate([ 'schedules', 'edit' ]);
   }

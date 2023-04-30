@@ -9,7 +9,7 @@ import { ExerciseItemsComponent } from './exercise-items/exercise-items.componen
 
 export const DEFAULT_BG_COLOR = 'var(--primary-color)';
 
-export type FrontendExerciseTemplate = OptionalId<RequiredKey<ExerciseTemplate>>;
+export type FrontendExerciseTemplate = RequiredKey<OptionalId<ExerciseTemplate>>;
 
 @Component({
   selector: 'app-mutate-workout-template',

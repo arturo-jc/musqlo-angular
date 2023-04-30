@@ -2,7 +2,7 @@ type Schedule {
   id: String!
   key: String
   name: String!
-  workouts: [ScheduleWorkout!]
+  workouts: [ScheduleWorkout!]!
 }
 
 type ScheduleWorkout {

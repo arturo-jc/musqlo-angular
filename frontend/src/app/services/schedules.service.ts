@@ -1,18 +1,6 @@
 import { Injectable } from '@angular/core';
-
-export interface ScheduleWorkout {
-  workoutTemplateKey?: string;
-  dow: number;
-  allDay: boolean;
-  start?: string;
-  end?: string;
-}
-
-export interface Schedule {
-  name: string;
-  workouts: ScheduleWorkout[];
-  key?: number;
-}
+import { Schedule } from '../../generated/graphql.generated';
+import { OptionalId } from '../shared/utils';
 
 @Injectable({
   providedIn: 'root'
@@ -21,23 +9,31 @@ export class SchedulesService {
 
   constructor() { }
 
-  schedules: Schedule[] = [];
+  schedules: OptionalId<Schedule>[] = [];
 
-  editScheduleKey?: number;
+  editScheduleKey?: string | null;
 
   currentKey = 0;
 
-  addSchedule(newSchedule: Schedule) {
-    newSchedule.key = this.currentKey;
+  addSchedule(newSchedule: OptionalId<Schedule>) {
+    newSchedule.key = this.currentKey.toString();
+
     this.currentKey++;
+
     const updatedSchedules = [ ...this.schedules, newSchedule ];
+
     this.schedules = updatedSchedules;
   }
 
-  updateSchedule(updatedSchedule: Schedule) {
-    updatedSchedule.key = this.editScheduleKey;
+  updateSchedule(updatedSchedule: OptionalId<Schedule>) {
+    if (!this.editScheduleKey) { return; }
+
+    updatedSchedule.key = this.editScheduleKey.toString();
+
     const updatedSchedules = [ ...this.schedules ];
+
     updatedSchedules.splice(this.scheduleToEditIndex, 1, updatedSchedule);
+
     this.schedules = updatedSchedules;
   }
 

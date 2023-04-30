@@ -6,11 +6,13 @@ import { FullCalendarComponent } from '@fullcalendar/angular';
 import interaction from '@fullcalendar/interaction';
 import { FullCalendarService } from '../services/full-calendar.service';
 import { WorkoutTemplatesComponent } from '../workout-templates/workout-templates.component';
-import { Schedule, SchedulesService, ScheduleWorkout } from '../services/schedules.service';
+import { SchedulesService } from '../services/schedules.service';
 import dayjs from 'dayjs';
 import { EventImpl } from '@fullcalendar/core/internal';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WorkoutTemplatesService } from '../services/workout-templates.service';
+import { Schedule, ScheduleWorkout } from '../../generated/graphql.generated';
+import { OptionalId } from '../shared/utils';
 
 export type CalendarView = 'weekly' | 'biweekly';
 
@@ -147,12 +149,10 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
   saveSchedule() {
     if (!this.calendarApi) { return; }
 
-    const scheduleToSave: Schedule = {
+    const scheduleToSave: OptionalId<Schedule> = {
       name: this.title,
       workouts: this.getScheduleWorkouts(this.calendarApi.getEvents()),
     }
-
-    console.log(scheduleToSave);
 
     if (this.mode === 'create') {
       this.schedulesService.addSchedule(scheduleToSave);
@@ -164,7 +164,7 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   getScheduleWorkouts(events: EventImpl[]) {
-    const workouts: ScheduleWorkout[] = [];
+    const workouts: OptionalId<ScheduleWorkout>[] = [];
 
     for (const event of events) {
       if (!event.start) { continue; }
@@ -177,7 +177,7 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
         dow = dow + 7;
       }
 
-      const newWorkout: ScheduleWorkout = {
+      const newWorkout: OptionalId<ScheduleWorkout> = {
         workoutTemplateKey: event.extendedProps['key'],
         dow,
         allDay: event.allDay,
@@ -205,7 +205,7 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
 
     let showTimes = false;
 
-    for (const scheduleWorkout of scheduleToEdit.workouts) {
+    for (const scheduleWorkout of (scheduleToEdit.workouts || [])) {
       const workout = this.workoutTemplatesService.workoutTemplates
         .find(t => t.key === scheduleWorkout.workoutTemplateKey);
 
@@ -213,7 +213,11 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
 
       const eventInput = this.fullCalendar.getEventInput(workout);
 
-      eventInput.allDay = scheduleWorkout.allDay;
+      eventInput.allDay = scheduleWorkout.allDay || undefined;
+
+      if (scheduleWorkout.dow === null || scheduleWorkout.dow === undefined) {
+        throw new Error('Cannot read dow');
+      }
 
       const eventDay = scheduleStart.add(scheduleWorkout.dow, 'day');
 
@@ -235,15 +239,15 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
     this.cd.detectChanges();
   }
 
-  setEventTimes(dateString: string | undefined, eventInput: EventInput, time: 'start' | 'end', eventDay: dayjs.Dayjs) {
+  setEventTimes(dateString: string | undefined | null, eventInput: EventInput, time: 'start' | 'end', eventDay: dayjs.Dayjs) {
     if (!dateString) { return; }
     const [ hourString, minString, secString ] = dateString.split(':');
     eventInput[time] = eventDay.hour(Number(hourString)).minute(Number(minString)).second(Number(secString)).toDate();
   }
 
-  setCalendarView(scheduleToEdit: Schedule, showTimes: boolean) {
+  setCalendarView(scheduleToEdit: OptionalId<Schedule>, showTimes: boolean) {
 
-    const latestWorkoutDow = Math.max(...scheduleToEdit.workouts.map(w => w.dow));
+    const latestWorkoutDow = this.getLatestWorkoutDow(scheduleToEdit.workouts);
 
     if (latestWorkoutDow > 6) {
       this.selectedCalendarView = 'biweekly';
@@ -252,5 +256,15 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
     this.showTimes = showTimes;
 
     this.updateCalendarView();
+  }
+
+  getLatestWorkoutDow(workouts: OptionalId<ScheduleWorkout>[]) {
+    if (!workouts || !workouts.length) {
+      return 0;
+    }
+
+    const dows = workouts.map(w => w.dow || 0);
+
+    return Math.max(...dows);
   }
 }

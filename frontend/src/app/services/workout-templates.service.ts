@@ -6,6 +6,8 @@ import { CreateWorkoutTemplatesGQL, UserWorkoutTemplatesGQL, UserWorkoutTemplate
 import { WorkoutTemplate } from '../../generated/graphql.generated';
 import { OptionalId, RequiredKey } from '../shared/utils';
 
+export type FrontendWorkoutTemplate = RequiredKey<OptionalId<WorkoutTemplate>>;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -59,7 +61,7 @@ export class WorkoutTemplatesService {
   }
 
   createUnsavedWorkoutTemplates(userId: string) {
-    const unsavedWorkoutTemplates: RequiredKey<OptionalId<WorkoutTemplate>>[] = [];
+    const unsavedWorkoutTemplates: FrontendWorkoutTemplate[] = [];
 
     for (const template of this.workoutTemplates) {
       if (template.id) { continue; }
@@ -68,14 +70,14 @@ export class WorkoutTemplatesService {
         throw new Error('Cannot save a workout template without a key');
       }
 
-      const templateExercises: Array<OptionalId<ExerciseTemplate>>= template.exercises
+      const templateExercises: OptionalId<ExerciseTemplate>[] = template.exercises
         .map(e => ({
           exerciseType: e.exerciseType,
           order: e.order,
           sets: e.sets,
         }));
 
-      const unsavedTemplate: RequiredKey<OptionalId<WorkoutTemplate>> = {
+      const unsavedTemplate: FrontendWorkoutTemplate = {
         name: template.name,
         exercises: templateExercises,
         backgroundColor: template.backgroundColor,
