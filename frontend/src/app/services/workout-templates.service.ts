@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
 import { cloneDeep } from 'lodash-es';
 import { filter, map, of, tap } from 'rxjs';
+import { SubSink } from 'subsink';
 import { CreateWorkoutTemplatesGQL, UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables, CreateWorkoutTemplatesMutationVariables, CreateWorkoutTemplateInput, CreateExerciseInput, UserWorkoutTemplatesGQL } from '../../generated/graphql.generated';
 import { WorkoutTemplate } from '../../generated/graphql.generated';
 import { OptionalId, RequiredKey } from '../shared/utils';
@@ -20,6 +21,8 @@ export class WorkoutTemplatesService {
   currentKey = 0;
 
   userWorkoutTemplatesQuery?: QueryRef<UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables>;
+
+  subs = new SubSink();
 
   constructor(
     private createWorkoutTemplatesGQL: CreateWorkoutTemplatesGQL,
@@ -55,12 +58,11 @@ export class WorkoutTemplatesService {
 
     this.userWorkoutTemplatesQuery = this.userWorkoutTemplatesGQL.watch(watchQueryVariables, { fetchPolicy: 'cache-and-network' });
 
-    return this.userWorkoutTemplatesQuery.valueChanges.pipe(
+    this.subs.sink = this.userWorkoutTemplatesQuery.valueChanges.pipe(
       filter(res => !res.loading),
       map(res => cloneDeep(res.data.user?.workoutTemplates) || []),
       tap(userTemplates => this.setKeys(userTemplates)),
-      tap(userTemplates => this.workoutTemplates = userTemplates),
-    )
+    ).subscribe(userTemplates => this.workoutTemplates = userTemplates);
   }
 
   setKeys(workoutTemplates: WorkoutTemplate[]) {
@@ -126,6 +128,7 @@ export class WorkoutTemplatesService {
     this.workoutTemplates = [];
     this.editWorkoutTemplateKey = undefined;
     this.currentKey = 0;
+    this.subs.unsubscribe();
   }
 
   get workoutTemplateToEdit() {

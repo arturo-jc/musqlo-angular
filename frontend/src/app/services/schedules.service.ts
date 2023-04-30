@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
 import { cloneDeep } from 'lodash-es';
 import { filter, map, of, tap } from 'rxjs';
+import { SubSink } from 'subsink';
 import { CreateScheduleInput, CreateSchedulesGQL, CreateSchedulesMutationVariables, CreateScheduleWorkoutInput, Schedule, UserSchedulesGQL, UserSchedulesQuery, UserSchedulesQueryVariables } from '../../generated/graphql.generated';
 import { OptionalId } from '../shared/utils';
 import { WorkoutTemplatesService } from './workout-templates.service';
@@ -24,6 +25,8 @@ export class SchedulesService {
   currentKey = 0;
 
   userSchedulesQuery?: QueryRef<UserSchedulesQuery, UserSchedulesQueryVariables>;
+
+  subs = new SubSink();
 
   addSchedule(newSchedule: OptionalId<Schedule>) {
     newSchedule.key = this.currentKey.toString();
@@ -53,12 +56,11 @@ export class SchedulesService {
 
     this.userSchedulesQuery = this.userSchedulesGQL.watch(watchQueryVariables, { fetchPolicy: 'cache-and-network' });
 
-    return this.userSchedulesQuery.valueChanges.pipe(
+    this.subs.sink = this.userSchedulesQuery.valueChanges.pipe(
       filter(res => !res.loading),
       map(res => cloneDeep(res.data.user?.schedules) || []),
       tap(userSchedules => this.setKeys(userSchedules)),
-      tap(userSchedules => this.schedules = userSchedules),
-    )
+    ).subscribe(userSchedules => this.schedules = userSchedules);
   }
 
   setKeys(userSchedules: Schedule[]) {
