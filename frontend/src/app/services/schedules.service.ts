@@ -128,6 +128,7 @@ export class SchedulesService {
     this.schedules = [];
     this.editScheduleKey = undefined;
     this.currentKey = 0;
+    this.subs.unsubscribe();
   }
 
   get scheduleToEdit() {
