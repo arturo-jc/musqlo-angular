@@ -40,7 +40,6 @@ export type CreateScheduleWorkoutInput = {
   end?: InputMaybe<Scalars['String']>;
   start?: InputMaybe<Scalars['String']>;
   workoutTemplateId?: InputMaybe<Scalars['String']>;
-  workoutTemplateKey?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateSetTemplateInput = {

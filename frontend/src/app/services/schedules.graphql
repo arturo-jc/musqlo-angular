@@ -8,7 +8,6 @@ query UserSchedules($userId: String!) {
         workouts {
           id
           workoutTemplateId
-          workoutTemplateKey
           dow
           allDay
           start
@@ -30,7 +29,6 @@ mutation CreateSchedules($schedules: [CreateScheduleInput!]!) {
       id
       workoutTemplateId
       start
-      workoutTemplateKey
     }
   }
 }

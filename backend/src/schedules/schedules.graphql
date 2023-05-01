@@ -31,7 +31,6 @@ input CreateScheduleInput {
 
 input CreateScheduleWorkoutInput {
   workoutTemplateId: String
-  workoutTemplateKey: String
   dow: Int
   allDay: Boolean
   start: String

@@ -65,17 +65,8 @@ export class SchedulesService {
 
   setKeys(userSchedules: Schedule[]) {
     for (const schedule of userSchedules) {
-
-      if (schedule.key) { continue; }
-
-      const loadedSchedule = this.schedules.find(s => s.id === schedule.id);
-
-      if (loadedSchedule?.key) {
-        schedule.key = loadedSchedule.key;
-      } else {
-        schedule.key = this.currentKey.toString();
-        this.currentKey++;
-      }
+      schedule.key = schedule.id;
+      schedule.workouts = schedule.workouts?.map(w => ({ ...w, workoutTemplateKey: w.workoutTemplateId }));
     }
   }
 
@@ -96,7 +87,13 @@ export class SchedulesService {
 
         const workoutTemplateId = this.workoutTemplates.workoutTemplates.find(t => t.key === workout.workoutTemplateKey)?.id;
 
-        const unsavedScheduleWorkout: CreateScheduleWorkoutInput = { ...workout, workoutTemplateId };
+        const unsavedScheduleWorkout: CreateScheduleWorkoutInput = {
+          allDay: workout.allDay,
+          dow: workout.dow,
+          start: workout.start,
+          end: workout.end,
+          workoutTemplateId,
+        };
 
         unsavedScheduleWorkouts.push(unsavedScheduleWorkout);
       }
@@ -120,7 +117,7 @@ export class SchedulesService {
       .pipe(
         filter(res => !res.loading),
         map(res => res.data?.createSchedules || []),
-        tap(userSchedules => this.schedules = userSchedules)
+        tap(userSchedules => this.schedules = userSchedules),
       );
   }
 

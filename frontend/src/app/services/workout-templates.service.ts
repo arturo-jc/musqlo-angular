@@ -3,7 +3,7 @@ import { QueryRef } from 'apollo-angular';
 import { cloneDeep } from 'lodash-es';
 import { filter, map, of, tap } from 'rxjs';
 import { SubSink } from 'subsink';
-import { CreateWorkoutTemplatesGQL, UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables, CreateWorkoutTemplatesMutationVariables, CreateWorkoutTemplateInput, CreateExerciseInput, UserWorkoutTemplatesGQL } from '../../generated/graphql.generated';
+import { CreateWorkoutTemplatesGQL, UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables, CreateWorkoutTemplatesMutationVariables, CreateWorkoutTemplateInput, CreateExerciseInput, UserWorkoutTemplatesGQL, ScheduleWorkout } from '../../generated/graphql.generated';
 import { WorkoutTemplate } from '../../generated/graphql.generated';
 import { OptionalId, RequiredKey } from '../shared/utils';
 
@@ -67,17 +67,7 @@ export class WorkoutTemplatesService {
 
   setKeys(workoutTemplates: WorkoutTemplate[]) {
     for (const template of workoutTemplates) {
-
-      if (template.key) { continue; }
-
-      const loadedTemplate = this.workoutTemplates.find(t => t.id === template.id);
-
-      if (loadedTemplate?.key) {
-        template.key = loadedTemplate.key;
-      } else {
-        template.key = this.currentKey.toString();
-        this.currentKey++;
-      }
+      template.key = template.id;
     }
   }
 
