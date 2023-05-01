@@ -59,15 +59,7 @@ export class SchedulesService {
     this.subs.sink = this.userSchedulesQuery.valueChanges.pipe(
       filter(res => !res.loading),
       map(res => cloneDeep(res.data.user?.schedules) || []),
-      tap(userSchedules => this.setKeys(userSchedules)),
     ).subscribe(userSchedules => this.schedules = userSchedules);
-  }
-
-  setKeys(userSchedules: Schedule[]) {
-    for (const schedule of userSchedules) {
-      schedule.key = schedule.id;
-      schedule.workouts = schedule.workouts?.map(w => ({ ...w, workoutTemplateKey: w.workoutTemplateId }));
-    }
   }
 
   createUnsavedSchedules() {

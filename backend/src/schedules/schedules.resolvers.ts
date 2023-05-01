@@ -9,7 +9,7 @@ const savedSchedules: SavedSchedule[] = [];
 const savedScheduleWorkouts: ScheduleWorkout[] = [];
 
 const getSchedules: UserResolvers<Context>['schedules'] = (parent) => {
-  return savedSchedules.filter(s => s.userId === parent.id);
+  return savedSchedules.filter(s => s.userId === parent.id).map(s => ({ ...s, key: s.id }));
 }
 
 const workouts: ScheduleResolvers<Context>['workouts'] = (parent, _args, _ctx) => {
@@ -19,7 +19,7 @@ const workouts: ScheduleResolvers<Context>['workouts'] = (parent, _args, _ctx) =
     throw new Error(`Could not resolve schedule: ${parent.id}`);
   }
 
-  return savedScheduleWorkouts.filter(w => schedule.workoutIds.includes(w.id));
+  return savedScheduleWorkouts.filter(w => schedule.workoutIds.includes(w.id)).map(w => ({ ...w, workoutTemplateKey: w.workoutTemplateId }));
 }
 
 const createSchedules: MutationResolvers<Context>['createSchedules'] = (_parent, args, ctx) => {

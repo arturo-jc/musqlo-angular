@@ -3,16 +3,17 @@ query UserSchedules($userId: String!) {
     id
     schedules {
       id
-        key
-        name
-        workouts {
-          id
-          workoutTemplateId
-          dow
-          allDay
-          start
-          end
-        }
+      key
+      name
+      workouts {
+        id
+        workoutTemplateId
+        workoutTemplateKey
+        dow
+        allDay
+        start
+        end
+      }
     }
   }
 }

@@ -199,7 +199,7 @@ export type UserSchedulesQueryVariables = Exact<{
 }>;
 
 
-export type UserSchedulesQuery = { __typename?: 'Query', user?: { __typename?: 'User', id: string, schedules?: Array<{ __typename?: 'Schedule', id: string, key?: string | null, name: string, workouts?: Array<{ __typename?: 'ScheduleWorkout', id: string, workoutTemplateId?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null }> | null }> | null } | null };
+export type UserSchedulesQuery = { __typename?: 'Query', user?: { __typename?: 'User', id: string, schedules?: Array<{ __typename?: 'Schedule', id: string, key?: string | null, name: string, workouts?: Array<{ __typename?: 'ScheduleWorkout', id: string, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null }> | null }> | null } | null };
 
 export type CreateSchedulesMutationVariables = Exact<{
   schedules: Array<CreateScheduleInput> | CreateScheduleInput;
@@ -331,6 +331,7 @@ export const UserSchedulesDocument = gql`
       workouts {
         id
         workoutTemplateId
+        workoutTemplateKey
         dow
         allDay
         start
