@@ -55,6 +55,24 @@ export type CreateWorkoutTemplateInput = {
   name: Scalars['String'];
 };
 
+export type EditExerciseInput = {
+  id?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Scalars['Int']>;
+  sets?: InputMaybe<Array<EditSetTemplateInput>>;
+};
+
+export type EditSetTemplateInput = {
+  order: Scalars['Int'];
+  reps?: InputMaybe<Scalars['Int']>;
+  weight?: InputMaybe<Scalars['Int']>;
+};
+
+export type EditWorkoutTemplateInput = {
+  backgroundColor?: InputMaybe<Scalars['String']>;
+  exercises?: InputMaybe<Array<EditExerciseInput>>;
+  name?: InputMaybe<Scalars['String']>;
+};
+
 export type ExerciseItem = {
   __typename?: 'ExerciseItem';
   category: Scalars['String'];
@@ -75,6 +93,7 @@ export type Mutation = {
   _blank?: Maybe<Scalars['Boolean']>;
   createSchedules: Array<Schedule>;
   createWorkoutTemplates: Array<WorkoutTemplate>;
+  editWorkoutTemplates: Array<WorkoutTemplate>;
   signUp: AuthenticateOutput;
 };
 
@@ -86,6 +105,12 @@ export type MutationCreateSchedulesArgs = {
 
 export type MutationCreateWorkoutTemplatesArgs = {
   workoutTemplates: Array<CreateWorkoutTemplateInput>;
+};
+
+
+export type MutationEditWorkoutTemplatesArgs = {
+  edit: EditWorkoutTemplateInput;
+  workoutTemplateIds: Array<Scalars['String']>;
 };
 
 
@@ -240,6 +265,9 @@ export type ResolversTypes = ResolversObject<{
   CreateScheduleWorkoutInput: CreateScheduleWorkoutInput;
   CreateSetTemplateInput: CreateSetTemplateInput;
   CreateWorkoutTemplateInput: CreateWorkoutTemplateInput;
+  EditExerciseInput: EditExerciseInput;
+  EditSetTemplateInput: EditSetTemplateInput;
+  EditWorkoutTemplateInput: EditWorkoutTemplateInput;
   ExerciseItem: ResolverTypeWrapper<ExerciseItem>;
   ExerciseTemplate: ResolverTypeWrapper<ExerciseTemplate>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
@@ -262,6 +290,9 @@ export type ResolversParentTypes = ResolversObject<{
   CreateScheduleWorkoutInput: CreateScheduleWorkoutInput;
   CreateSetTemplateInput: CreateSetTemplateInput;
   CreateWorkoutTemplateInput: CreateWorkoutTemplateInput;
+  EditExerciseInput: EditExerciseInput;
+  EditSetTemplateInput: EditSetTemplateInput;
+  EditWorkoutTemplateInput: EditWorkoutTemplateInput;
   ExerciseItem: ExerciseItem;
   ExerciseTemplate: ExerciseTemplate;
   Int: Scalars['Int'];
@@ -302,6 +333,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   _blank?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   createSchedules?: Resolver<Array<ResolversTypes['Schedule']>, ParentType, ContextType, RequireFields<MutationCreateSchedulesArgs, 'schedules'>>;
   createWorkoutTemplates?: Resolver<Array<ResolversTypes['WorkoutTemplate']>, ParentType, ContextType, RequireFields<MutationCreateWorkoutTemplatesArgs, 'workoutTemplates'>>;
+  editWorkoutTemplates?: Resolver<Array<ResolversTypes['WorkoutTemplate']>, ParentType, ContextType, RequireFields<MutationEditWorkoutTemplatesArgs, 'edit' | 'workoutTemplateIds'>>;
   signUp?: Resolver<ResolversTypes['AuthenticateOutput'], ParentType, ContextType, RequireFields<MutationSignUpArgs, 'email' | 'password'>>;
 }>;
 

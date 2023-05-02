@@ -1,5 +1,6 @@
+import { filter } from "lodash";
 import { Context } from "../context";
-import { ExerciseTemplate, MutationResolvers, Resolvers, UserResolvers, WorkoutTemplate } from "../generated/graphql.generated";
+import { EditExerciseInput, ExerciseTemplate, MutationResolvers, Resolvers, UserResolvers, WorkoutTemplate } from "../generated/graphql.generated";
 import { v1 as uuid } from 'uuid';
 
 export interface UserTemplates {
@@ -9,7 +10,11 @@ export interface UserTemplates {
 
 export type SavedWorkoutTemplate = WorkoutTemplate & { userId: string };
 
+export type SavedExerciseTemplate = ExerciseTemplate & { workoutTemplateId: string };
+
 export const savedWorkoutTemplates: SavedWorkoutTemplate[] = [];
+
+export const savedExerciseTemplates: SavedExerciseTemplate[] = [];
 
 const getWorkoutTemplates: UserResolvers<Context>['workoutTemplates'] = (parent) => {
   return savedWorkoutTemplates.filter(t => t.userId === parent.id);
@@ -48,12 +53,79 @@ const createWorkoutTemplates: MutationResolvers<Context>['createWorkoutTemplates
   return output;
 }
 
+const editWorkoutTemplates: MutationResolvers<Context>['editWorkoutTemplates'] = (_parent, args, ctx) => {
+  const workoutTemplates = savedWorkoutTemplates.filter(w => args.workoutTemplateIds.includes(w.id));
+
+  const { edit } = args;
+
+  for (const template of workoutTemplates) {
+
+    if (edit.name) {
+      template.name = edit.name;
+    }
+
+    if (edit.exercises) {
+
+      const existingExerciseIds: String[] = [];
+      const newExerciseInputs: EditExerciseInput[] = [];
+
+      for (const exercise of edit.exercises) {
+        if (exercise.id) {
+          existingExerciseIds.push(exercise.id);
+        } else {
+          newExerciseInputs.push(exercise);
+        }
+      }
+
+      const existingExercises = savedExerciseTemplates.filter(t => existingExerciseIds.includes(t.id));
+
+      for (const existingExercise of existingExercises) {
+        const update = edit.exercises.find(e => e.id === existingExercise.id);
+
+        if (!update) { continue; }
+
+        existingExercise.order = update.order || existingExercise.order;
+
+        if (!update.sets) { continue; }
+
+        existingExercise.sets = update.sets || existingExercise.sets;
+      }
+
+      // for (const input of newExerciseInputs) {
+      //   const newTemplateExercise: SavedExerciseTemplate = {
+      //     id: uuid(),
+      //     // exerciseType: input
+      //   }
+      // }
+
+      // const existingExerciseIds = edit.exercises.reduce((exerciseIds: string[], exercise) => {
+      //   if (exercise.id) {
+      //     exerciseIds.push(exercise.id);
+      //   }
+      //   return exerciseIds;
+      // }, [])
+
+      // const exerciseTemplateIds = edit.exercises.map()
+      // const exercises = savedExerciseTemplates.filter(t => t.id === edit.exercises.)
+
+    }
+
+    // if (exercises) {
+
+    // }
+
+  }
+
+  return [];
+}
+
 const resolvers: Resolvers<Context> = {
   User: {
     workoutTemplates: getWorkoutTemplates,
   },
   Mutation: {
     createWorkoutTemplates,
+    editWorkoutTemplates,
   },
 }
 

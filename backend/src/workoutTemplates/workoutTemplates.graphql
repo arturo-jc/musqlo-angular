@@ -26,6 +26,10 @@ extend type User {
 
 extend type Mutation {
   createWorkoutTemplates(workoutTemplates: [CreateWorkoutTemplateInput!]!): [WorkoutTemplate!]!
+  editWorkoutTemplates(
+    workoutTemplateIds: [String!]!
+    edit: EditWorkoutTemplateInput!
+  ): [WorkoutTemplate!]!
 }
 
 input CreateWorkoutTemplateInput {
@@ -42,6 +46,24 @@ input CreateExerciseInput {
 }
 
 input CreateSetTemplateInput {
+  reps: Int
+  weight: Int
+  order: Int!
+}
+
+input EditWorkoutTemplateInput {
+  name: String
+  exercises: [EditExerciseInput!]
+  backgroundColor: String
+}
+
+input EditExerciseInput {
+  id: String
+  sets: [EditSetTemplateInput!]
+  order: Int
+}
+
+input EditSetTemplateInput {
   reps: Int
   weight: Int
   order: Int!
