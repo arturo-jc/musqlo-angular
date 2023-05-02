@@ -1,6 +1,7 @@
 import { Context } from "../context";
 import { EditExerciseInput, ExerciseTemplate, MutationResolvers, Resolvers, UserResolvers, WorkoutTemplate } from "../generated/graphql.generated";
 import { v1 as uuid } from 'uuid';
+import { savedExerciseTemplates } from '../exerciseTemplates/exerciseTemplates.resolvers';
 
 export interface UserTemplates {
   userId: string;
@@ -9,11 +10,7 @@ export interface UserTemplates {
 
 export type SavedWorkoutTemplate = WorkoutTemplate & { userId: string };
 
-export type SavedExerciseTemplate = ExerciseTemplate & { workoutTemplateId: string };
-
 export const savedWorkoutTemplates: SavedWorkoutTemplate[] = [];
-
-export const savedExerciseTemplates: SavedExerciseTemplate[] = [];
 
 const getWorkoutTemplates: UserResolvers<Context>['workoutTemplates'] = (parent) => {
   return savedWorkoutTemplates.filter(t => t.userId === parent.id);
@@ -52,7 +49,7 @@ const createWorkoutTemplates: MutationResolvers<Context>['createWorkoutTemplates
   return output;
 }
 
-const editWorkoutTemplates: MutationResolvers<Context>['editWorkoutTemplates'] = (_parent, args, ctx) => {
+const editWorkoutTemplates: MutationResolvers<Context>['editWorkoutTemplates'] = (_parent, args) => {
   const workoutTemplates = savedWorkoutTemplates.filter(w => args.workoutTemplateIds.includes(w.id));
 
   const { edit } = args;

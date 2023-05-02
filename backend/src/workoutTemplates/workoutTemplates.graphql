@@ -6,20 +6,6 @@ type WorkoutTemplate {
   backgroundColor: String
 }
 
-type ExerciseTemplate {
-  id: String!
-  key: String
-  exerciseType: String!
-  sets: [SetTemplate!]!
-  order: Int!
-}
-
-type SetTemplate {
-  reps: Int
-  weight: Int
-  order: Int!
-}
-
 extend type User {
   workoutTemplates: [WorkoutTemplate!]
 }
@@ -45,12 +31,6 @@ input CreateExerciseInput {
   order: Int!
 }
 
-input CreateSetTemplateInput {
-  reps: Int
-  weight: Int
-  order: Int!
-}
-
 input EditWorkoutTemplateInput {
   name: String
   exercises: [EditExerciseInput!]
@@ -63,8 +43,3 @@ input EditExerciseInput {
   order: Int
 }
 
-input EditSetTemplateInput {
-  reps: Int
-  weight: Int
-  order: Int!
-}
