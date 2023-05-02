@@ -1,4 +1,3 @@
-import { filter } from "lodash";
 import { Context } from "../context";
 import { EditExerciseInput, ExerciseTemplate, MutationResolvers, Resolvers, UserResolvers, WorkoutTemplate } from "../generated/graphql.generated";
 import { v1 as uuid } from 'uuid';
