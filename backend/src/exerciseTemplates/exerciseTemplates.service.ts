@@ -1,47 +1,30 @@
 import { CreateExerciseTemplateInput, ExerciseTemplate, SetTemplate } from '../generated/graphql.generated';
-import { savedExerciseItems } from '../exerciseItems/exerciseItems.resolvers';
 import { v1 as uuid } from 'uuid';
+import { createSetTemplates } from '../setTemplates/setTemplates.service';
 
 export type SavedExerciseTemplate = ExerciseTemplate & { workoutTemplateId: string };
 
 export const savedExerciseTemplates: SavedExerciseTemplate[] = [];
 
-export function createExerciseTemplatesAction(exerciseTemplates: CreateExerciseTemplateInput[]) {
+export function createExerciseTemplates(exerciseTemplates: CreateExerciseTemplateInput[], workoutTemplateId: string) {
   const output: ExerciseTemplate[] = [];
 
-  for (const template of exerciseTemplates) {
+  for (const exerciseTemplate of exerciseTemplates) {
 
-    const newTemplateSets: SetTemplate[] = [];
+    const newExerciseTemplateId = uuid();
 
-    for (const set of template.sets) {
+    createSetTemplates(exerciseTemplate.setTemplates, newExerciseTemplateId);
 
-      const exerciseItem = savedExerciseItems.find(i => i.id === set.exerciseItemId);
-
-      if (!exerciseItem || !exerciseItem.id) {
-        throw new Error('Could not resolve exercise item');
-      }
-
-      const newTemplateSet: SetTemplate = { ...set, exerciseType: exerciseItem.exerciseType };
-
-      newTemplateSets.push(newTemplateSet);
+    const newExerciseTemplate: ExerciseTemplate = {
+      id: newExerciseTemplateId,
+      order: exerciseTemplate.order,
+      workoutTemplateId,
     }
 
-    const newTemplate: ExerciseTemplate = {
-      id: uuid(),
-      order: template.order,
-      sets: newTemplateSets,
-    }
+    savedExerciseTemplates.push(newExerciseTemplate);
 
-    output.push(newTemplate);
-
-    const savedTemplate: SavedExerciseTemplate = {
-      ...newTemplate,
-      workoutTemplateId: template.workoutTemplateId,
-    }
-
-    savedExerciseTemplates.push(savedTemplate);
+    output.push(newExerciseTemplate);
   }
 
   return output;
-
 }

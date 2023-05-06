@@ -24,7 +24,7 @@ export type AuthenticateOutput = {
 
 export type CreateExerciseTemplateInput = {
   order: Scalars['Int'];
-  sets: Array<CreateSetTemplateInput>;
+  setTemplates: Array<CreateSetTemplateInput>;
 };
 
 export type CreateScheduleInput = {
@@ -67,7 +67,7 @@ export type ExerciseTemplate = {
   id: Scalars['String'];
   key?: Maybe<Scalars['String']>;
   order: Scalars['Int'];
-  sets: Array<SetTemplate>;
+  setTemplates?: Maybe<Array<SetTemplate>>;
   workoutTemplateId: Scalars['String'];
 };
 
@@ -162,16 +162,18 @@ export type SetTemplate = {
   __typename?: 'SetTemplate';
   category?: Maybe<Scalars['String']>;
   exerciseItemId: Scalars['String'];
+  exerciseTemplateId: Scalars['String'];
   exerciseType?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
   order: Scalars['Int'];
   reps?: Maybe<Scalars['Int']>;
   weight?: Maybe<Scalars['Int']>;
 };
 
 export type UpdateExerciseTemplateInput = {
-  addSets?: InputMaybe<Array<Scalars['String']>>;
+  addSetTemplates?: InputMaybe<Array<CreateSetTemplateInput>>;
   order?: InputMaybe<Scalars['Int']>;
-  removeSets?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  removeSetTemplates?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type UpdateSetTemplateInput = {
@@ -199,10 +201,11 @@ export type User = {
 export type WorkoutTemplate = {
   __typename?: 'WorkoutTemplate';
   backgroundColor?: Maybe<Scalars['String']>;
-  exerciseTemplates: Array<ExerciseTemplate>;
+  exerciseTemplates?: Maybe<Array<ExerciseTemplate>>;
   id: Scalars['String'];
   key?: Maybe<Scalars['String']>;
   name: Scalars['String'];
+  userId: Scalars['String'];
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -344,7 +347,7 @@ export type ExerciseTemplateResolvers<ContextType = any, ParentType extends Reso
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   key?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   order?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  sets?: Resolver<Array<ResolversTypes['SetTemplate']>, ParentType, ContextType>;
+  setTemplates?: Resolver<Maybe<Array<ResolversTypes['SetTemplate']>>, ParentType, ContextType>;
   workoutTemplateId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -390,7 +393,9 @@ export type ScheduleWorkoutResolvers<ContextType = any, ParentType extends Resol
 export type SetTemplateResolvers<ContextType = any, ParentType extends ResolversParentTypes['SetTemplate'] = ResolversParentTypes['SetTemplate']> = ResolversObject<{
   category?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   exerciseItemId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  exerciseTemplateId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   exerciseType?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   order?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   reps?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   weight?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
@@ -408,10 +413,11 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type WorkoutTemplateResolvers<ContextType = any, ParentType extends ResolversParentTypes['WorkoutTemplate'] = ResolversParentTypes['WorkoutTemplate']> = ResolversObject<{
   backgroundColor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  exerciseTemplates?: Resolver<Array<ResolversTypes['ExerciseTemplate']>, ParentType, ContextType>;
+  exerciseTemplates?: Resolver<Maybe<Array<ResolversTypes['ExerciseTemplate']>>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   key?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  userId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 

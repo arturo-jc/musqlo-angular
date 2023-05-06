@@ -8,9 +8,10 @@ extend type Mutation {
 
 type WorkoutTemplate {
   id: String!
+  userId: String!
   key: String
   name: String!
-  exerciseTemplates: [ExerciseTemplate!]!
+  exerciseTemplates: [ExerciseTemplate!]
   backgroundColor: String
 }
 

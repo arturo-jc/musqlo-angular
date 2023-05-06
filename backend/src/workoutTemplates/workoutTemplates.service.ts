@@ -1,34 +1,29 @@
-import { CreateWorkoutTemplateInput, ExerciseTemplate, WorkoutTemplate } from '../generated/graphql.generated';
+import { createExerciseTemplates } from '../exerciseTemplates/exerciseTemplates.service';
+import { CreateWorkoutTemplateInput, WorkoutTemplate } from '../generated/graphql.generated';
 import { v1 as uuid } from 'uuid';
 
-export type SavedWorkoutTemplate = WorkoutTemplate & { userId: string };
+export const savedWorkoutTemplates: WorkoutTemplate[] = [];
 
-export const savedWorkoutTemplates: SavedWorkoutTemplate[] = [];
-
-export function createWorkoutTemplatesAction(workoutTemplates: CreateWorkoutTemplateInput[], userId: string) {
+export function createWorkoutTemplates(workoutTemplates: CreateWorkoutTemplateInput[], userId: string) {
 
   const output: WorkoutTemplate[] = [];
 
-  for (const template of workoutTemplates) {
+  for (const workoutTemplate of workoutTemplates) {
 
-    // const newTemplateExercises: ExerciseTemplate[] = template.exercises
-    //   .map(e => ({
-    //     id: uuid(),
-    //     sets: e.sets,
-    //     order: e.order,
-    //   }))
+    const newWorkoutTemplateId = uuid();
 
-    // const newTemplate: WorkoutTemplate = {
-    //   id: uuid(),
-    //   name: template.name,
-    //   exercises: newTemplateExercises,
-    //   backgroundColor: template.backgroundColor,
-    // }
+    createExerciseTemplates(workoutTemplate.exerciseTemplates, newWorkoutTemplateId);
 
-    // output.push({ ...newTemplate, key: template.key });
+    const newWorkoutTemplate: WorkoutTemplate = {
+      id: newWorkoutTemplateId,
+      name: workoutTemplate.name,
+      backgroundColor: workoutTemplate.backgroundColor,
+      userId,
+    }
 
-    // savedWorkoutTemplates.push({ ...newTemplate, userId });
+    savedWorkoutTemplates.push(newWorkoutTemplate);
 
+    output.push(newWorkoutTemplate);
   }
 
   return output;

@@ -8,19 +8,19 @@ extend type Mutation {
 type ExerciseTemplate {
   id: String!
   workoutTemplateId: String!
-  key: String
-  sets: [SetTemplate!]!
   order: Int!
+  key: String
+  setTemplates: [SetTemplate!]
 }
 
 input CreateExerciseTemplateInput {
-  sets: [CreateSetTemplateInput!]!
+  setTemplates: [CreateSetTemplateInput!]!
   order: Int!
 }
 
 input UpdateExerciseTemplateInput {
-  addSets: [String!]
-  removeSets: [String]
+  addSetTemplates: [CreateSetTemplateInput!]
+  removeSetTemplates: [String!]
   order: Int
 }
 

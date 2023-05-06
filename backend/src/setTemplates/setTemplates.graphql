@@ -6,10 +6,12 @@ extend type Mutation {
 }
 
 type SetTemplate {
+  id: String!
+  exerciseTemplateId: String!
+  exerciseItemId: String!
+  order: Int!
   reps: Int
   weight: Int
-  order: Int!
-  exerciseItemId: String!
   exerciseType: String
   category: String
 }
@@ -22,7 +24,7 @@ input CreateSetTemplateInput {
 }
 
 input UpdateSetTemplateInput {
+  order: Int!
   reps: Int
   weight: Int
-  order: Int!
 }
