@@ -1,3 +1,11 @@
+extend type Mutation {
+  createSchedules(schedules: [CreateScheduleInput!]!): [Schedule!]!
+}
+
+extend type User {
+schedules: [Schedule!]
+}
+
 type Schedule {
   id: String!
   key: String
@@ -13,14 +21,6 @@ type ScheduleWorkout {
   allDay: Boolean
   start: String
   end: String
-}
-
-extend type User {
-  schedules: [Schedule!]
-}
-
-extend type Mutation {
-  createSchedules(schedules: [CreateScheduleInput!]!): [Schedule!]!
 }
 
 input CreateScheduleInput {

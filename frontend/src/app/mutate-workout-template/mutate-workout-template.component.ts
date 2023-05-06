@@ -6,6 +6,7 @@ import { ExerciseItem, ExerciseTemplate, SetTemplate, WorkoutTemplate } from '..
 import { OptionalId, RequiredKey } from '../shared/utils';
 import { WorkoutTemplatesService } from '../services/workout-templates.service';
 import { ExerciseItemsComponent } from './exercise-items/exercise-items.component';
+import { AuthService } from '../services/auth.service';
 
 export const DEFAULT_BG_COLOR = 'var(--primary-color)';
 
@@ -70,12 +71,17 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
     const exerciseTemplates: FrontendExerciseTemplate[] = [];
 
     for (const exercise of (workoutTemplateToEdit.exercises || [])) {
-      const frontendExercise: FrontendExerciseTemplate = {
-        ...exercise,
-        key: this.currentKey.toString(),
+
+      let key: string;
+
+      if (exercise.id) {
+        key = exercise.id;
+      } else {
+        key = this.currentKey.toString();
+        this.currentKey++;
       }
 
-      this.currentKey++;
+      const frontendExercise: FrontendExerciseTemplate = { ...exercise, key };
 
       exerciseTemplates.push(frontendExercise);
 

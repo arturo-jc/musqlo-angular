@@ -1,0 +1,28 @@
+extend type Mutation {
+  updateSetTemplates(
+    setTemplateIds: [String!]!
+    update: UpdateSetTemplateInput!
+  ): [SetTemplate!]!
+}
+
+type SetTemplate {
+  reps: Int
+  weight: Int
+  order: Int!
+  exerciseItemId: String!
+  exerciseType: String
+  category: String
+}
+
+input CreateSetTemplateInput {
+  reps: Int
+  weight: Int
+  order: Int!
+  exerciseItemId: String!
+}
+
+input UpdateSetTemplateInput {
+  reps: Int
+  weight: Int
+  order: Int!
+}

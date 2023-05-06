@@ -1,48 +1,26 @@
+extend type Mutation {
+  updateExerciseTemplates(
+    exerciseTemplateIds: [String!]!
+    update: UpdateExerciseTemplateInput!
+  ): [ExerciseTemplate!]!
+}
+
 type ExerciseTemplate {
   id: String!
+  workoutTemplateId: String!
   key: String
-  exerciseItemId: String
-  exerciseType: String
-  category: String
   sets: [SetTemplate!]!
   order: Int!
 }
 
-type SetTemplate {
-  reps: Int
-  weight: Int
-  order: Int!
-}
-
-extend type Mutation {
-  createExerciseTemplates(exerciseTemplates: [CreateExerciseTemplateInput!]!): [ExerciseTemplate!]!
-  editExerciseTemplates(
-    exerciseTemplateIds: [String!]!
-    edit: EditExerciseTemplateInput!
-  ): [ExerciseTemplate!]!
-}
-
 input CreateExerciseTemplateInput {
-  exerciseItemId: String!
-  workoutTemplateId: String!
   sets: [CreateSetTemplateInput!]!
   order: Int!
 }
 
-input EditExerciseTemplateInput {
-  exerciseTemplateId: String
-  sets: [EditSetTemplateInput!]
+input UpdateExerciseTemplateInput {
+  addSets: [String!]
+  removeSets: [String]
   order: Int
 }
 
-input CreateSetTemplateInput {
-  reps: Int
-  weight: Int
-  order: Int!
-}
-
-input EditSetTemplateInput {
-  reps: Int
-  weight: Int
-  order: Int!
-}

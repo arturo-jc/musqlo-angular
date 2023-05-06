@@ -6,6 +6,7 @@ import { SubSink } from 'subsink';
 import { CreateWorkoutTemplatesGQL, UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables, CreateWorkoutTemplatesMutationVariables, CreateWorkoutTemplateInput, CreateExerciseInput, UserWorkoutTemplatesGQL, ScheduleWorkout } from '../../generated/graphql.generated';
 import { WorkoutTemplate } from '../../generated/graphql.generated';
 import { OptionalId, RequiredKey } from '../shared/utils';
+import { AuthService } from './auth.service';
 
 export type FrontendWorkoutTemplate = RequiredKey<OptionalId<WorkoutTemplate>>;
 
@@ -13,6 +14,8 @@ export type FrontendWorkoutTemplate = RequiredKey<OptionalId<WorkoutTemplate>>;
   providedIn: 'root'
 })
 export class WorkoutTemplatesService {
+
+  userId?: string | null;
 
   workoutTemplates: OptionalId<WorkoutTemplate>[] = []
 
@@ -27,6 +30,7 @@ export class WorkoutTemplatesService {
   constructor(
     private createWorkoutTemplatesGQL: CreateWorkoutTemplatesGQL,
     private userWorkoutTemplatesGQL: UserWorkoutTemplatesGQL,
+    private auth: AuthService,
   ) {}
 
   addWorkoutTemplate(newWorkoutTemplate: OptionalId<WorkoutTemplate>) {
@@ -42,6 +46,10 @@ export class WorkoutTemplatesService {
 
   editWorkoutTemplate(editedWorkoutTemplate: OptionalId<WorkoutTemplate>) {
 
+    if (this.userId) {
+      this.updateExistingWorkoutTemplate(editedWorkoutTemplate);
+    }
+
     if (this.editWorkoutTemplateKey === undefined) { return; }
 
     editedWorkoutTemplate.key = this.editWorkoutTemplateKey;
@@ -53,7 +61,12 @@ export class WorkoutTemplatesService {
     this.workoutTemplates = updatedWorkoutTemplates;
   }
 
-  watchUserWorkoutTemplates(userId: string) {
+  updateExistingWorkoutTemplate(editedWorkoutTemplate: OptionalId<WorkoutTemplate>) {
+  }
+
+  onAuthSuccess(userId: string) {
+    this.userId = userId;
+
     const watchQueryVariables: UserWorkoutTemplatesQueryVariables = { userId };
 
     this.userWorkoutTemplatesQuery = this.userWorkoutTemplatesGQL.watch(watchQueryVariables, { fetchPolicy: 'cache-and-network' });
@@ -115,6 +128,7 @@ export class WorkoutTemplatesService {
   }
 
   reset() {
+    this.userId = null;
     this.workoutTemplates = [];
     this.editWorkoutTemplateKey = undefined;
     this.currentKey = 0;

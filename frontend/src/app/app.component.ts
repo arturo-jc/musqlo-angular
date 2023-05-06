@@ -43,8 +43,8 @@ export class AppComponent implements OnInit {
   async onAuthSuccess(userId: string) {
     await firstValueFrom(this.workoutTemplates.createUnsavedWorkoutTemplates())
     await firstValueFrom(this.schedules.createUnsavedSchedules());
-    this.workoutTemplates.watchUserWorkoutTemplates(userId);
-    this.schedules.watchUserSchedules(userId);
+    this.workoutTemplates.onAuthSuccess(userId);
+    this.schedules.onAuthSuccess(userId);
   }
 
   onLogout() {

@@ -1,4 +1,5 @@
 type ExerciseItem {
+  id: String!
   exerciseType: String!
   category: String!
 }

@@ -18,6 +18,8 @@ export class SchedulesService {
     private createSchedulesGQL: CreateSchedulesGQL,
   ) { }
 
+  userId?: string | null;
+
   schedules: OptionalId<Schedule>[] = [];
 
   editScheduleKey?: string | null;
@@ -51,7 +53,9 @@ export class SchedulesService {
     this.schedules = updatedSchedules;
   }
 
-  watchUserSchedules(userId: string) {
+  onAuthSuccess(userId: string) {
+    this.userId = userId;
+
     const watchQueryVariables: UserSchedulesQueryVariables = { userId };
 
     this.userSchedulesQuery = this.userSchedulesGQL.watch(watchQueryVariables, { fetchPolicy: 'cache-and-network' });
@@ -114,6 +118,7 @@ export class SchedulesService {
   }
 
   reset() {
+    this.userId = null;
     this.schedules = [];
     this.editScheduleKey = undefined;
     this.currentKey = 0;
