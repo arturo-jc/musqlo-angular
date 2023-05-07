@@ -5,8 +5,9 @@ import dayjs from 'dayjs';
 import { DEFAULT_BG_COLOR } from '../mutate-workout-template/mutate-workout-template.component';
 import { WorkoutTemplatesService } from './workout-templates.service';
 import { LIGHT_DARK_THRESHOLD } from '../shared/color-picker/color-picker.component';
-import { OptionalId } from '../shared/utils';
+import { RecursivePartial } from '../shared/utils';
 import { WorkoutTemplate, ExerciseTemplate } from '../../generated/graphql.generated';
+import { Maybe } from 'graphql/jsutils/Maybe';
 
 @Injectable({
   providedIn: 'root'
@@ -71,25 +72,25 @@ export class FullCalendarService {
 
     const workoutTemplate = this.workoutTemplates.workoutTemplates.find(t => t.key === workoutTemplateKey);
 
-    for (const exercise of workoutTemplate?.exercises || []) {
-      const exerciseEl = this.createExerciseEl(exercise);
+    for (const exerciseTemplate of workoutTemplate?.exerciseTemplates || []) {
+      const exerciseEl = this.createExerciseEl(exerciseTemplate);
       bodyEl.append(exerciseEl);
     }
 
     return bodyEl;
   }
 
-  createExerciseEl(exercise: OptionalId<ExerciseTemplate>): HTMLDivElement {
+  createExerciseEl(exercise: Maybe<RecursivePartial<ExerciseTemplate>>): HTMLDivElement {
     const exerciseEl = document.createElement('div');
     this.applyStyle(this.exerciseStyle, exerciseEl);
 
     const exerciseTypeEl = document.createElement('div');
-    exerciseTypeEl.textContent = exercise.exerciseType;
+    // exerciseTypeEl.textContent = exercise.exerciseType;
     this.applyStyle(this.exerciseTypeStyle, exerciseTypeEl);
     exerciseEl.append(exerciseTypeEl);
 
     const setCountEl = document.createElement('div');
-    setCountEl.textContent = `x ${exercise.sets.length}`;
+    // setCountEl.textContent = `x ${exercise.sets.length}`;
     exerciseEl.append(setCountEl);
 
     return exerciseEl;
@@ -101,12 +102,12 @@ export class FullCalendarService {
     }
   }
 
-  getEventInput(workoutTemplate: OptionalId<WorkoutTemplate>): EventInput {
+  getEventInput(workoutTemplate: RecursivePartial<WorkoutTemplate>): EventInput {
 
     const backgroundColor = workoutTemplate?.backgroundColor || DEFAULT_BG_COLOR;
 
     return {
-      title: workoutTemplate.name,
+      title: workoutTemplate.name || undefined,
       extendedProps: {
         key: workoutTemplate.key,
       },

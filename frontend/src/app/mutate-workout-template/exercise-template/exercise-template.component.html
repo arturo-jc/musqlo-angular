@@ -9,7 +9,8 @@
         >
         <ng-content></ng-content>
     </button>
-    <h3 class="flex-1">{{ template.exerciseType }}</h3>
+    <!-- <h3 class="flex-1">{{ template.exerciseType }}</h3> -->
+    <h3 class="flex-1"></h3>
     <p-button 
         (click)="onAddSet.emit(template)"
         label="Add Set"
@@ -17,8 +18,8 @@
         styleClass="p-button-sm p-button-success mr-2"
         [disabled]="reorderMode"
         ></p-button>
+    <!-- (click)="onDeleteTemplate.emit(template.order - 1)" -->
     <p-button 
-        (click)="onDeleteTemplate.emit(template.order - 1)"
         label="Delete"
         icon="pi pi-trash"
         styleClass="p-button-sm p-button-danger"
@@ -26,7 +27,7 @@
 </div>
 <div [@collapse]="(collapsed || hideSets) ? 'hidden' : 'visible'" style="overflow: hidden;">
     <p-table
-        [value]="template.sets"
+        [value]="[]"
         (onRowReorder)="onReorderSets.emit(template)"
         >
         <ng-template pTemplate="header">

@@ -9,15 +9,17 @@ export class ExerciseTemplatePlaceholderPipe implements PipeTransform {
 
   transform(exerciseItem: ExerciseItem): FrontendExerciseTemplate {
     return {
-      exerciseType: exerciseItem.exerciseType,
+      // exerciseType: exerciseItem.exerciseType,
       order: 1,
-      sets: [
-        {
-          order: 1,
-          reps: 1,
-          weight: 0,
-        }
-      ],
+      setTemplates: [],
+      workoutTemplateId: '',
+      // sets: [
+      //   {
+      //     order: 1,
+      //     reps: 1,
+      //     weight: 0,
+      //   }
+      // ],
       key: 'placeholder',
     };
   }

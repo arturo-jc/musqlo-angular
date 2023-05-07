@@ -4,7 +4,7 @@ import { cloneDeep } from 'lodash-es';
 import { filter, map, of, tap } from 'rxjs';
 import { SubSink } from 'subsink';
 import { CreateScheduleInput, CreateSchedulesGQL, CreateSchedulesMutationVariables, CreateScheduleWorkoutInput, Schedule, UserSchedulesGQL, UserSchedulesQuery, UserSchedulesQueryVariables } from '../../generated/graphql.generated';
-import { OptionalId } from '../shared/utils';
+import { RecursivePartial } from '../shared/utils';
 import { WorkoutTemplatesService } from './workout-templates.service';
 
 @Injectable({
@@ -20,7 +20,7 @@ export class SchedulesService {
 
   userId?: string | null;
 
-  schedules: OptionalId<Schedule>[] = [];
+  schedules: RecursivePartial<Schedule>[] = [];
 
   editScheduleKey?: string | null;
 
@@ -30,7 +30,7 @@ export class SchedulesService {
 
   subs = new SubSink();
 
-  addSchedule(newSchedule: OptionalId<Schedule>) {
+  addSchedule(newSchedule: RecursivePartial<Schedule>) {
     newSchedule.key = this.currentKey.toString();
 
     this.currentKey++;
@@ -40,7 +40,7 @@ export class SchedulesService {
     this.schedules = updatedSchedules;
   }
 
-  updateSchedule(updatedSchedule: OptionalId<Schedule>) {
+  updateSchedule(updatedSchedule: RecursivePartial<Schedule>) {
 
     if (!this.editScheduleKey) { return; }
 
@@ -81,13 +81,13 @@ export class SchedulesService {
 
       for (const workout of schedule.workouts || []) {
 
-        const workoutTemplateId = this.workoutTemplates.workoutTemplates.find(t => t.key === workout.workoutTemplateKey)?.id;
+        const workoutTemplateId = this.workoutTemplates.workoutTemplates.find(t => t.key === workout?.workoutTemplateKey)?.id;
 
         const unsavedScheduleWorkout: CreateScheduleWorkoutInput = {
-          allDay: workout.allDay,
-          dow: workout.dow,
-          start: workout.start,
-          end: workout.end,
+          allDay: workout?.allDay,
+          dow: workout?.dow,
+          start: workout?.start,
+          end: workout?.end,
           workoutTemplateId,
         };
 
@@ -95,7 +95,7 @@ export class SchedulesService {
       }
 
       const unsavedSchedule: CreateScheduleInput = {
-        name: schedule.name,
+        name: schedule.name || '',
         workouts: unsavedScheduleWorkouts,
         key: schedule.key,
       }

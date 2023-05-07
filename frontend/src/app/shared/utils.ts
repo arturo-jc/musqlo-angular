@@ -1,4 +1,4 @@
-import { Maybe } from "graphql/jsutils/Maybe";
+import { Maybe } from 'graphql/jsutils/Maybe';
 
 export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
     return value !== null && value !== undefined;
@@ -10,12 +10,19 @@ export type RequiredBy<T, K extends keyof T> = Omit<T, K> & Required<Demaybefy<P
 
 export type OptionalId<T extends { id: string }> = PartialBy<{
     [P in keyof T]:
-        T[P] extends Maybe<Array<infer V>> ? V extends { id: string } ? Maybe<Array<OptionalId<V>>> : T[P] :
+        T[P] extends Maybe<Array<infer V>> ?
+            V extends { id: string } ? Maybe<Array<OptionalId<V>>> : T[P] :
         T[P] extends Array<infer Item> ?
-        Item extends { id: string } ? Array<OptionalId<Item>> : T[P]
-        :
+        Item extends { id: string } ? Array<OptionalId<Item>> : T[P] :
         T[P] extends { id: string } ? OptionalId<T[P]> : T[P]
 }, 'id'>;
 
 export type RequiredKey<T extends { key?: Maybe<string> }> = RequiredBy<T, 'key'>;
 
+export type RecursivePartial<T> = {
+    [P in keyof T]?:
+        T[P] extends Maybe<infer V> ? Maybe<RecursivePartial<V>> :
+        T[P] extends (infer U)[] ? RecursivePartial<U>[] :
+        T[P] extends object ? RecursivePartial<T[P]> :
+        T[P];
+};

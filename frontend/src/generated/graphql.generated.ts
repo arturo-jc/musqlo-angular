@@ -2,7 +2,7 @@ import { gql } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import * as Apollo from 'apollo-angular';
 export type Maybe<T> = T | null;
-export type InputMaybe<T> = Maybe<T>;
+export type InputMaybe<T> = T | null | undefined;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
@@ -23,10 +23,9 @@ export type AuthenticateOutput = {
   username?: Maybe<Scalars['String']>;
 };
 
-export type CreateExerciseInput = {
-  exerciseType: Scalars['String'];
+export type CreateExerciseTemplateInput = {
   order: Scalars['Int'];
-  sets: Array<CreateSetTemplateInput>;
+  setTemplates: Array<CreateSetTemplateInput>;
 };
 
 export type CreateScheduleInput = {
@@ -44,6 +43,7 @@ export type CreateScheduleWorkoutInput = {
 };
 
 export type CreateSetTemplateInput = {
+  exerciseItemId: Scalars['String'];
   order: Scalars['Int'];
   reps?: InputMaybe<Scalars['Int']>;
   weight?: InputMaybe<Scalars['Int']>;
@@ -51,42 +51,25 @@ export type CreateSetTemplateInput = {
 
 export type CreateWorkoutTemplateInput = {
   backgroundColor?: InputMaybe<Scalars['String']>;
-  exercises: Array<CreateExerciseInput>;
+  exerciseTemplates: Array<CreateExerciseTemplateInput>;
   key: Scalars['String'];
   name: Scalars['String'];
-};
-
-export type EditExerciseInput = {
-  id?: InputMaybe<Scalars['String']>;
-  order?: InputMaybe<Scalars['Int']>;
-  sets?: InputMaybe<Array<EditSetTemplateInput>>;
-};
-
-export type EditSetTemplateInput = {
-  order: Scalars['Int'];
-  reps?: InputMaybe<Scalars['Int']>;
-  weight?: InputMaybe<Scalars['Int']>;
-};
-
-export type EditWorkoutTemplateInput = {
-  backgroundColor?: InputMaybe<Scalars['String']>;
-  exercises?: InputMaybe<Array<EditExerciseInput>>;
-  name?: InputMaybe<Scalars['String']>;
 };
 
 export type ExerciseItem = {
   __typename?: 'ExerciseItem';
   category: Scalars['String'];
   exerciseType: Scalars['String'];
+  id: Scalars['String'];
 };
 
 export type ExerciseTemplate = {
   __typename?: 'ExerciseTemplate';
-  exerciseType: Scalars['String'];
   id: Scalars['String'];
   key?: Maybe<Scalars['String']>;
   order: Scalars['Int'];
-  sets: Array<SetTemplate>;
+  setTemplates?: Maybe<Array<SetTemplate>>;
+  workoutTemplateId: Scalars['String'];
 };
 
 export type Mutation = {
@@ -94,8 +77,10 @@ export type Mutation = {
   _blank?: Maybe<Scalars['Boolean']>;
   createSchedules: Array<Schedule>;
   createWorkoutTemplates: Array<WorkoutTemplate>;
-  editWorkoutTemplates: Array<WorkoutTemplate>;
   signUp: AuthenticateOutput;
+  updateExerciseTemplates: Array<ExerciseTemplate>;
+  updateSetTemplates: Array<SetTemplate>;
+  updateWorkoutTemplates: Array<WorkoutTemplate>;
 };
 
 
@@ -109,16 +94,28 @@ export type MutationCreateWorkoutTemplatesArgs = {
 };
 
 
-export type MutationEditWorkoutTemplatesArgs = {
-  edit: EditWorkoutTemplateInput;
-  workoutTemplateIds: Array<Scalars['String']>;
-};
-
-
 export type MutationSignUpArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
   username?: InputMaybe<Scalars['String']>;
+};
+
+
+export type MutationUpdateExerciseTemplatesArgs = {
+  exerciseTemplateIds: Array<Scalars['String']>;
+  update: UpdateExerciseTemplateInput;
+};
+
+
+export type MutationUpdateSetTemplatesArgs = {
+  setTemplateIds: Array<Scalars['String']>;
+  update: UpdateSetTemplateInput;
+};
+
+
+export type MutationUpdateWorkoutTemplatesArgs = {
+  update: UpdateWorkoutTemplateInput;
+  workoutTemplateIds: Array<Scalars['String']>;
 };
 
 export type Query = {
@@ -164,9 +161,33 @@ export type ScheduleWorkout = {
 
 export type SetTemplate = {
   __typename?: 'SetTemplate';
+  category?: Maybe<Scalars['String']>;
+  exerciseItemId: Scalars['String'];
+  exerciseTemplateId: Scalars['String'];
+  exerciseType?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
   order: Scalars['Int'];
   reps?: Maybe<Scalars['Int']>;
   weight?: Maybe<Scalars['Int']>;
+};
+
+export type UpdateExerciseTemplateInput = {
+  addSetTemplates?: InputMaybe<Array<CreateSetTemplateInput>>;
+  order?: InputMaybe<Scalars['Int']>;
+  removeSetTemplates?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type UpdateSetTemplateInput = {
+  order: Scalars['Int'];
+  reps?: InputMaybe<Scalars['Int']>;
+  weight?: InputMaybe<Scalars['Int']>;
+};
+
+export type UpdateWorkoutTemplateInput = {
+  addExerciseTemplates?: InputMaybe<Array<CreateExerciseTemplateInput>>;
+  backgroundColor?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+  removeExerciseTemplates?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type User = {
@@ -181,16 +202,17 @@ export type User = {
 export type WorkoutTemplate = {
   __typename?: 'WorkoutTemplate';
   backgroundColor?: Maybe<Scalars['String']>;
-  exercises: Array<ExerciseTemplate>;
+  exerciseTemplates?: Maybe<Array<ExerciseTemplate>>;
   id: Scalars['String'];
   key?: Maybe<Scalars['String']>;
   name: Scalars['String'];
+  userId: Scalars['String'];
 };
 
 export type ExerciseItemsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ExerciseItemsQuery = { __typename?: 'Query', exerciseItems: Array<{ __typename?: 'ExerciseItem', exerciseType: string, category: string } | null> };
+export type ExerciseItemsQuery = { __typename?: 'Query', exerciseItems: Array<{ __typename?: 'ExerciseItem', id: string, exerciseType: string, category: string } | null> };
 
 export type LogInQueryVariables = Exact<{
   email: Scalars['String'];
@@ -238,18 +260,19 @@ export type UserWorkoutTemplatesQueryVariables = Exact<{
 }>;
 
 
-export type UserWorkoutTemplatesQuery = { __typename?: 'Query', user?: { __typename?: 'User', id: string, workoutTemplates?: Array<{ __typename?: 'WorkoutTemplate', id: string, name: string, backgroundColor?: string | null, key?: string | null, exercises: Array<{ __typename?: 'ExerciseTemplate', id: string, exerciseType: string, order: number, sets: Array<{ __typename?: 'SetTemplate', reps?: number | null, weight?: number | null, order: number }> }> }> | null } | null };
+export type UserWorkoutTemplatesQuery = { __typename?: 'Query', user?: { __typename?: 'User', id: string, workoutTemplates?: Array<{ __typename?: 'WorkoutTemplate', id: string, name: string, backgroundColor?: string | null, key?: string | null, exerciseTemplates?: Array<{ __typename?: 'ExerciseTemplate', id: string, order: number, setTemplates?: Array<{ __typename?: 'SetTemplate', exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null }> | null }> | null } | null };
 
 export type CreateWorkoutTemplatesMutationVariables = Exact<{
   workoutTemplates: Array<CreateWorkoutTemplateInput> | CreateWorkoutTemplateInput;
 }>;
 
 
-export type CreateWorkoutTemplatesMutation = { __typename?: 'Mutation', createWorkoutTemplates: Array<{ __typename?: 'WorkoutTemplate', id: string, name: string, backgroundColor?: string | null, key?: string | null, exercises: Array<{ __typename?: 'ExerciseTemplate', id: string, exerciseType: string, order: number, sets: Array<{ __typename?: 'SetTemplate', reps?: number | null, weight?: number | null, order: number }> }> }> };
+export type CreateWorkoutTemplatesMutation = { __typename?: 'Mutation', createWorkoutTemplates: Array<{ __typename?: 'WorkoutTemplate', id: string, name: string, backgroundColor?: string | null, key?: string | null, exerciseTemplates?: Array<{ __typename?: 'ExerciseTemplate', id: string, order: number, setTemplates?: Array<{ __typename?: 'SetTemplate', exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null }> | null }> };
 
 export const ExerciseItemsDocument = gql`
     query ExerciseItems {
   exerciseItems {
+    id
     exerciseType
     category
   }
@@ -414,11 +437,11 @@ export const UserWorkoutTemplatesDocument = gql`
       name
       backgroundColor
       key
-      exercises {
+      exerciseTemplates {
         id
-        exerciseType
         order
-        sets {
+        setTemplates {
+          exerciseType
           reps
           weight
           order
@@ -446,11 +469,11 @@ export const CreateWorkoutTemplatesDocument = gql`
     name
     backgroundColor
     key
-    exercises {
+    exerciseTemplates {
       id
-      exerciseType
       order
-      sets {
+      setTemplates {
+        exerciseType
         reps
         weight
         order

@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Schedule, WorkoutTemplate } from '../../generated/graphql.generated';
 import { SchedulesService } from '../services/schedules.service';
-import { OptionalId } from '../shared/utils';
 import { WorkoutTemplatesService } from '../services/workout-templates.service';
+import { RecursivePartial } from '../shared/utils';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,13 +17,13 @@ export class DashboardComponent {
     private router: Router,
   ) {}
 
-  editWorkout(workoutTemplate: OptionalId<WorkoutTemplate>) {
+  editWorkout(workoutTemplate: RecursivePartial<WorkoutTemplate>) {
     if (!workoutTemplate.key) { return; }
     this.workoutTemplatesService.editWorkoutTemplateKey = workoutTemplate.key;
     this.router.navigate([ 'workouts', 'edit' ]);
   }
 
-  editSchedule(schedule: OptionalId<Schedule>) {
+  editSchedule(schedule: RecursivePartial<Schedule>) {
     this.schedulesService.editScheduleKey = schedule.key;
     this.router.navigate([ 'schedules', 'edit' ]);
   }

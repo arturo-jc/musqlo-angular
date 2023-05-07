@@ -6,11 +6,11 @@ query UserWorkoutTemplates($userId: String!) {
       name
       backgroundColor
       key
-      exercises {
+      exerciseTemplates {
         id
-        exerciseType
         order
-        sets {
+        setTemplates {
+          exerciseType
           reps
           weight
           order
@@ -26,11 +26,11 @@ mutation CreateWorkoutTemplates($workoutTemplates: [CreateWorkoutTemplateInput!]
     name
     backgroundColor
     key
-    exercises {
+    exerciseTemplates {
       id
-      exerciseType
       order
-      sets {
+      setTemplates {
+        exerciseType
         reps
         weight
         order

@@ -12,7 +12,8 @@ import { EventImpl } from '@fullcalendar/core/internal';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WorkoutTemplatesService } from '../services/workout-templates.service';
 import { Schedule, ScheduleWorkout } from '../../generated/graphql.generated';
-import { OptionalId } from '../shared/utils';
+import { RecursivePartial } from '../shared/utils';
+import { Maybe } from 'graphql/jsutils/Maybe';
 
 export type CalendarView = 'weekly' | 'biweekly';
 
@@ -149,7 +150,7 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
   saveSchedule() {
     if (!this.calendarApi) { return; }
 
-    const scheduleToSave: OptionalId<Schedule> = {
+    const scheduleToSave: RecursivePartial<Schedule> = {
       name: this.title,
       workouts: this.getScheduleWorkouts(this.calendarApi.getEvents()),
     }
@@ -164,7 +165,7 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   getScheduleWorkouts(events: EventImpl[]) {
-    const workouts: OptionalId<ScheduleWorkout>[] = [];
+    const workouts: RecursivePartial<ScheduleWorkout>[] = [];
 
     for (const event of events) {
       if (!event.start) { continue; }
@@ -177,7 +178,7 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
         dow = dow + 7;
       }
 
-      const newWorkout: OptionalId<ScheduleWorkout> = {
+      const newWorkout: RecursivePartial<ScheduleWorkout> = {
         workoutTemplateKey: event.extendedProps['key'],
         dow,
         allDay: event.allDay,
@@ -206,6 +207,8 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
     let showTimes = false;
 
     for (const scheduleWorkout of (scheduleToEdit.workouts || [])) {
+      if (!scheduleWorkout) { continue; }
+
       const workout = this.workoutTemplatesService.workoutTemplates
         .find(t => t.key === scheduleWorkout.workoutTemplateKey);
 
@@ -234,6 +237,8 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
 
     this.setCalendarView(scheduleToEdit, showTimes);
 
+    if (!scheduleToEdit.name) { return; }
+
     this.title = scheduleToEdit.name;
 
     this.cd.detectChanges();
@@ -245,7 +250,7 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
     eventInput[time] = eventDay.hour(Number(hourString)).minute(Number(minString)).second(Number(secString)).toDate();
   }
 
-  setCalendarView(scheduleToEdit: OptionalId<Schedule>, showTimes: boolean) {
+  setCalendarView(scheduleToEdit: RecursivePartial<Schedule>, showTimes: boolean) {
 
     const latestWorkoutDow = this.getLatestWorkoutDow(scheduleToEdit.workouts || []);
 
@@ -258,12 +263,12 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
     this.updateCalendarView();
   }
 
-  getLatestWorkoutDow(workouts: OptionalId<ScheduleWorkout>[]) {
+  getLatestWorkoutDow(workouts: Maybe<RecursivePartial<ScheduleWorkout>>[]) {
     if (!workouts || !workouts.length) {
       return 0;
     }
 
-    const dows = workouts.map(w => w.dow || 0);
+    const dows = workouts.map(w => w?.dow || 0);
 
     return Math.max(...dows);
   }

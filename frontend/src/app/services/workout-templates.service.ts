@@ -3,12 +3,11 @@ import { QueryRef } from 'apollo-angular';
 import { cloneDeep } from 'lodash-es';
 import { filter, map, of, tap } from 'rxjs';
 import { SubSink } from 'subsink';
-import { CreateWorkoutTemplatesGQL, UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables, CreateWorkoutTemplatesMutationVariables, CreateWorkoutTemplateInput, CreateExerciseInput, UserWorkoutTemplatesGQL, ScheduleWorkout } from '../../generated/graphql.generated';
+import { CreateWorkoutTemplatesGQL, UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables, CreateWorkoutTemplatesMutationVariables, CreateWorkoutTemplateInput, UserWorkoutTemplatesGQL, CreateExerciseTemplateInput, CreateSetTemplateInput } from '../../generated/graphql.generated';
 import { WorkoutTemplate } from '../../generated/graphql.generated';
-import { OptionalId, RequiredKey } from '../shared/utils';
-import { AuthService } from './auth.service';
+import { RecursivePartial, RequiredKey } from '../shared/utils';
 
-export type FrontendWorkoutTemplate = RequiredKey<OptionalId<WorkoutTemplate>>;
+export type FrontendWorkoutTemplate = RequiredKey<RecursivePartial<WorkoutTemplate>>;
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +16,7 @@ export class WorkoutTemplatesService {
 
   userId?: string | null;
 
-  workoutTemplates: OptionalId<WorkoutTemplate>[] = []
+  workoutTemplates: RecursivePartial<WorkoutTemplate>[] = []
 
   editWorkoutTemplateKey?: string;
 
@@ -30,10 +29,9 @@ export class WorkoutTemplatesService {
   constructor(
     private createWorkoutTemplatesGQL: CreateWorkoutTemplatesGQL,
     private userWorkoutTemplatesGQL: UserWorkoutTemplatesGQL,
-    private auth: AuthService,
   ) {}
 
-  addWorkoutTemplate(newWorkoutTemplate: OptionalId<WorkoutTemplate>) {
+  addWorkoutTemplate(newWorkoutTemplate: RecursivePartial<WorkoutTemplate>) {
 
     newWorkoutTemplate.key = this.currentKey.toString();
 
@@ -44,7 +42,7 @@ export class WorkoutTemplatesService {
     this.workoutTemplates = updatedWorkoutTemplates;
   }
 
-  editWorkoutTemplate(editedWorkoutTemplate: OptionalId<WorkoutTemplate>) {
+  editWorkoutTemplate(editedWorkoutTemplate: RecursivePartial<WorkoutTemplate>) {
 
     if (this.userId) {
       this.updateExistingWorkoutTemplate(editedWorkoutTemplate);
@@ -61,7 +59,7 @@ export class WorkoutTemplatesService {
     this.workoutTemplates = updatedWorkoutTemplates;
   }
 
-  updateExistingWorkoutTemplate(editedWorkoutTemplate: OptionalId<WorkoutTemplate>) {
+  updateExistingWorkoutTemplate(_editedWorkoutTemplate: RecursivePartial<WorkoutTemplate>) {
   }
 
   onAuthSuccess(userId: string) {
@@ -78,7 +76,7 @@ export class WorkoutTemplatesService {
     ).subscribe(userTemplates => this.workoutTemplates = userTemplates);
   }
 
-  setKeys(workoutTemplates: WorkoutTemplate[]) {
+  setKeys(workoutTemplates: RecursivePartial<WorkoutTemplate>[]) {
     for (const template of workoutTemplates) {
       template.key = template.id;
     }
@@ -94,20 +92,36 @@ export class WorkoutTemplatesService {
         throw new Error('Cannot save a workout template without a key');
       }
 
-      template.exercises = template.exercises || [];
+      template.exerciseTemplates = template.exerciseTemplates || [];
 
-      const templateExercises: CreateExerciseInput[] = template.exercises
-        .map(e => ({
-          exerciseType: e.exerciseType,
-          order: e.order,
-          sets: e.sets,
-        }));
+      const createExerciseTemplateInputs: CreateExerciseTemplateInput[] = [];
+      
+      for (const exerciseTemplate of template.exerciseTemplates) {
+        const createSetTemplateInputs: CreateSetTemplateInput[] = [];
+
+        for (const setTemplate of exerciseTemplate?.setTemplates || []) {
+
+          const createSetTemplateInput: CreateSetTemplateInput = {
+            exerciseItemId: setTemplate?.exerciseTemplateId || '',
+            order: setTemplate?.order || 0,
+          }
+
+          createSetTemplateInputs.push(createSetTemplateInput);
+        }
+
+        const createExerciseTemplateInput: CreateExerciseTemplateInput = {
+          order: exerciseTemplate?.order || 0,
+          setTemplates: createSetTemplateInputs,
+        }
+
+        createExerciseTemplateInputs.push(createExerciseTemplateInput);
+      }
 
       const unsavedTemplate: CreateWorkoutTemplateInput = {
         backgroundColor: template.backgroundColor,
-        exercises: templateExercises,
+        exerciseTemplates: createExerciseTemplateInputs,
         key: template.key,
-        name: template.name,
+        name: template.name || '',
       };
 
       unsavedWorkoutTemplates.push(unsavedTemplate)

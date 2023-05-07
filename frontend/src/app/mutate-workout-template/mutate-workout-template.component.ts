@@ -3,14 +3,13 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { cloneDeep } from 'lodash-es';
 import { ExerciseItem, ExerciseTemplate, SetTemplate, WorkoutTemplate } from '../../generated/graphql.generated';
-import { OptionalId, RequiredKey } from '../shared/utils';
+import { OptionalId, RequiredKey, RecursivePartial } from '../shared/utils';
 import { WorkoutTemplatesService } from '../services/workout-templates.service';
 import { ExerciseItemsComponent } from './exercise-items/exercise-items.component';
-import { AuthService } from '../services/auth.service';
 
 export const DEFAULT_BG_COLOR = 'var(--primary-color)';
 
-export type FrontendExerciseTemplate = RequiredKey<OptionalId<ExerciseTemplate>>;
+export type FrontendExerciseTemplate = RequiredKey<RecursivePartial<ExerciseTemplate>>;
 
 @Component({
   selector: 'app-mutate-workout-template',
@@ -65,23 +64,25 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
 
     if (!workoutTemplateToEdit) { return; }
 
+    if (!workoutTemplateToEdit.name) { return; }
+
     this.title = workoutTemplateToEdit.name;
     this.color = workoutTemplateToEdit.backgroundColor || DEFAULT_BG_COLOR;
 
     const exerciseTemplates: FrontendExerciseTemplate[] = [];
 
-    for (const exercise of (workoutTemplateToEdit.exercises || [])) {
+    for (const exerciseTemplate of (workoutTemplateToEdit.exerciseTemplates || [])) {
 
       let key: string;
 
-      if (exercise.id) {
-        key = exercise.id;
+      if (exerciseTemplate?.id) {
+        key = exerciseTemplate.id;
       } else {
         key = this.currentKey.toString();
         this.currentKey++;
       }
 
-      const frontendExercise: FrontendExerciseTemplate = { ...exercise, key };
+      const frontendExercise: FrontendExerciseTemplate = { ...exerciseTemplate, key };
 
       exerciseTemplates.push(frontendExercise);
 
@@ -111,16 +112,18 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
     this.exerciseItems.show()
   }
 
-  insertNewTemplate(exercise: ExerciseItem, index: number) {
-    const firstSet: SetTemplate = {
+  insertNewTemplate(exerciseItem: ExerciseItem, index: number) {
+    const firstSet: Partial<SetTemplate> = {
+      exerciseItemId: exerciseItem.id,
+      exerciseType: exerciseItem.exerciseType,
+      category: exerciseItem.category,
       order: 1,
       weight: 0,
       reps: 1,
     };
 
     const newTemplate: FrontendExerciseTemplate = {
-      exerciseType: exercise.exerciseType,
-      sets: [ firstSet ],
+      setTemplates: [ firstSet ],
       order: index + 1,
       key: this.currentKey.toString(),
     };
@@ -155,22 +158,23 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       let lastExistingSet;
 
-      if (template.sets.length) {
-        lastExistingSet = template.sets[template.sets.length - 1];
+      if (template?.setTemplates?.length) {
+        lastExistingSet = template.setTemplates[template.setTemplates.length - 1];
       }
 
-      const newSet: SetTemplate = {
-        order: template.sets.length + 1,
+      const newSet: RecursivePartial<SetTemplate> = {
+        order: (template?.setTemplates?.length || 0) + 1,
         weight: lastExistingSet?.weight || 0,
         reps: lastExistingSet?.reps || 1,
       };
 
-      template.sets = [ ...template.sets, newSet ];
+      template.setTemplates = [ ...(template.setTemplates || []), newSet ];
     }, delay);
   }
 
   reorderSets(template: FrontendExerciseTemplate) {
-    template.sets.forEach((set, index) => {
+    template?.setTemplates?.forEach((set, index) => {
+      if (!set?.order) { return; }
       set.order = index + 1;
     });
   }
@@ -178,15 +182,18 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
   deleteSet(input: { template: FrontendExerciseTemplate, index: number }) {
     const { template, index } = input;
 
-    const updatedTemplates = [ ...template.sets ];
+    const updatedTemplates = [ ...(template.setTemplates || []) ];
     updatedTemplates.splice(index, 1);
 
     if (!updatedTemplates.length) {
-      this.deleteTemplate(template.order - 1);
+      this.deleteTemplate((template.order || 0) - 1);
       return;
     }
 
-    template.sets = updatedTemplates;
+    if (template.setTemplates) {
+      template.setTemplates = updatedTemplates;
+    }
+
     this.reorderSets(template);
   }
 
@@ -196,9 +203,9 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
 
   saveWorkout() {
 
-    const workoutTemplateToSave: OptionalId<WorkoutTemplate> = {
+    const workoutTemplateToSave: RecursivePartial<WorkoutTemplate> = {
       name: this.title,
-      exercises: this.exerciseTemplates,
+      exerciseTemplates: this.exerciseTemplates,
       backgroundColor: this.color,
     }
 

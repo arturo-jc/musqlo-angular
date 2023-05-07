@@ -5,7 +5,7 @@ import { Draggable } from '@fullcalendar/interaction';
 import { WorkoutTemplatesService } from '../services/workout-templates.service';
 import { FixedFilterComponent } from '../shared/fixed-filter/fixed-filter.component';
 import { WorkoutTemplate } from '../../generated/graphql.generated';
-import { OptionalId } from '../shared/utils';
+import { RecursivePartial } from '../shared/utils';
 
 @Component({
   selector: 'app-workout-templates',
@@ -18,11 +18,11 @@ export class WorkoutTemplatesComponent implements AfterViewInit {
 
   @ViewChild('workoutsRef') workouts?: ElementRef;
 
-  @ViewChild(FixedFilterComponent) fixedFilter?: FixedFilterComponent<OptionalId<WorkoutTemplate>>;
+  @ViewChild(FixedFilterComponent) fixedFilter?: FixedFilterComponent<RecursivePartial<WorkoutTemplate>>;
 
   calendarApi?: Calendar;
 
-  filteredWorkoutTemplates: OptionalId<WorkoutTemplate>[] = [];
+  filteredWorkoutTemplates: RecursivePartial<WorkoutTemplate>[] = [];
 
   draggableSelector = 'fc-workout';
 
@@ -43,7 +43,7 @@ export class WorkoutTemplatesComponent implements AfterViewInit {
     })
   }
 
-  setFilteredWorkoutTemplates(updatedWorkoutTemplates: OptionalId<WorkoutTemplate>[]) {
+  setFilteredWorkoutTemplates(updatedWorkoutTemplates: RecursivePartial<WorkoutTemplate>[]) {
     this.filteredWorkoutTemplates = updatedWorkoutTemplates;
   }
 

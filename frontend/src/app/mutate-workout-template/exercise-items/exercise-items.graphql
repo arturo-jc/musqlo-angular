@@ -1,5 +1,6 @@
 query ExerciseItems {
   exerciseItems {
+    id
     exerciseType
     category
   }

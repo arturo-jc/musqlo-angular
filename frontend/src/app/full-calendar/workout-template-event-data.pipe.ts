@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { WorkoutTemplate } from '../../generated/graphql.generated';
-import { OptionalId } from '../shared/utils';
+import { RecursivePartial } from '../shared/utils';
 import { FullCalendarService } from '../services/full-calendar.service';
 
 @Pipe({
@@ -10,7 +10,7 @@ export class WorkoutTemplateEventDataPipe implements PipeTransform {
 
   constructor(private fullCalendar: FullCalendarService) {}
 
-  transform(workoutTemplate: OptionalId<WorkoutTemplate>): string {
+  transform(workoutTemplate: RecursivePartial<WorkoutTemplate>): string {
     return JSON.stringify(this.fullCalendar.getEventInput(workoutTemplate));
   }
 }
