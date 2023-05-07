@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FrontendExerciseTemplate } from '../mutate-workout-template.component';
+import { FrontendExerciseTemplate } from '../../services/frontend.service';
 
 @Component({
   selector: 'app-exercise-template',

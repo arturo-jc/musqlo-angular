@@ -1,35 +1,36 @@
-query UserSchedules($userId: String!) {
-  user(userId: $userId) {
-    id
-    schedules {
-      id
-      key
-      name
-      workouts {
-        id
-        workoutTemplateId
-        workoutTemplateKey
-        dow
-        allDay
-        start
-        end
-      }
-    }
+mutation CreateSchedules($schedules: [CreateScheduleInput!]!) {
+  createSchedules(schedules: $schedules) {
+    ...FullSchedule
   }
 }
 
-mutation CreateSchedules($schedules: [CreateScheduleInput!]!) {
-  createSchedules(schedules: $schedules) {
-    id
-    key
-    name
-    workouts {
-      allDay
-      dow
-      end
-      id
-      workoutTemplateId
-      start
-    }
+fragment FullSchedule on Schedule {
+  ...BaseSchedule
+  ...Schedule_ScheduleWorkouts
+}
+
+fragment BaseSchedule on Schedule {
+  id
+  key
+  name
+}
+
+fragment Schedule_ScheduleWorkouts on Schedule {
+  workouts {
+    ...BaseScheduleWorkout
   }
+}
+
+fragment FullScheduleWorkout on ScheduleWorkout {
+  ...BaseScheduleWorkout
+}
+
+fragment BaseScheduleWorkout on ScheduleWorkout {
+  id
+  workoutTemplateId
+  workoutTemplateKey
+  dow
+  allDay
+  start
+  end
 }

@@ -1,13 +1,9 @@
 import { Injectable } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
-import { cloneDeep } from 'lodash-es';
 import { filter, map, of, tap } from 'rxjs';
 import { SubSink } from 'subsink';
-import { CreateWorkoutTemplatesGQL, UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables, CreateWorkoutTemplatesMutationVariables, CreateWorkoutTemplateInput, UserWorkoutTemplatesGQL, CreateExerciseTemplateInput, CreateSetTemplateInput } from '../../generated/graphql.generated';
-import { WorkoutTemplate } from '../../generated/graphql.generated';
-import { RecursivePartial, RequiredKey } from '../shared/utils';
-
-export type FrontendWorkoutTemplate = RequiredKey<RecursivePartial<WorkoutTemplate>>;
+import { CreateWorkoutTemplatesGQL, UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables, CreateWorkoutTemplatesMutationVariables, CreateWorkoutTemplateInput, UserWorkoutTemplatesGQL, CreateExerciseTemplateInput, CreateSetTemplateInput, WorkoutTemplate, User, FullWorkoutTemplateFragment } from '../../generated/graphql.generated';
+import { FrontendService, FrontendWorkoutTemplate } from '../services/frontend.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,11 +12,11 @@ export class WorkoutTemplatesService {
 
   userId?: string | null;
 
-  workoutTemplates: RecursivePartial<WorkoutTemplate>[] = []
+  workoutTemplates: FrontendWorkoutTemplate[] = []
 
   editWorkoutTemplateKey?: string;
 
-  currentKey = 0;
+  _currentKey = 0;
 
   userWorkoutTemplatesQuery?: QueryRef<UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables>;
 
@@ -29,20 +25,17 @@ export class WorkoutTemplatesService {
   constructor(
     private createWorkoutTemplatesGQL: CreateWorkoutTemplatesGQL,
     private userWorkoutTemplatesGQL: UserWorkoutTemplatesGQL,
+    private frontend: FrontendService,
   ) {}
 
-  addWorkoutTemplate(newWorkoutTemplate: RecursivePartial<WorkoutTemplate>) {
-
-    newWorkoutTemplate.key = this.currentKey.toString();
-
-    this.currentKey++;
+  addWorkoutTemplate(newWorkoutTemplate: FrontendWorkoutTemplate) {
 
     const updatedWorkoutTemplates = [ ...this.workoutTemplates, newWorkoutTemplate ];
 
     this.workoutTemplates = updatedWorkoutTemplates;
   }
 
-  editWorkoutTemplate(editedWorkoutTemplate: RecursivePartial<WorkoutTemplate>) {
+  editWorkoutTemplate(editedWorkoutTemplate: FrontendWorkoutTemplate) {
 
     if (this.userId) {
       this.updateExistingWorkoutTemplate(editedWorkoutTemplate);
@@ -59,7 +52,7 @@ export class WorkoutTemplatesService {
     this.workoutTemplates = updatedWorkoutTemplates;
   }
 
-  updateExistingWorkoutTemplate(_editedWorkoutTemplate: RecursivePartial<WorkoutTemplate>) {
+  updateExistingWorkoutTemplate(_editedWorkoutTemplate: FrontendWorkoutTemplate) {
   }
 
   onAuthSuccess(userId: string) {
@@ -71,12 +64,11 @@ export class WorkoutTemplatesService {
 
     this.subs.sink = this.userWorkoutTemplatesQuery.valueChanges.pipe(
       filter(res => !res.loading),
-      map(res => cloneDeep(res.data.user?.workoutTemplates) || []),
-      tap(userTemplates => this.setKeys(userTemplates)),
-    ).subscribe(userTemplates => this.workoutTemplates = userTemplates);
+      map(res => this.frontend.convertWorkoutTemplates(res.data.user?.workoutTemplates, true)),
+    ).subscribe(userWorkoutTemplates => this.workoutTemplates = userWorkoutTemplates);
   }
 
-  setKeys(workoutTemplates: RecursivePartial<WorkoutTemplate>[]) {
+  setKeys(workoutTemplates: { key?: string | null | undefined; id: string }[]) {
     for (const template of workoutTemplates) {
       template.key = template.id;
     }
@@ -92,25 +84,26 @@ export class WorkoutTemplatesService {
         throw new Error('Cannot save a workout template without a key');
       }
 
-      template.exerciseTemplates = template.exerciseTemplates || [];
+      template.exerciseTemplates = template.exerciseTemplates;
 
       const createExerciseTemplateInputs: CreateExerciseTemplateInput[] = [];
       
       for (const exerciseTemplate of template.exerciseTemplates) {
         const createSetTemplateInputs: CreateSetTemplateInput[] = [];
 
-        for (const setTemplate of exerciseTemplate?.setTemplates || []) {
+        for (const setTemplate of exerciseTemplate.setTemplates) {
 
           const createSetTemplateInput: CreateSetTemplateInput = {
-            exerciseItemId: setTemplate?.exerciseTemplateId || '',
-            order: setTemplate?.order || 0,
+            exerciseItemId: setTemplate?.exerciseItemId,
+            order: setTemplate.order,
           }
 
           createSetTemplateInputs.push(createSetTemplateInput);
         }
 
         const createExerciseTemplateInput: CreateExerciseTemplateInput = {
-          order: exerciseTemplate?.order || 0,
+          name: exerciseTemplate.name,
+          order: exerciseTemplate.order,
           setTemplates: createSetTemplateInputs,
         }
 
@@ -121,7 +114,7 @@ export class WorkoutTemplatesService {
         backgroundColor: template.backgroundColor,
         exerciseTemplates: createExerciseTemplateInputs,
         key: template.key,
-        name: template.name || '',
+        name: template.name,
       };
 
       unsavedWorkoutTemplates.push(unsavedTemplate)
@@ -133,19 +126,18 @@ export class WorkoutTemplatesService {
       workoutTemplates: unsavedWorkoutTemplates,
     };
 
-    return this.createWorkoutTemplatesGQL.mutate(mutationVariables)
-      .pipe(
-        filter(res => !res.loading),
-        map(res => res.data?.createWorkoutTemplates || []),
-        tap(userWorkoutTemplates => this.workoutTemplates = userWorkoutTemplates),
-      );
+    return this.createWorkoutTemplatesGQL.mutate(mutationVariables).pipe(
+      filter(res => !res.loading),
+      map(res => this.frontend.convertWorkoutTemplates(res.data?.createWorkoutTemplates)),
+      tap(newWorkoutTemplates => this.workoutTemplates = newWorkoutTemplates)
+    );
   }
 
   reset() {
     this.userId = null;
     this.workoutTemplates = [];
     this.editWorkoutTemplateKey = undefined;
-    this.currentKey = 0;
+    this._currentKey = 0;
     this.subs.unsubscribe();
   }
 
@@ -156,4 +148,11 @@ export class WorkoutTemplatesService {
   get workoutTemplateToEditIndex() {
     return this.workoutTemplates.findIndex(t => t.key === this.editWorkoutTemplateKey);
   }
+
+  get currentKey() {
+    const output = this._currentKey.toString();
+    this._currentKey++;
+    return output;
+  }
+
 }

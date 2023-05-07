@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
-import { cloneDeep } from 'lodash-es';
-import { filter, map, of, tap } from 'rxjs';
+import { filter, map, tap, of } from 'rxjs';
 import { SubSink } from 'subsink';
-import { CreateScheduleInput, CreateSchedulesGQL, CreateSchedulesMutationVariables, CreateScheduleWorkoutInput, Schedule, UserSchedulesGQL, UserSchedulesQuery, UserSchedulesQueryVariables } from '../../generated/graphql.generated';
-import { RecursivePartial } from '../shared/utils';
+import { CreateScheduleInput, CreateSchedulesGQL, CreateSchedulesMutationVariables, CreateScheduleWorkoutInput, UserSchedulesGQL, UserSchedulesQuery, UserSchedulesQueryVariables } from '../../generated/graphql.generated';
+import { FrontendSchedule, FrontendService } from '../services/frontend.service';
 import { WorkoutTemplatesService } from './workout-templates.service';
 
 @Injectable({
@@ -16,11 +15,12 @@ export class SchedulesService {
     private workoutTemplates: WorkoutTemplatesService,
     private userSchedulesGQL: UserSchedulesGQL,
     private createSchedulesGQL: CreateSchedulesGQL,
+    private frontend: FrontendService,
   ) { }
 
   userId?: string | null;
 
-  schedules: RecursivePartial<Schedule>[] = [];
+  schedules: FrontendSchedule[] = [];
 
   editScheduleKey?: string | null;
 
@@ -30,7 +30,7 @@ export class SchedulesService {
 
   subs = new SubSink();
 
-  addSchedule(newSchedule: RecursivePartial<Schedule>) {
+  addSchedule(newSchedule: FrontendSchedule) {
     newSchedule.key = this.currentKey.toString();
 
     this.currentKey++;
@@ -40,7 +40,7 @@ export class SchedulesService {
     this.schedules = updatedSchedules;
   }
 
-  updateSchedule(updatedSchedule: RecursivePartial<Schedule>) {
+  updateSchedule(updatedSchedule: FrontendSchedule) {
 
     if (!this.editScheduleKey) { return; }
 
@@ -62,7 +62,7 @@ export class SchedulesService {
 
     this.subs.sink = this.userSchedulesQuery.valueChanges.pipe(
       filter(res => !res.loading),
-      map(res => cloneDeep(res.data.user?.schedules) || []),
+      map(res => this.frontend.convertSchedules(res.data.user?.schedules)),
     ).subscribe(userSchedules => this.schedules = userSchedules);
   }
 
@@ -81,13 +81,13 @@ export class SchedulesService {
 
       for (const workout of schedule.workouts || []) {
 
-        const workoutTemplateId = this.workoutTemplates.workoutTemplates.find(t => t.key === workout?.workoutTemplateKey)?.id;
+        const workoutTemplateId = this.workoutTemplates.workoutTemplates.find(t => t.key === workout.workoutTemplateKey)?.id;
 
         const unsavedScheduleWorkout: CreateScheduleWorkoutInput = {
-          allDay: workout?.allDay,
-          dow: workout?.dow,
-          start: workout?.start,
-          end: workout?.end,
+          allDay: workout.allDay,
+          dow: workout.dow,
+          start: workout.start,
+          end: workout.end,
           workoutTemplateId,
         };
 
@@ -95,7 +95,7 @@ export class SchedulesService {
       }
 
       const unsavedSchedule: CreateScheduleInput = {
-        name: schedule.name || '',
+        name: schedule.name,
         workouts: unsavedScheduleWorkouts,
         key: schedule.key,
       }
@@ -109,12 +109,11 @@ export class SchedulesService {
       schedules: unsavedSchedules,
     }
 
-    return this.createSchedulesGQL.mutate(mutationVariables)
-      .pipe(
-        filter(res => !res.loading),
-        map(res => res.data?.createSchedules || []),
-        tap(userSchedules => this.schedules = userSchedules),
-      );
+    return this.createSchedulesGQL.mutate(mutationVariables).pipe(
+      filter(res => !res.loading),
+      map(res => this.frontend.convertSchedules(res.data?.createSchedules)),
+      tap(newSchedules => this.schedules = newSchedules)
+    );
   }
 
   reset() {

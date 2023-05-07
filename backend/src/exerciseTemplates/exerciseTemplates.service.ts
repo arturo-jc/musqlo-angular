@@ -1,4 +1,4 @@
-import { CreateExerciseTemplateInput, ExerciseTemplate, SetTemplate } from '../generated/graphql.generated';
+import { CreateExerciseTemplateInput, ExerciseTemplate } from '../generated/graphql.generated';
 import { v1 as uuid } from 'uuid';
 import { createSetTemplates } from '../setTemplates/setTemplates.service';
 
@@ -17,6 +17,7 @@ export function createExerciseTemplates(exerciseTemplates: CreateExerciseTemplat
 
     const newExerciseTemplate: ExerciseTemplate = {
       id: newExerciseTemplateId,
+      name: exerciseTemplate.name,
       order: exerciseTemplate.order,
       workoutTemplateId,
     }

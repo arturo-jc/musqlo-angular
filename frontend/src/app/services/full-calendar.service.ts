@@ -5,9 +5,7 @@ import dayjs from 'dayjs';
 import { DEFAULT_BG_COLOR } from '../mutate-workout-template/mutate-workout-template.component';
 import { WorkoutTemplatesService } from './workout-templates.service';
 import { LIGHT_DARK_THRESHOLD } from '../shared/color-picker/color-picker.component';
-import { RecursivePartial } from '../shared/utils';
-import { WorkoutTemplate, ExerciseTemplate } from '../../generated/graphql.generated';
-import { Maybe } from 'graphql/jsutils/Maybe';
+import { FrontendExerciseTemplate, FrontendWorkoutTemplate } from '../services/frontend.service';
 
 @Injectable({
   providedIn: 'root'
@@ -72,7 +70,11 @@ export class FullCalendarService {
 
     const workoutTemplate = this.workoutTemplates.workoutTemplates.find(t => t.key === workoutTemplateKey);
 
-    for (const exerciseTemplate of workoutTemplate?.exerciseTemplates || []) {
+    if (!workoutTemplate?.exerciseTemplates) {
+      return bodyEl;
+    }
+
+    for (const exerciseTemplate of workoutTemplate.exerciseTemplates) {
       const exerciseEl = this.createExerciseEl(exerciseTemplate);
       bodyEl.append(exerciseEl);
     }
@@ -80,17 +82,17 @@ export class FullCalendarService {
     return bodyEl;
   }
 
-  createExerciseEl(exercise: Maybe<RecursivePartial<ExerciseTemplate>>): HTMLDivElement {
+  createExerciseEl(exerciseTemplate: FrontendExerciseTemplate): HTMLDivElement {
     const exerciseEl = document.createElement('div');
     this.applyStyle(this.exerciseStyle, exerciseEl);
 
     const exerciseTypeEl = document.createElement('div');
-    // exerciseTypeEl.textContent = exercise.exerciseType;
+    exerciseTypeEl.textContent = exerciseTemplate.name;
     this.applyStyle(this.exerciseTypeStyle, exerciseTypeEl);
     exerciseEl.append(exerciseTypeEl);
 
     const setCountEl = document.createElement('div');
-    // setCountEl.textContent = `x ${exercise.sets.length}`;
+    setCountEl.textContent = `x ${exerciseTemplate.setTemplates.length}`;
     exerciseEl.append(setCountEl);
 
     return exerciseEl;
@@ -102,12 +104,12 @@ export class FullCalendarService {
     }
   }
 
-  getEventInput(workoutTemplate: RecursivePartial<WorkoutTemplate>): EventInput {
+  getEventInput(workoutTemplate: FrontendWorkoutTemplate): EventInput {
 
-    const backgroundColor = workoutTemplate?.backgroundColor || DEFAULT_BG_COLOR;
+    const backgroundColor = workoutTemplate.backgroundColor || DEFAULT_BG_COLOR;
 
     return {
-      title: workoutTemplate.name || undefined,
+      title: workoutTemplate.name,
       extendedProps: {
         key: workoutTemplate.key,
       },
@@ -120,6 +122,7 @@ export class FullCalendarService {
   getTextColor(backgroundColor: string): string {
 
     const lightTextColor = 'var(--gray-50)';
+
     const darkTextColor = 'var(--gray-800)';
 
     const consecutiveNumbersRegex = new RegExp(/[.*!\d](\d+)[.*!\d]/g);

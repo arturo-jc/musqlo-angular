@@ -2,14 +2,12 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { cloneDeep } from 'lodash-es';
-import { ExerciseItem, ExerciseTemplate, SetTemplate, WorkoutTemplate } from '../../generated/graphql.generated';
-import { OptionalId, RequiredKey, RecursivePartial } from '../shared/utils';
+import { ExerciseItem } from '../../generated/graphql.generated';
 import { WorkoutTemplatesService } from '../services/workout-templates.service';
 import { ExerciseItemsComponent } from './exercise-items/exercise-items.component';
+import { FrontendExerciseTemplate, FrontendSetTemplate, FrontendWorkoutTemplate } from '../services/frontend.service';
 
 export const DEFAULT_BG_COLOR = 'var(--primary-color)';
-
-export type FrontendExerciseTemplate = RequiredKey<RecursivePartial<ExerciseTemplate>>;
 
 @Component({
   selector: 'app-mutate-workout-template',
@@ -113,7 +111,7 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
   }
 
   insertNewTemplate(exerciseItem: ExerciseItem, index: number) {
-    const firstSet: Partial<SetTemplate> = {
+    const firstSet: FrontendSetTemplate = {
       exerciseItemId: exerciseItem.id,
       exerciseType: exerciseItem.exerciseType,
       category: exerciseItem.category,
@@ -123,6 +121,7 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
     };
 
     const newTemplate: FrontendExerciseTemplate = {
+      name: exerciseItem.exerciseType,
       setTemplates: [ firstSet ],
       order: index + 1,
       key: this.currentKey.toString(),
@@ -162,10 +161,11 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
         lastExistingSet = template.setTemplates[template.setTemplates.length - 1];
       }
 
-      const newSet: RecursivePartial<SetTemplate> = {
+      const newSet: FrontendSetTemplate = {
         order: (template?.setTemplates?.length || 0) + 1,
         weight: lastExistingSet?.weight || 0,
         reps: lastExistingSet?.reps || 1,
+        exerciseItemId: 'sldk',
       };
 
       template.setTemplates = [ ...(template.setTemplates || []), newSet ];
@@ -203,10 +203,11 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
 
   saveWorkout() {
 
-    const workoutTemplateToSave: RecursivePartial<WorkoutTemplate> = {
+    const workoutTemplateToSave: FrontendWorkoutTemplate = {
       name: this.title,
       exerciseTemplates: this.exerciseTemplates,
       backgroundColor: this.color,
+      key: this.workoutTemplates.currentKey,
     }
 
     if (this.mode === 'create') {

@@ -23,7 +23,7 @@ export function createWorkoutTemplates(workoutTemplates: CreateWorkoutTemplateIn
 
     savedWorkoutTemplates.push(newWorkoutTemplate);
 
-    output.push(newWorkoutTemplate);
+    output.push({ ...newWorkoutTemplate, key: workoutTemplate.key });
   }
 
   return output;

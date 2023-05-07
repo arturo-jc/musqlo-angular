@@ -1,0 +1,13 @@
+fragment FullSetTemplate on SetTemplate {
+  ...BaseSetTemplate
+}
+
+fragment BaseSetTemplate on SetTemplate {
+  id
+  exerciseTemplateId
+  exerciseItemId
+  exerciseType
+  reps
+  weight
+  order
+}

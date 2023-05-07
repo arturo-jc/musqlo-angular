@@ -1,40 +1,23 @@
-query UserWorkoutTemplates($userId: String!) {
-  user(userId: $userId) {
-    id
-    workoutTemplates {
-      id
-      name
-      backgroundColor
-      key
-      exerciseTemplates {
-        id
-        order
-        setTemplates {
-          exerciseType
-          reps
-          weight
-          order
-        }
-      }
-    }
+mutation CreateWorkoutTemplates($workoutTemplates: [CreateWorkoutTemplateInput!]!) {
+  createWorkoutTemplates(workoutTemplates: $workoutTemplates) {
+    ...FullWorkoutTemplate
   }
 }
 
-mutation CreateWorkoutTemplates($workoutTemplates: [CreateWorkoutTemplateInput!]!) {
-  createWorkoutTemplates(workoutTemplates: $workoutTemplates) {
-    id
-    name
-    backgroundColor
-    key
-    exerciseTemplates {
-      id
-      order
-      setTemplates {
-        exerciseType
-        reps
-        weight
-        order
-      }
-    }
+fragment FullWorkoutTemplate on WorkoutTemplate {
+  ...BaseWorkoutTemplate
+  ...WorkoutTemplate_ExerciseTemplates
+}
+
+fragment BaseWorkoutTemplate on WorkoutTemplate {
+  id
+  name
+  backgroundColor
+  key
+}
+
+fragment WorkoutTemplate_ExerciseTemplates on WorkoutTemplate {
+  exerciseTemplates {
+    ...FullExerciseTemplate
   }
 }

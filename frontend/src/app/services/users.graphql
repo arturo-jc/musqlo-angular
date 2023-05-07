@@ -1,0 +1,29 @@
+query UserWorkoutTemplates($userId: String!) {
+  user(userId: $userId) {
+    ...FullUser
+  }
+}
+
+query UserSchedules($userId: String!) {
+  user(userId: $userId) {
+    id
+    schedules {
+      ...FullSchedule
+    }
+  }
+}
+
+fragment FullUser on User {
+  ...BaseUser
+  ...User_WorkoutTemplates
+}
+
+fragment BaseUser on User {
+  id
+}
+
+fragment User_WorkoutTemplates on User {
+  workoutTemplates {
+    ...FullWorkoutTemplate
+  }
+}

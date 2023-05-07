@@ -23,6 +23,7 @@ export type AuthenticateOutput = {
 };
 
 export type CreateExerciseTemplateInput = {
+  name: Scalars['String'];
   order: Scalars['Int'];
   setTemplates: Array<CreateSetTemplateInput>;
 };
@@ -66,6 +67,7 @@ export type ExerciseTemplate = {
   __typename?: 'ExerciseTemplate';
   id: Scalars['String'];
   key?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
   order: Scalars['Int'];
   setTemplates?: Maybe<Array<SetTemplate>>;
   workoutTemplateId: Scalars['String'];
@@ -346,6 +348,7 @@ export type ExerciseItemResolvers<ContextType = any, ParentType extends Resolver
 export type ExerciseTemplateResolvers<ContextType = any, ParentType extends ResolversParentTypes['ExerciseTemplate'] = ResolversParentTypes['ExerciseTemplate']> = ResolversObject<{
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   key?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   order?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   setTemplates?: Resolver<Maybe<Array<ResolversTypes['SetTemplate']>>, ParentType, ContextType>;
   workoutTemplateId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
