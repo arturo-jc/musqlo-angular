@@ -97,6 +97,7 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
       FrontendExerciseTemplate
     >
   ) {
+
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       this.reorderTemplates();
@@ -111,6 +112,7 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
   }
 
   insertNewTemplate(exerciseItem: ExerciseItem, index: number) {
+
     const firstSet: FrontendSetTemplate = {
       exerciseItemId: exerciseItem.id,
       exerciseType: exerciseItem.exerciseType,
