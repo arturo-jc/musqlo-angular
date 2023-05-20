@@ -38,7 +38,9 @@ const updateWorkoutTemplatesResolver: MutationResolvers<Context>['updateWorkoutT
 
   deleteExerciseTemplates(removeExerciseTemplates);
 
-  return [];
+  const workoutTemplateIds = args.workoutTemplates.map(wt => wt.workoutTemplateId);
+
+  return savedWorkoutTemplates.filter(swt => workoutTemplateIds.includes(swt.id));
 }
 
 const workoutTemplatesResolver: UserResolvers<Context>['workoutTemplates'] = (parent) => {

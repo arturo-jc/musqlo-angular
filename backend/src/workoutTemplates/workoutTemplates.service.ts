@@ -1,8 +1,11 @@
 import { createExerciseTemplates } from '../exerciseTemplates/exerciseTemplates.service';
 import { CreateWorkoutTemplateInput, UpdateWorkoutTemplateInput, WorkoutTemplate } from '../generated/graphql.generated';
 import { v1 as uuid } from 'uuid';
+import { RequiredBy } from '../utils/types';
 
-export const savedWorkoutTemplates: WorkoutTemplate[] = [];
+export type SavedWorkoutTemplate = RequiredBy<WorkoutTemplate, 'id'>;
+
+export const savedWorkoutTemplates: SavedWorkoutTemplate[] = [];
 
 export function createWorkoutTemplates(workoutTemplates: CreateWorkoutTemplateInput[], userId: string) {
 
@@ -14,7 +17,7 @@ export function createWorkoutTemplates(workoutTemplates: CreateWorkoutTemplateIn
 
     createExerciseTemplates(workoutTemplate.exerciseTemplates, newWorkoutTemplateId);
 
-    const newWorkoutTemplate: WorkoutTemplate = {
+    const newWorkoutTemplate: SavedWorkoutTemplate = {
       id: newWorkoutTemplateId,
       name: workoutTemplate.name,
       backgroundColor: workoutTemplate.backgroundColor,
