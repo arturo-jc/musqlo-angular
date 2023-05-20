@@ -299,6 +299,14 @@ export type CreateWorkoutTemplatesMutationVariables = Exact<{
 
 export type CreateWorkoutTemplatesMutation = { __typename?: 'Mutation', createWorkoutTemplates: Array<{ __typename?: 'WorkoutTemplate', id?: string | null, name: string, backgroundColor?: string | null, key?: string | null, exerciseTemplates?: Array<{ __typename?: 'ExerciseTemplate', id?: string | null, name: string, order: number, setTemplates?: Array<{ __typename?: 'SetTemplate', id?: string | null, exerciseTemplateId?: string | null, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null }> | null }> };
 
+export type UpdateWorkoutTemplateMutationVariables = Exact<{
+  workoutTemplateId: Scalars['String'];
+  update: UpdateWorkoutTemplateInput;
+}>;
+
+
+export type UpdateWorkoutTemplateMutation = { __typename?: 'Mutation', updateWorkoutTemplates: Array<{ __typename?: 'WorkoutTemplate', id?: string | null, name: string, backgroundColor?: string | null, key?: string | null, exerciseTemplates?: Array<{ __typename?: 'ExerciseTemplate', id?: string | null, name: string, order: number, setTemplates?: Array<{ __typename?: 'SetTemplate', id?: string | null, exerciseTemplateId?: string | null, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null }> | null }> };
+
 export type FullWorkoutTemplateFragment = { __typename?: 'WorkoutTemplate', id?: string | null, name: string, backgroundColor?: string | null, key?: string | null, exerciseTemplates?: Array<{ __typename?: 'ExerciseTemplate', id?: string | null, name: string, order: number, setTemplates?: Array<{ __typename?: 'SetTemplate', id?: string | null, exerciseTemplateId?: string | null, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null }> | null };
 
 export type BaseWorkoutTemplateFragment = { __typename?: 'WorkoutTemplate', id?: string | null, name: string, backgroundColor?: string | null, key?: string | null };
@@ -589,6 +597,27 @@ export const CreateWorkoutTemplatesDocument = gql`
   })
   export class CreateWorkoutTemplatesGQL extends Apollo.Mutation<CreateWorkoutTemplatesMutation, CreateWorkoutTemplatesMutationVariables> {
     override document = CreateWorkoutTemplatesDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const UpdateWorkoutTemplateDocument = gql`
+    mutation UpdateWorkoutTemplate($workoutTemplateId: String!, $update: UpdateWorkoutTemplateInput!) {
+  updateWorkoutTemplates(
+    workoutTemplateIds: [$workoutTemplateId]
+    update: $update
+  ) {
+    ...FullWorkoutTemplate
+  }
+}
+    ${FullWorkoutTemplateFragmentDoc}`;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class UpdateWorkoutTemplateGQL extends Apollo.Mutation<UpdateWorkoutTemplateMutation, UpdateWorkoutTemplateMutationVariables> {
+    override document = UpdateWorkoutTemplateDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

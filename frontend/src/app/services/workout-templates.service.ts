@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
+// import { partition } from 'lodash-es';
 import { filter, map, of, tap } from 'rxjs';
 import { SubSink } from 'subsink';
-import { CreateWorkoutTemplatesGQL, UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables, CreateWorkoutTemplatesMutationVariables, CreateWorkoutTemplateInput, UserWorkoutTemplatesGQL, CreateExerciseTemplateInput, CreateSetTemplateInput, WorkoutTemplate, User, FullWorkoutTemplateFragment } from '../../generated/graphql.generated';
+import { CreateWorkoutTemplatesGQL, UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables, CreateWorkoutTemplatesMutationVariables, CreateWorkoutTemplateInput, UserWorkoutTemplatesGQL, CreateExerciseTemplateInput, CreateSetTemplateInput, WorkoutTemplate, User, FullWorkoutTemplateFragment, UpdateWorkoutTemplateGQL, UpdateWorkoutTemplateInput, UpdateExerciseTemplateInput } from '../../generated/graphql.generated';
 import { FrontendService, FrontendWorkoutTemplate } from '../services/frontend.service';
 
 @Injectable({
@@ -25,6 +26,7 @@ export class WorkoutTemplatesService {
   constructor(
     private createWorkoutTemplatesGQL: CreateWorkoutTemplatesGQL,
     private userWorkoutTemplatesGQL: UserWorkoutTemplatesGQL,
+    // private updateWorkoutTemplateGQL: UpdateWorkoutTemplateGQL,
     private frontend: FrontendService,
   ) {}
 
@@ -35,24 +37,34 @@ export class WorkoutTemplatesService {
     this.workoutTemplates = updatedWorkoutTemplates;
   }
 
-  editWorkoutTemplate(editedWorkoutTemplate: FrontendWorkoutTemplate) {
+  editWorkoutTemplate(_editedWorkoutTemplate: FrontendWorkoutTemplate) {
 
     if (this.userId) {
-      this.updateExistingWorkoutTemplate(editedWorkoutTemplate);
+      this.updateExistingWorkoutTemplate(_editedWorkoutTemplate);
     }
 
     if (this.editWorkoutTemplateKey === undefined) { return; }
 
-    editedWorkoutTemplate.key = this.editWorkoutTemplateKey;
+    _editedWorkoutTemplate.key = this.editWorkoutTemplateKey;
 
     const updatedWorkoutTemplates = [ ...this.workoutTemplates ];
 
-    updatedWorkoutTemplates.splice(this.workoutTemplateToEditIndex, 1, editedWorkoutTemplate);
+    updatedWorkoutTemplates.splice(this.workoutTemplateToEditIndex, 1, _editedWorkoutTemplate);
 
     this.workoutTemplates = updatedWorkoutTemplates;
   }
 
-  updateExistingWorkoutTemplate(_editedWorkoutTemplate: FrontendWorkoutTemplate) {
+  updateExistingWorkoutTemplate(_editedWorkout: FrontendWorkoutTemplate) {
+
+    // const [ _existingExerciseTemplates, newExerciseTemplates ] = partition(_editedWorkout.exerciseTemplates, e => e.id);
+
+    // const updateExerciseTemplate: UpdateExerciseTemplateInput = {
+    // }
+
+    // const updateWorkoutTemplateInput: UpdateWorkoutTemplateInput = {
+    //   addExerciseTemplates: newExerciseTemplates,
+    //   removeExerciseTemplates: [],
+    // }
   }
 
   onAuthSuccess(userId: string) {
