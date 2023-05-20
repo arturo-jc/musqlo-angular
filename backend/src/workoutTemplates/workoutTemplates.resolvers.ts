@@ -1,7 +1,7 @@
 import { Context } from '../context';
-import { savedExerciseTemplates } from '../exerciseTemplates/exerciseTemplates.service';
+import { createExerciseTemplates, deleteExerciseTemplates, savedExerciseTemplates } from '../exerciseTemplates/exerciseTemplates.service';
 import { MutationResolvers, Resolvers, UserResolvers, WorkoutTemplateResolvers } from '../generated/graphql.generated';
-import { createWorkoutTemplates, savedWorkoutTemplates } from './workoutTemplates.service';
+import { createWorkoutTemplates, savedWorkoutTemplates, updateWorkoutTemplates } from './workoutTemplates.service';
 
 const createWorkoutTemplatesResolver: MutationResolvers<Context>['createWorkoutTemplates'] = (_parent, args, ctx) => {
 
@@ -12,8 +12,33 @@ const createWorkoutTemplatesResolver: MutationResolvers<Context>['createWorkoutT
   return createWorkoutTemplates(args.workoutTemplates, ctx.userId);
 }
 
-const updateWorkoutTemplatesResolver: MutationResolvers<Context>['updateWorkoutTemplates'] = (_parent, _args) => {
-  throw new Error('not implemented');
+const updateWorkoutTemplatesResolver: MutationResolvers<Context>['updateWorkoutTemplates'] = (_parent, args) => {
+
+  const removeExerciseTemplates: string[] = [];
+
+  for (const workoutTemplate of args.workoutTemplates) {
+
+    const {
+      addExerciseTemplates,
+      removeExerciseTemplates: remove,
+      workoutTemplateId,
+      ...update
+    } = workoutTemplate;
+
+    if (addExerciseTemplates?.length) {
+      createExerciseTemplates(addExerciseTemplates, workoutTemplateId);
+    }
+
+    if (remove?.length) {
+      removeExerciseTemplates.push(...remove);
+    }
+
+    updateWorkoutTemplates(workoutTemplateId, update);
+  }
+
+  deleteExerciseTemplates(removeExerciseTemplates);
+
+  return [];
 }
 
 const workoutTemplatesResolver: UserResolvers<Context>['workoutTemplates'] = (parent) => {

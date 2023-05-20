@@ -3,9 +3,9 @@ import { v1 as uuid } from 'uuid';
 import { createSetTemplates } from '../setTemplates/setTemplates.service';
 import { RequiredBy } from '../utils/types';
 
-export type SavedExerciseTemplate = RequiredBy<ExerciseTemplate, 'workoutTemplateId'>;
+export type SavedExerciseTemplate = RequiredBy<ExerciseTemplate, 'workoutTemplateId' | 'id'>;
 
-export const savedExerciseTemplates: SavedExerciseTemplate[] = [];
+export let savedExerciseTemplates: SavedExerciseTemplate[] = [];
 
 export function createExerciseTemplates(exerciseTemplates: CreateExerciseTemplateInput[], workoutTemplateId: string) {
   const output: SavedExerciseTemplate[] = [];
@@ -30,3 +30,9 @@ export function createExerciseTemplates(exerciseTemplates: CreateExerciseTemplat
 
   return output;
 }
+
+export function deleteExerciseTemplates(exerciseTemplateIds: string[]) {
+  savedExerciseTemplates = savedExerciseTemplates.filter(et => !exerciseTemplateIds.includes(et.id));
+}
+
+

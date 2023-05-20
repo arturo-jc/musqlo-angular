@@ -37,10 +37,10 @@ export class WorkoutTemplatesService {
     this.workoutTemplates = updatedWorkoutTemplates;
   }
 
-  editWorkoutTemplate(_editedWorkoutTemplate: FrontendWorkoutTemplate) {
+  editWorkoutTemplate(editedWorkoutTemplate: FrontendWorkoutTemplate) {
 
     if (this.userId) {
-      this.updateExistingWorkoutTemplate(_editedWorkoutTemplate);
+      this.updateExistingWorkoutTemplate(editedWorkoutTemplate);
       return;
     }
 
@@ -48,11 +48,11 @@ export class WorkoutTemplatesService {
       throw new Error('No editWorkoutTemplateKey found');
     }
 
-    _editedWorkoutTemplate.key = this.editWorkoutTemplateKey;
+    editedWorkoutTemplate.key = this.editWorkoutTemplateKey;
 
     const updatedWorkoutTemplates = [ ...this.workoutTemplates ];
 
-    updatedWorkoutTemplates.splice(this.workoutTemplateToEditIndex, 1, _editedWorkoutTemplate);
+    updatedWorkoutTemplates.splice(this.workoutTemplateToEditIndex, 1, editedWorkoutTemplate);
 
     this.workoutTemplates = updatedWorkoutTemplates;
   }
