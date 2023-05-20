@@ -156,22 +156,24 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
   }
 
   addSet(template: FrontendExerciseTemplate) {
+
+    if (!template?.setTemplates?.length) {
+      throw new Error('Cannot add set templates if exercise template has no other set templates');
+    }
+
+    const lastExistingSet = template.setTemplates[template.setTemplates.length - 1];
+
     const delay = this.collapsedTemplates[template.key] ? 400 : 0;
 
     this.collapsedTemplates[template.key] = false;
 
     setTimeout(() => {
-      let lastExistingSet;
-
-      if (template?.setTemplates?.length) {
-        lastExistingSet = template.setTemplates[template.setTemplates.length - 1];
-      }
 
       const newSet: FrontendSetTemplate = {
-        order: (template?.setTemplates?.length || 0) + 1,
-        weight: lastExistingSet?.weight || 0,
-        reps: lastExistingSet?.reps || 1,
-        exerciseItemId: 'sldk',
+        order: template.setTemplates.length + 1,
+        weight: lastExistingSet.weight,
+        reps: lastExistingSet.reps,
+        exerciseItemId: lastExistingSet.exerciseItemId,
       };
 
       template.setTemplates = [ ...(template.setTemplates || []), newSet ];
@@ -179,16 +181,25 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
   }
 
   reorderSets(template: FrontendExerciseTemplate) {
-    template?.setTemplates?.forEach((set, index) => {
-      if (!set?.order) { return; }
-      set.order = index + 1;
-    });
+    if (!template.setTemplates) { return; }
+
+    for (let i = 0; i < template.setTemplates.length; i++) {
+
+      const setTemplate = template.setTemplates[i];
+
+      if (!setTemplate.order) { continue; }
+
+      setTemplate.order = i + 1;
+    }
+
   }
 
   deleteSet(input: { template: FrontendExerciseTemplate, index: number }) {
+
     const { template, index } = input;
 
     const updatedTemplates = [ ...(template.setTemplates || []) ];
+
     updatedTemplates.splice(index, 1);
 
     if (!updatedTemplates.length) {

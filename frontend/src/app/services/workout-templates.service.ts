@@ -87,8 +87,9 @@ export class WorkoutTemplatesService {
       template.exerciseTemplates = template.exerciseTemplates;
 
       const createExerciseTemplateInputs: CreateExerciseTemplateInput[] = [];
-      
+
       for (const exerciseTemplate of template.exerciseTemplates) {
+
         const createSetTemplateInputs: CreateSetTemplateInput[] = [];
 
         for (const setTemplate of exerciseTemplate.setTemplates) {
@@ -96,6 +97,8 @@ export class WorkoutTemplatesService {
           const createSetTemplateInput: CreateSetTemplateInput = {
             exerciseItemId: setTemplate?.exerciseItemId,
             order: setTemplate.order,
+            reps: setTemplate.reps,
+            weight: setTemplate.weight,
           }
 
           createSetTemplateInputs.push(createSetTemplateInput);

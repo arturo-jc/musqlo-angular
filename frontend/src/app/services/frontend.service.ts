@@ -29,7 +29,7 @@ export class FrontendService {
 
     for (const workoutTemplate of backendWorkoutTemplates) {
 
-      if (!workoutTemplate.key) {
+      if (!overrideKey && !workoutTemplate.key) {
         throw new Error('Backend did not resolve workout template key');
       }
 
@@ -92,6 +92,7 @@ export class FrontendService {
         id: setTemplate.id,
         order: setTemplate.order,
         weight: setTemplate.weight,
+        reps: setTemplate.reps,
         exerciseType: setTemplate.exerciseType,
         exerciseItemId: setTemplate.exerciseItemId,
       }
