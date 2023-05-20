@@ -103,20 +103,17 @@ export type MutationSignUpArgs = {
 
 
 export type MutationUpdateExerciseTemplatesArgs = {
-  exerciseTemplateIds: Array<Scalars['String']>;
-  update: UpdateExerciseTemplateInput;
+  exerciseTemplates: Array<UpdateExerciseTemplateInput>;
 };
 
 
 export type MutationUpdateSetTemplatesArgs = {
-  setTemplateIds: Array<Scalars['String']>;
-  update: UpdateSetTemplateInput;
+  setTemplates: Array<UpdateSetTemplateInput>;
 };
 
 
 export type MutationUpdateWorkoutTemplatesArgs = {
-  update: UpdateWorkoutTemplateInput;
-  workoutTemplateIds: Array<Scalars['String']>;
+  workoutTemplates: Array<UpdateWorkoutTemplateInput>;
 };
 
 export type Query = {
@@ -176,6 +173,7 @@ export type SetTemplate = {
 
 export type UpdateExerciseTemplateInput = {
   addSetTemplates?: InputMaybe<Array<CreateSetTemplateInput>>;
+  exerciseTemplateId: Scalars['String'];
   order?: InputMaybe<Scalars['Int']>;
   removeSetTemplates?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -183,6 +181,7 @@ export type UpdateExerciseTemplateInput = {
 export type UpdateSetTemplateInput = {
   order: Scalars['Int'];
   reps?: InputMaybe<Scalars['Int']>;
+  setTemplateId: Scalars['String'];
   weight?: InputMaybe<Scalars['Int']>;
 };
 
@@ -191,6 +190,7 @@ export type UpdateWorkoutTemplateInput = {
   backgroundColor?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   removeExerciseTemplates?: InputMaybe<Array<Scalars['String']>>;
+  workoutTemplateId: Scalars['String'];
 };
 
 export type User = {
@@ -362,9 +362,9 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createSchedules?: Resolver<Array<ResolversTypes['Schedule']>, ParentType, ContextType, RequireFields<MutationCreateSchedulesArgs, 'schedules'>>;
   createWorkoutTemplates?: Resolver<Array<ResolversTypes['WorkoutTemplate']>, ParentType, ContextType, RequireFields<MutationCreateWorkoutTemplatesArgs, 'workoutTemplates'>>;
   signUp?: Resolver<ResolversTypes['AuthenticateOutput'], ParentType, ContextType, RequireFields<MutationSignUpArgs, 'email' | 'password'>>;
-  updateExerciseTemplates?: Resolver<Array<ResolversTypes['ExerciseTemplate']>, ParentType, ContextType, RequireFields<MutationUpdateExerciseTemplatesArgs, 'exerciseTemplateIds' | 'update'>>;
-  updateSetTemplates?: Resolver<Array<ResolversTypes['SetTemplate']>, ParentType, ContextType, RequireFields<MutationUpdateSetTemplatesArgs, 'setTemplateIds' | 'update'>>;
-  updateWorkoutTemplates?: Resolver<Array<ResolversTypes['WorkoutTemplate']>, ParentType, ContextType, RequireFields<MutationUpdateWorkoutTemplatesArgs, 'update' | 'workoutTemplateIds'>>;
+  updateExerciseTemplates?: Resolver<Array<ResolversTypes['ExerciseTemplate']>, ParentType, ContextType, RequireFields<MutationUpdateExerciseTemplatesArgs, 'exerciseTemplates'>>;
+  updateSetTemplates?: Resolver<Array<ResolversTypes['SetTemplate']>, ParentType, ContextType, RequireFields<MutationUpdateSetTemplatesArgs, 'setTemplates'>>;
+  updateWorkoutTemplates?: Resolver<Array<ResolversTypes['WorkoutTemplate']>, ParentType, ContextType, RequireFields<MutationUpdateWorkoutTemplatesArgs, 'workoutTemplates'>>;
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{

@@ -4,9 +4,19 @@ mutation CreateWorkoutTemplates($workoutTemplates: [CreateWorkoutTemplateInput!]
   }
 }
 
-mutation UpdateWorkoutTemplate($workoutTemplateId: String!, $update: UpdateWorkoutTemplateInput!) {
-  updateWorkoutTemplates(workoutTemplateIds: [ $workoutTemplateId ], update: $update) {
+mutation UpdateWorkoutTemplate(
+ $workoutTemplates: [UpdateWorkoutTemplateInput!]!
+ $exerciseTemplates: [UpdateExerciseTemplateInput!]!
+ $setTemplates: [UpdateSetTemplateInput!]!
+ ) {
+  updateWorkoutTemplates(workoutTemplates: $workoutTemplates) {
     ...FullWorkoutTemplate
+  }
+  updateExerciseTemplates(exerciseTemplates: $exerciseTemplates) {
+    ...FullExerciseTemplate
+  }
+  updateSetTemplates(setTemplates: $setTemplates) {
+    ...FullSetTemplate
   }
 }
 

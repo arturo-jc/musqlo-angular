@@ -104,20 +104,17 @@ export type MutationSignUpArgs = {
 
 
 export type MutationUpdateExerciseTemplatesArgs = {
-  exerciseTemplateIds: Array<Scalars['String']>;
-  update: UpdateExerciseTemplateInput;
+  exerciseTemplates: Array<UpdateExerciseTemplateInput>;
 };
 
 
 export type MutationUpdateSetTemplatesArgs = {
-  setTemplateIds: Array<Scalars['String']>;
-  update: UpdateSetTemplateInput;
+  setTemplates: Array<UpdateSetTemplateInput>;
 };
 
 
 export type MutationUpdateWorkoutTemplatesArgs = {
-  update: UpdateWorkoutTemplateInput;
-  workoutTemplateIds: Array<Scalars['String']>;
+  workoutTemplates: Array<UpdateWorkoutTemplateInput>;
 };
 
 export type Query = {
@@ -177,6 +174,7 @@ export type SetTemplate = {
 
 export type UpdateExerciseTemplateInput = {
   addSetTemplates?: InputMaybe<Array<CreateSetTemplateInput>>;
+  exerciseTemplateId: Scalars['String'];
   order?: InputMaybe<Scalars['Int']>;
   removeSetTemplates?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -184,6 +182,7 @@ export type UpdateExerciseTemplateInput = {
 export type UpdateSetTemplateInput = {
   order: Scalars['Int'];
   reps?: InputMaybe<Scalars['Int']>;
+  setTemplateId: Scalars['String'];
   weight?: InputMaybe<Scalars['Int']>;
 };
 
@@ -192,6 +191,7 @@ export type UpdateWorkoutTemplateInput = {
   backgroundColor?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   removeExerciseTemplates?: InputMaybe<Array<Scalars['String']>>;
+  workoutTemplateId: Scalars['String'];
 };
 
 export type User = {
@@ -300,12 +300,13 @@ export type CreateWorkoutTemplatesMutationVariables = Exact<{
 export type CreateWorkoutTemplatesMutation = { __typename?: 'Mutation', createWorkoutTemplates: Array<{ __typename?: 'WorkoutTemplate', id?: string | null, name: string, backgroundColor?: string | null, key?: string | null, exerciseTemplates?: Array<{ __typename?: 'ExerciseTemplate', id?: string | null, name: string, order: number, setTemplates?: Array<{ __typename?: 'SetTemplate', id?: string | null, exerciseTemplateId?: string | null, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null }> | null }> };
 
 export type UpdateWorkoutTemplateMutationVariables = Exact<{
-  workoutTemplateId: Scalars['String'];
-  update: UpdateWorkoutTemplateInput;
+  workoutTemplates: Array<UpdateWorkoutTemplateInput> | UpdateWorkoutTemplateInput;
+  exerciseTemplates: Array<UpdateExerciseTemplateInput> | UpdateExerciseTemplateInput;
+  setTemplates: Array<UpdateSetTemplateInput> | UpdateSetTemplateInput;
 }>;
 
 
-export type UpdateWorkoutTemplateMutation = { __typename?: 'Mutation', updateWorkoutTemplates: Array<{ __typename?: 'WorkoutTemplate', id?: string | null, name: string, backgroundColor?: string | null, key?: string | null, exerciseTemplates?: Array<{ __typename?: 'ExerciseTemplate', id?: string | null, name: string, order: number, setTemplates?: Array<{ __typename?: 'SetTemplate', id?: string | null, exerciseTemplateId?: string | null, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null }> | null }> };
+export type UpdateWorkoutTemplateMutation = { __typename?: 'Mutation', updateWorkoutTemplates: Array<{ __typename?: 'WorkoutTemplate', id?: string | null, name: string, backgroundColor?: string | null, key?: string | null, exerciseTemplates?: Array<{ __typename?: 'ExerciseTemplate', id?: string | null, name: string, order: number, setTemplates?: Array<{ __typename?: 'SetTemplate', id?: string | null, exerciseTemplateId?: string | null, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null }> | null }>, updateExerciseTemplates: Array<{ __typename?: 'ExerciseTemplate', id?: string | null, name: string, order: number, setTemplates?: Array<{ __typename?: 'SetTemplate', id?: string | null, exerciseTemplateId?: string | null, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null }>, updateSetTemplates: Array<{ __typename?: 'SetTemplate', id?: string | null, exerciseTemplateId?: string | null, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> };
 
 export type FullWorkoutTemplateFragment = { __typename?: 'WorkoutTemplate', id?: string | null, name: string, backgroundColor?: string | null, key?: string | null, exerciseTemplates?: Array<{ __typename?: 'ExerciseTemplate', id?: string | null, name: string, order: number, setTemplates?: Array<{ __typename?: 'SetTemplate', id?: string | null, exerciseTemplateId?: string | null, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null }> | null };
 
@@ -603,15 +604,20 @@ export const CreateWorkoutTemplatesDocument = gql`
     }
   }
 export const UpdateWorkoutTemplateDocument = gql`
-    mutation UpdateWorkoutTemplate($workoutTemplateId: String!, $update: UpdateWorkoutTemplateInput!) {
-  updateWorkoutTemplates(
-    workoutTemplateIds: [$workoutTemplateId]
-    update: $update
-  ) {
+    mutation UpdateWorkoutTemplate($workoutTemplates: [UpdateWorkoutTemplateInput!]!, $exerciseTemplates: [UpdateExerciseTemplateInput!]!, $setTemplates: [UpdateSetTemplateInput!]!) {
+  updateWorkoutTemplates(workoutTemplates: $workoutTemplates) {
     ...FullWorkoutTemplate
   }
+  updateExerciseTemplates(exerciseTemplates: $exerciseTemplates) {
+    ...FullExerciseTemplate
+  }
+  updateSetTemplates(setTemplates: $setTemplates) {
+    ...FullSetTemplate
+  }
 }
-    ${FullWorkoutTemplateFragmentDoc}`;
+    ${FullWorkoutTemplateFragmentDoc}
+${FullExerciseTemplateFragmentDoc}
+${FullSetTemplateFragmentDoc}`;
 
   @Injectable({
     providedIn: 'root'

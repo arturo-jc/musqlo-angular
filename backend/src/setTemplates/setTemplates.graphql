@@ -1,7 +1,6 @@
 extend type Mutation {
   updateSetTemplates(
-    setTemplateIds: [String!]!
-    update: UpdateSetTemplateInput!
+    setTemplates: [UpdateSetTemplateInput!]!
   ): [SetTemplate!]!
 }
 
@@ -24,6 +23,7 @@ input CreateSetTemplateInput {
 }
 
 input UpdateSetTemplateInput {
+  setTemplateId: String!
   order: Int!
   reps: Int
   weight: Int

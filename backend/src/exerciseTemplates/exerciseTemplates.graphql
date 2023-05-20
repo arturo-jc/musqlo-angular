@@ -1,7 +1,6 @@
 extend type Mutation {
   updateExerciseTemplates(
-    exerciseTemplateIds: [String!]!
-    update: UpdateExerciseTemplateInput!
+    exerciseTemplates: [UpdateExerciseTemplateInput!]!
   ): [ExerciseTemplate!]!
 }
 
@@ -21,6 +20,7 @@ input CreateExerciseTemplateInput {
 }
 
 input UpdateExerciseTemplateInput {
+  exerciseTemplateId: String!
   addSetTemplates: [CreateSetTemplateInput!]
   removeSetTemplates: [String!]
   order: Int

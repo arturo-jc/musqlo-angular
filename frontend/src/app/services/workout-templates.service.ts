@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
-// import { partition } from 'lodash-es';
+import { partition } from 'lodash-es';
 import { filter, map, of, tap } from 'rxjs';
 import { SubSink } from 'subsink';
-import { CreateWorkoutTemplatesGQL, UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables, CreateWorkoutTemplatesMutationVariables, CreateWorkoutTemplateInput, UserWorkoutTemplatesGQL, CreateExerciseTemplateInput, CreateSetTemplateInput, WorkoutTemplate, User, FullWorkoutTemplateFragment, UpdateWorkoutTemplateGQL, UpdateWorkoutTemplateInput, UpdateExerciseTemplateInput } from '../../generated/graphql.generated';
-import { FrontendService, FrontendWorkoutTemplate } from '../services/frontend.service';
+import { CreateWorkoutTemplatesGQL, UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables, CreateWorkoutTemplatesMutationVariables, CreateWorkoutTemplateInput, UserWorkoutTemplatesGQL, CreateExerciseTemplateInput, CreateSetTemplateInput, UpdateWorkoutTemplateGQL, UpdateExerciseTemplateInput, UpdateWorkoutTemplateMutationVariables, UpdateSetTemplateInput } from '../../generated/graphql.generated';
+import { FrontendExerciseTemplate, FrontendService, FrontendSetTemplate, FrontendWorkoutTemplate } from '../services/frontend.service';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +26,7 @@ export class WorkoutTemplatesService {
   constructor(
     private createWorkoutTemplatesGQL: CreateWorkoutTemplatesGQL,
     private userWorkoutTemplatesGQL: UserWorkoutTemplatesGQL,
-    // private updateWorkoutTemplateGQL: UpdateWorkoutTemplateGQL,
+    private updateWorkoutTemplateGQL: UpdateWorkoutTemplateGQL,
     private frontend: FrontendService,
   ) {}
 
@@ -41,9 +41,12 @@ export class WorkoutTemplatesService {
 
     if (this.userId) {
       this.updateExistingWorkoutTemplate(_editedWorkoutTemplate);
+      return;
     }
 
-    if (this.editWorkoutTemplateKey === undefined) { return; }
+    if (this.editWorkoutTemplateKey === undefined) {
+      throw new Error('No editWorkoutTemplateKey found');
+    }
 
     _editedWorkoutTemplate.key = this.editWorkoutTemplateKey;
 
@@ -54,17 +57,106 @@ export class WorkoutTemplatesService {
     this.workoutTemplates = updatedWorkoutTemplates;
   }
 
-  updateExistingWorkoutTemplate(_editedWorkout: FrontendWorkoutTemplate) {
+  updateExistingWorkoutTemplate(editedWorkoutTemplate: FrontendWorkoutTemplate) {
 
-    // const [ _existingExerciseTemplates, newExerciseTemplates ] = partition(_editedWorkout.exerciseTemplates, e => e.id);
+    const uneditedWorkoutTemplate = this.workoutTemplateToEdit;
 
-    // const updateExerciseTemplate: UpdateExerciseTemplateInput = {
-    // }
+    if (!uneditedWorkoutTemplate) {
+      throw new Error('workoutTemplateToEdit not found');
+    }
 
-    // const updateWorkoutTemplateInput: UpdateWorkoutTemplateInput = {
-    //   addExerciseTemplates: newExerciseTemplates,
-    //   removeExerciseTemplates: [],
-    // }
+    if (!uneditedWorkoutTemplate.id) {
+      throw new Error('Cannot update workout template without an ID');
+    }
+
+    const exerciseTemplateIds: string[] = [];
+
+    const setTemplateIds: string[] = [];
+
+    for (const exerciseTemplate of editedWorkoutTemplate.exerciseTemplates) {
+
+      for (const setTemplate of exerciseTemplate.setTemplates) {
+        if (!setTemplate.id) { continue; }
+        setTemplateIds.push(setTemplate.id);
+      }
+
+      if (!exerciseTemplate.id) { continue; }
+      exerciseTemplateIds.push(exerciseTemplate.id);
+    }
+
+    const removeExerciseTemplates: string[] = [];
+
+    for (const exerciseTemplate of uneditedWorkoutTemplate.exerciseTemplates) {
+
+      if (!exerciseTemplate.id || exerciseTemplateIds.includes(exerciseTemplate.id)) { continue; }
+
+      removeExerciseTemplates.push(exerciseTemplate.id);
+    }
+
+    const [ existingExerciseTemplates, newExerciseTemplates ] = partition(editedWorkoutTemplate.exerciseTemplates, e => e.id);
+
+    const updateExerciseTemplateInputs: UpdateExerciseTemplateInput[] = [];
+
+    const modifiedSetTemplates: FrontendSetTemplate[] = [];
+
+    for (const editedExerciseTemplate of existingExerciseTemplates) {
+
+      if (!editedExerciseTemplate.id) {
+        throw new Error('Cannot update exercise template without an ID');
+      }
+
+      const uneditedExerciseTemplate = uneditedWorkoutTemplate.exerciseTemplates.find(t => t.id === uneditedWorkoutTemplate.id);
+
+      if (!uneditedExerciseTemplate) { continue; }
+
+      const removeSetTemplates: string[] = [];
+
+      for (const setTemplate of uneditedExerciseTemplate.setTemplates) {
+
+        if (!setTemplate.id || setTemplateIds.includes(setTemplate.id)) { continue; }
+
+        removeSetTemplates.push(setTemplate.id);
+      }
+
+      const [ existingSetTemplates, newSetTemplates ] = partition(editedExerciseTemplate.setTemplates, st => st.id);
+
+      updateExerciseTemplateInputs.push({
+        exerciseTemplateId: editedExerciseTemplate.id,
+        addSetTemplates: this.getCreateSetTemplateInput(newSetTemplates),
+        removeSetTemplates,
+      });
+
+      modifiedSetTemplates.push(...existingSetTemplates);
+    }
+
+    const updateSetTemplateInputs: UpdateSetTemplateInput[] = [];
+
+    for (const modifiedSetTemplate of modifiedSetTemplates) {
+
+      if (!modifiedSetTemplate.id) { continue; }
+
+      updateSetTemplateInputs.push({
+        setTemplateId: modifiedSetTemplate.id,
+        order: modifiedSetTemplate.order,
+        weight: modifiedSetTemplate.weight,
+        reps: modifiedSetTemplate.reps,
+      })
+
+    }
+
+    const mutationVariables: UpdateWorkoutTemplateMutationVariables = {
+      workoutTemplates: [
+        {
+          workoutTemplateId: uneditedWorkoutTemplate.id,
+          removeExerciseTemplates,
+          addExerciseTemplates: this.getCreateExerciseTemplateInput(newExerciseTemplates),
+        }
+      ],
+      exerciseTemplates: updateExerciseTemplateInputs,
+      setTemplates: updateSetTemplateInputs,
+    }
+
+    this.updateWorkoutTemplateGQL.mutate(mutationVariables).subscribe();
   }
 
   onAuthSuccess(userId: string) {
@@ -87,58 +179,13 @@ export class WorkoutTemplatesService {
   }
 
   createUnsavedWorkoutTemplates() {
-    const unsavedWorkoutTemplates: CreateWorkoutTemplateInput[] = [];
 
-    for (const template of this.workoutTemplates) {
-      if (template.id) { continue; }
-
-      if (!template.key) {
-        throw new Error('Cannot save a workout template without a key');
-      }
-
-      template.exerciseTemplates = template.exerciseTemplates;
-
-      const createExerciseTemplateInputs: CreateExerciseTemplateInput[] = [];
-
-      for (const exerciseTemplate of template.exerciseTemplates) {
-
-        const createSetTemplateInputs: CreateSetTemplateInput[] = [];
-
-        for (const setTemplate of exerciseTemplate.setTemplates) {
-
-          const createSetTemplateInput: CreateSetTemplateInput = {
-            exerciseItemId: setTemplate?.exerciseItemId,
-            order: setTemplate.order,
-            reps: setTemplate.reps,
-            weight: setTemplate.weight,
-          }
-
-          createSetTemplateInputs.push(createSetTemplateInput);
-        }
-
-        const createExerciseTemplateInput: CreateExerciseTemplateInput = {
-          name: exerciseTemplate.name,
-          order: exerciseTemplate.order,
-          setTemplates: createSetTemplateInputs,
-        }
-
-        createExerciseTemplateInputs.push(createExerciseTemplateInput);
-      }
-
-      const unsavedTemplate: CreateWorkoutTemplateInput = {
-        backgroundColor: template.backgroundColor,
-        exerciseTemplates: createExerciseTemplateInputs,
-        key: template.key,
-        name: template.name,
-      };
-
-      unsavedWorkoutTemplates.push(unsavedTemplate)
-    }
+    const unsavedWorkoutTemplates = this.workoutTemplates.filter(t => !t.id);
 
     if (!unsavedWorkoutTemplates.length) { return of([]); }
 
     const mutationVariables: CreateWorkoutTemplatesMutationVariables = {
-      workoutTemplates: unsavedWorkoutTemplates,
+      workoutTemplates: this.getCreateWorkoutTemplateInput(unsavedWorkoutTemplates),
     };
 
     return this.createWorkoutTemplatesGQL.mutate(mutationVariables).pipe(
@@ -146,6 +193,67 @@ export class WorkoutTemplatesService {
       map(res => this.frontend.convertWorkoutTemplates(res.data?.createWorkoutTemplates)),
       tap(newWorkoutTemplates => this.workoutTemplates = newWorkoutTemplates)
     );
+  }
+
+  getCreateWorkoutTemplateInput(workoutTemplates: FrontendWorkoutTemplate[]): CreateWorkoutTemplateInput[] {
+    const output: CreateWorkoutTemplateInput[] = [];
+
+    for (const workoutTemplate of workoutTemplates) {
+
+      if (workoutTemplate.id) {
+        throw new Error('Cannot create an already existing workout template');
+      }
+
+      if (!workoutTemplate.key) {
+        throw new Error('Cannot save a workout template without a key');
+      }
+
+      const createWorkoutTemplateInput: CreateWorkoutTemplateInput = {
+        backgroundColor: workoutTemplate.backgroundColor,
+        exerciseTemplates: this.getCreateExerciseTemplateInput(workoutTemplate.exerciseTemplates),
+        key: workoutTemplate.key,
+        name: workoutTemplate.name,
+      };
+
+      output.push(createWorkoutTemplateInput)
+    }
+
+    return output;
+  }
+
+  getCreateExerciseTemplateInput(exerciseTemplates: FrontendExerciseTemplate[]): CreateExerciseTemplateInput[] {
+    const output: CreateExerciseTemplateInput[] = [];
+
+    for (const exerciseTemplate of exerciseTemplates) {
+
+      const createExerciseTemplateInput: CreateExerciseTemplateInput = {
+        name: exerciseTemplate.name,
+        order: exerciseTemplate.order,
+        setTemplates: this.getCreateSetTemplateInput(exerciseTemplate.setTemplates),
+      }
+
+      output.push(createExerciseTemplateInput);
+    }
+
+    return output;
+  }
+
+  getCreateSetTemplateInput(setTemplates: FrontendSetTemplate[]): CreateSetTemplateInput[] {
+    const output: CreateSetTemplateInput[] = [];
+
+    for (const setTemplate of setTemplates) {
+
+      const createSetTemplateInput: CreateSetTemplateInput = {
+        exerciseItemId: setTemplate?.exerciseItemId,
+        order: setTemplate.order,
+        reps: setTemplate.reps,
+        weight: setTemplate.weight,
+      }
+
+      output.push(createSetTemplateInput);
+    }
+
+    return output;
   }
 
   reset() {

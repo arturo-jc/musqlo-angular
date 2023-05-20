@@ -1,8 +1,7 @@
 extend type Mutation {
   createWorkoutTemplates(workoutTemplates: [CreateWorkoutTemplateInput!]!): [WorkoutTemplate!]!
   updateWorkoutTemplates(
-    workoutTemplateIds: [String!]!
-    update: UpdateWorkoutTemplateInput!
+    workoutTemplates: [UpdateWorkoutTemplateInput!]!
   ): [WorkoutTemplate!]!
 }
 
@@ -20,6 +19,7 @@ extend type User {
 }
 
 input UpdateWorkoutTemplateInput {
+  workoutTemplateId: String!
   name: String
   backgroundColor: String
   addExerciseTemplates: [CreateExerciseTemplateInput!]
