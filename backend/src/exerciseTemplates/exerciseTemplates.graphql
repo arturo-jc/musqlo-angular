@@ -6,8 +6,8 @@ extend type Mutation {
 }
 
 type ExerciseTemplate {
-  id: String!
-  workoutTemplateId: String!
+  id: String
+  workoutTemplateId: String
   name: String!
   order: Int!
   key: String

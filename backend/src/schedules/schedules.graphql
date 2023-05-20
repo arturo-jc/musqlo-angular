@@ -7,14 +7,16 @@ schedules: [Schedule!]
 }
 
 type Schedule {
-  id: String!
+  id: String
+  userId: String
   key: String
   name: String!
   workouts: [ScheduleWorkout!]
+  workoutIds: [String!]
 }
 
 type ScheduleWorkout {
-  id: String!
+  id: String
   workoutTemplateId: String
   workoutTemplateKey: String
   dow: Int

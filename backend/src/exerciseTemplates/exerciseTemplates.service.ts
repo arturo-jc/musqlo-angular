@@ -1,13 +1,14 @@
 import { CreateExerciseTemplateInput, ExerciseTemplate } from '../generated/graphql.generated';
 import { v1 as uuid } from 'uuid';
 import { createSetTemplates } from '../setTemplates/setTemplates.service';
+import { RequiredBy } from '../utils/types';
 
-export type SavedExerciseTemplate = ExerciseTemplate & { workoutTemplateId: string };
+export type SavedExerciseTemplate = RequiredBy<ExerciseTemplate, 'workoutTemplateId'>;
 
 export const savedExerciseTemplates: SavedExerciseTemplate[] = [];
 
 export function createExerciseTemplates(exerciseTemplates: CreateExerciseTemplateInput[], workoutTemplateId: string) {
-  const output: ExerciseTemplate[] = [];
+  const output: SavedExerciseTemplate[] = [];
 
   for (const exerciseTemplate of exerciseTemplates) {
 
@@ -15,7 +16,7 @@ export function createExerciseTemplates(exerciseTemplates: CreateExerciseTemplat
 
     createSetTemplates(exerciseTemplate.setTemplates, newExerciseTemplateId);
 
-    const newExerciseTemplate: ExerciseTemplate = {
+    const newExerciseTemplate: SavedExerciseTemplate = {
       id: newExerciseTemplateId,
       name: exerciseTemplate.name,
       order: exerciseTemplate.order,

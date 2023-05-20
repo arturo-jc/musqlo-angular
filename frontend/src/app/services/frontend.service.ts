@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
 import { ExerciseTemplate, FullExerciseTemplateFragment, FullScheduleFragment, FullScheduleWorkoutFragment, FullSetTemplateFragment, FullWorkoutTemplateFragment, Schedule, ScheduleWorkout, SetTemplate, WorkoutTemplate } from '../../generated/graphql.generated';
-import { PartialBy, Replace, RequiredBy } from '../shared/utils';
+import { Replace, RequiredBy } from '../shared/utils';
 
-export type FrontendSetTemplate = PartialBy<SetTemplate, 'id' | 'exerciseTemplateId'>;
+export type FrontendSetTemplate = SetTemplate;
 
-export type FrontendExerciseTemplate = Replace<RequiredBy<PartialBy<ExerciseTemplate, 'id' | 'workoutTemplateId'>, 'key'>, 'setTemplates', FrontendSetTemplate[]>;
+export type FrontendExerciseTemplate = RequiredBy<ExerciseTemplate, 'key' | 'setTemplates'>;
 
-export type FrontendWorkoutTemplate = Replace<RequiredBy<PartialBy<WorkoutTemplate, 'id' | 'userId'>,'key'>, 'exerciseTemplates', FrontendExerciseTemplate[]>;
+export type FrontendWorkoutTemplate = Replace<WorkoutTemplate, 'exerciseTemplates', FrontendExerciseTemplate[]>;
 
-export type FrontendScheduleWorkout = PartialBy<ScheduleWorkout, 'id'>;
+export type FrontendScheduleWorkout = ScheduleWorkout;
 
-export type FrontendSchedule = Replace<PartialBy<Schedule, 'id'>, 'workouts', FrontendScheduleWorkout[]>;
+export type FrontendSchedule = Schedule;
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +30,10 @@ export class FrontendService {
     for (const workoutTemplate of backendWorkoutTemplates) {
 
       if (!workoutTemplate.key) {
+        throw new Error('Backend did not resolve workout template key');
+      }
+
+      if (!workoutTemplate.id) {
         throw new Error('Backend did not resolve workout template key');
       }
 
@@ -55,6 +59,10 @@ export class FrontendService {
     }
 
     for (const exerciseTemplate of backendExerciseTemplates) {
+
+      if (!exerciseTemplate.id) {
+        throw new Error('Backend did not resolve exercise template id');
+      }
 
       const frontendExerciseTemplate: FrontendExerciseTemplate = {
         id: exerciseTemplate.id,

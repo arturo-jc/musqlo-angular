@@ -66,12 +66,12 @@ export type ExerciseItem = {
 
 export type ExerciseTemplate = {
   __typename?: 'ExerciseTemplate';
-  id: Scalars['String'];
+  id?: Maybe<Scalars['String']>;
   key?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   order: Scalars['Int'];
   setTemplates?: Maybe<Array<SetTemplate>>;
-  workoutTemplateId: Scalars['String'];
+  workoutTemplateId?: Maybe<Scalars['String']>;
 };
 
 export type Mutation = {
@@ -144,9 +144,11 @@ export type QueryUserArgs = {
 
 export type Schedule = {
   __typename?: 'Schedule';
-  id: Scalars['String'];
+  id?: Maybe<Scalars['String']>;
   key?: Maybe<Scalars['String']>;
   name: Scalars['String'];
+  userId?: Maybe<Scalars['String']>;
+  workoutIds?: Maybe<Array<Scalars['String']>>;
   workouts?: Maybe<Array<ScheduleWorkout>>;
 };
 
@@ -155,7 +157,7 @@ export type ScheduleWorkout = {
   allDay?: Maybe<Scalars['Boolean']>;
   dow?: Maybe<Scalars['Int']>;
   end?: Maybe<Scalars['String']>;
-  id: Scalars['String'];
+  id?: Maybe<Scalars['String']>;
   start?: Maybe<Scalars['String']>;
   workoutTemplateId?: Maybe<Scalars['String']>;
   workoutTemplateKey?: Maybe<Scalars['String']>;
@@ -165,9 +167,9 @@ export type SetTemplate = {
   __typename?: 'SetTemplate';
   category?: Maybe<Scalars['String']>;
   exerciseItemId: Scalars['String'];
-  exerciseTemplateId: Scalars['String'];
+  exerciseTemplateId?: Maybe<Scalars['String']>;
   exerciseType?: Maybe<Scalars['String']>;
-  id: Scalars['String'];
+  id?: Maybe<Scalars['String']>;
   order: Scalars['Int'];
   reps?: Maybe<Scalars['Int']>;
   weight?: Maybe<Scalars['Int']>;
@@ -205,10 +207,10 @@ export type WorkoutTemplate = {
   __typename?: 'WorkoutTemplate';
   backgroundColor?: Maybe<Scalars['String']>;
   exerciseTemplates?: Maybe<Array<ExerciseTemplate>>;
-  id: Scalars['String'];
+  id?: Maybe<Scalars['String']>;
   key?: Maybe<Scalars['String']>;
   name: Scalars['String'];
-  userId: Scalars['String'];
+  userId?: Maybe<Scalars['String']>;
 };
 
 export type ExerciseItemsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -243,65 +245,65 @@ export type SignUpMutationVariables = Exact<{
 
 export type SignUpMutation = { __typename?: 'Mutation', signUp: { __typename?: 'AuthenticateOutput', userId: string, userEmail: string, username?: string | null, expiresIn?: number | null } };
 
-export type FullExerciseTemplateFragment = { __typename?: 'ExerciseTemplate', id: string, name: string, order: number, setTemplates?: Array<{ __typename?: 'SetTemplate', id: string, exerciseTemplateId: string, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null };
+export type FullExerciseTemplateFragment = { __typename?: 'ExerciseTemplate', id?: string | null, name: string, order: number, setTemplates?: Array<{ __typename?: 'SetTemplate', id?: string | null, exerciseTemplateId?: string | null, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null };
 
-export type BaseExerciseTemplateFragment = { __typename?: 'ExerciseTemplate', id: string, name: string, order: number };
+export type BaseExerciseTemplateFragment = { __typename?: 'ExerciseTemplate', id?: string | null, name: string, order: number };
 
-export type ExerciseTemplate_SetTemplatesFragment = { __typename?: 'ExerciseTemplate', setTemplates?: Array<{ __typename?: 'SetTemplate', id: string, exerciseTemplateId: string, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null };
+export type ExerciseTemplate_SetTemplatesFragment = { __typename?: 'ExerciseTemplate', setTemplates?: Array<{ __typename?: 'SetTemplate', id?: string | null, exerciseTemplateId?: string | null, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null };
 
 export type CreateSchedulesMutationVariables = Exact<{
   schedules: Array<CreateScheduleInput> | CreateScheduleInput;
 }>;
 
 
-export type CreateSchedulesMutation = { __typename?: 'Mutation', createSchedules: Array<{ __typename?: 'Schedule', id: string, key?: string | null, name: string, workouts?: Array<{ __typename?: 'ScheduleWorkout', id: string, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null }> | null }> };
+export type CreateSchedulesMutation = { __typename?: 'Mutation', createSchedules: Array<{ __typename?: 'Schedule', id?: string | null, key?: string | null, name: string, workouts?: Array<{ __typename?: 'ScheduleWorkout', id?: string | null, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null }> | null }> };
 
-export type FullScheduleFragment = { __typename?: 'Schedule', id: string, key?: string | null, name: string, workouts?: Array<{ __typename?: 'ScheduleWorkout', id: string, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null }> | null };
+export type FullScheduleFragment = { __typename?: 'Schedule', id?: string | null, key?: string | null, name: string, workouts?: Array<{ __typename?: 'ScheduleWorkout', id?: string | null, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null }> | null };
 
-export type BaseScheduleFragment = { __typename?: 'Schedule', id: string, key?: string | null, name: string };
+export type BaseScheduleFragment = { __typename?: 'Schedule', id?: string | null, key?: string | null, name: string };
 
-export type Schedule_ScheduleWorkoutsFragment = { __typename?: 'Schedule', workouts?: Array<{ __typename?: 'ScheduleWorkout', id: string, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null }> | null };
+export type Schedule_ScheduleWorkoutsFragment = { __typename?: 'Schedule', workouts?: Array<{ __typename?: 'ScheduleWorkout', id?: string | null, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null }> | null };
 
-export type FullScheduleWorkoutFragment = { __typename?: 'ScheduleWorkout', id: string, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null };
+export type FullScheduleWorkoutFragment = { __typename?: 'ScheduleWorkout', id?: string | null, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null };
 
-export type BaseScheduleWorkoutFragment = { __typename?: 'ScheduleWorkout', id: string, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null };
+export type BaseScheduleWorkoutFragment = { __typename?: 'ScheduleWorkout', id?: string | null, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null };
 
-export type FullSetTemplateFragment = { __typename?: 'SetTemplate', id: string, exerciseTemplateId: string, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number };
+export type FullSetTemplateFragment = { __typename?: 'SetTemplate', id?: string | null, exerciseTemplateId?: string | null, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number };
 
-export type BaseSetTemplateFragment = { __typename?: 'SetTemplate', id: string, exerciseTemplateId: string, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number };
+export type BaseSetTemplateFragment = { __typename?: 'SetTemplate', id?: string | null, exerciseTemplateId?: string | null, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number };
 
 export type UserWorkoutTemplatesQueryVariables = Exact<{
   userId: Scalars['String'];
 }>;
 
 
-export type UserWorkoutTemplatesQuery = { __typename?: 'Query', user?: { __typename?: 'User', id: string, workoutTemplates?: Array<{ __typename?: 'WorkoutTemplate', id: string, name: string, backgroundColor?: string | null, key?: string | null, exerciseTemplates?: Array<{ __typename?: 'ExerciseTemplate', id: string, name: string, order: number, setTemplates?: Array<{ __typename?: 'SetTemplate', id: string, exerciseTemplateId: string, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null }> | null }> | null } | null };
+export type UserWorkoutTemplatesQuery = { __typename?: 'Query', user?: { __typename?: 'User', id: string, workoutTemplates?: Array<{ __typename?: 'WorkoutTemplate', id?: string | null, name: string, backgroundColor?: string | null, key?: string | null, exerciseTemplates?: Array<{ __typename?: 'ExerciseTemplate', id?: string | null, name: string, order: number, setTemplates?: Array<{ __typename?: 'SetTemplate', id?: string | null, exerciseTemplateId?: string | null, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null }> | null }> | null } | null };
 
 export type UserSchedulesQueryVariables = Exact<{
   userId: Scalars['String'];
 }>;
 
 
-export type UserSchedulesQuery = { __typename?: 'Query', user?: { __typename?: 'User', id: string, schedules?: Array<{ __typename?: 'Schedule', id: string, key?: string | null, name: string, workouts?: Array<{ __typename?: 'ScheduleWorkout', id: string, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null }> | null }> | null } | null };
+export type UserSchedulesQuery = { __typename?: 'Query', user?: { __typename?: 'User', id: string, schedules?: Array<{ __typename?: 'Schedule', id?: string | null, key?: string | null, name: string, workouts?: Array<{ __typename?: 'ScheduleWorkout', id?: string | null, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null }> | null }> | null } | null };
 
-export type FullUserFragment = { __typename?: 'User', id: string, workoutTemplates?: Array<{ __typename?: 'WorkoutTemplate', id: string, name: string, backgroundColor?: string | null, key?: string | null, exerciseTemplates?: Array<{ __typename?: 'ExerciseTemplate', id: string, name: string, order: number, setTemplates?: Array<{ __typename?: 'SetTemplate', id: string, exerciseTemplateId: string, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null }> | null }> | null };
+export type FullUserFragment = { __typename?: 'User', id: string, workoutTemplates?: Array<{ __typename?: 'WorkoutTemplate', id?: string | null, name: string, backgroundColor?: string | null, key?: string | null, exerciseTemplates?: Array<{ __typename?: 'ExerciseTemplate', id?: string | null, name: string, order: number, setTemplates?: Array<{ __typename?: 'SetTemplate', id?: string | null, exerciseTemplateId?: string | null, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null }> | null }> | null };
 
 export type BaseUserFragment = { __typename?: 'User', id: string };
 
-export type User_WorkoutTemplatesFragment = { __typename?: 'User', workoutTemplates?: Array<{ __typename?: 'WorkoutTemplate', id: string, name: string, backgroundColor?: string | null, key?: string | null, exerciseTemplates?: Array<{ __typename?: 'ExerciseTemplate', id: string, name: string, order: number, setTemplates?: Array<{ __typename?: 'SetTemplate', id: string, exerciseTemplateId: string, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null }> | null }> | null };
+export type User_WorkoutTemplatesFragment = { __typename?: 'User', workoutTemplates?: Array<{ __typename?: 'WorkoutTemplate', id?: string | null, name: string, backgroundColor?: string | null, key?: string | null, exerciseTemplates?: Array<{ __typename?: 'ExerciseTemplate', id?: string | null, name: string, order: number, setTemplates?: Array<{ __typename?: 'SetTemplate', id?: string | null, exerciseTemplateId?: string | null, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null }> | null }> | null };
 
 export type CreateWorkoutTemplatesMutationVariables = Exact<{
   workoutTemplates: Array<CreateWorkoutTemplateInput> | CreateWorkoutTemplateInput;
 }>;
 
 
-export type CreateWorkoutTemplatesMutation = { __typename?: 'Mutation', createWorkoutTemplates: Array<{ __typename?: 'WorkoutTemplate', id: string, name: string, backgroundColor?: string | null, key?: string | null, exerciseTemplates?: Array<{ __typename?: 'ExerciseTemplate', id: string, name: string, order: number, setTemplates?: Array<{ __typename?: 'SetTemplate', id: string, exerciseTemplateId: string, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null }> | null }> };
+export type CreateWorkoutTemplatesMutation = { __typename?: 'Mutation', createWorkoutTemplates: Array<{ __typename?: 'WorkoutTemplate', id?: string | null, name: string, backgroundColor?: string | null, key?: string | null, exerciseTemplates?: Array<{ __typename?: 'ExerciseTemplate', id?: string | null, name: string, order: number, setTemplates?: Array<{ __typename?: 'SetTemplate', id?: string | null, exerciseTemplateId?: string | null, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null }> | null }> };
 
-export type FullWorkoutTemplateFragment = { __typename?: 'WorkoutTemplate', id: string, name: string, backgroundColor?: string | null, key?: string | null, exerciseTemplates?: Array<{ __typename?: 'ExerciseTemplate', id: string, name: string, order: number, setTemplates?: Array<{ __typename?: 'SetTemplate', id: string, exerciseTemplateId: string, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null }> | null };
+export type FullWorkoutTemplateFragment = { __typename?: 'WorkoutTemplate', id?: string | null, name: string, backgroundColor?: string | null, key?: string | null, exerciseTemplates?: Array<{ __typename?: 'ExerciseTemplate', id?: string | null, name: string, order: number, setTemplates?: Array<{ __typename?: 'SetTemplate', id?: string | null, exerciseTemplateId?: string | null, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null }> | null };
 
-export type BaseWorkoutTemplateFragment = { __typename?: 'WorkoutTemplate', id: string, name: string, backgroundColor?: string | null, key?: string | null };
+export type BaseWorkoutTemplateFragment = { __typename?: 'WorkoutTemplate', id?: string | null, name: string, backgroundColor?: string | null, key?: string | null };
 
-export type WorkoutTemplate_ExerciseTemplatesFragment = { __typename?: 'WorkoutTemplate', exerciseTemplates?: Array<{ __typename?: 'ExerciseTemplate', id: string, name: string, order: number, setTemplates?: Array<{ __typename?: 'SetTemplate', id: string, exerciseTemplateId: string, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null }> | null };
+export type WorkoutTemplate_ExerciseTemplatesFragment = { __typename?: 'WorkoutTemplate', exerciseTemplates?: Array<{ __typename?: 'ExerciseTemplate', id?: string | null, name: string, order: number, setTemplates?: Array<{ __typename?: 'SetTemplate', id?: string | null, exerciseTemplateId?: string | null, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null }> | null };
 
 export const BaseScheduleFragmentDoc = gql`
     fragment BaseSchedule on Schedule {
