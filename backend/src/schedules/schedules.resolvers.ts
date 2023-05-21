@@ -1,7 +1,6 @@
 import { Context } from '../context';
-import { MutationResolvers, Resolvers, Schedule, ScheduleResolvers, UserResolvers } from "../generated/graphql.generated";
-import { v1 as uuid } from 'uuid';
-import { SavedSchedule, savedSchedules, saveScheduleWorkouts } from './schedules.service';
+import { MutationResolvers, Resolvers, ScheduleResolvers, UserResolvers } from "../generated/graphql.generated";
+import { saveSchedules, savedSchedules } from './schedules.service';
 import { savedScheduleWorkouts } from '../scheduleWorkouts/scheduleWorkouts.service';
 
 const getSchedules: UserResolvers<Context>['schedules'] = (parent) => {
@@ -24,37 +23,7 @@ const createSchedules: MutationResolvers<Context>['createSchedules'] = (_parent,
     throw new Error('User not authenticated');
   }
 
-  const output: Schedule[] = [];
-
-  for (const schedule of args.schedules) {
-
-    const savedScheduleWorkouts = saveScheduleWorkouts(schedule.workouts);
-
-    const newSchedule: Schedule = {
-      id: uuid(),
-      name: schedule.name,
-      workouts: savedScheduleWorkouts,
-      key: schedule.key,
-    };
-
-    output.push(newSchedule);
-
-    if (!newSchedule.id) {
-      throw new Error('Cannot save schedule without ID');
-    }
-
-    const savedSchedule: SavedSchedule = {
-      id: newSchedule.id,
-      name: schedule.name,
-      userId: ctx.userId,
-      workoutIds: savedScheduleWorkouts.map(w => w.id),
-    };
-
-    savedSchedules.push(savedSchedule);
-
-  }
-
-  return output;
+  return saveSchedules(args.schedules, ctx.userId);
 }
 
 const updateSchedules: MutationResolvers<Context>['updateSchedules'] = (_parent, _args) => {
