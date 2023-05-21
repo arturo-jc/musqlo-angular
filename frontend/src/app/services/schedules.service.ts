@@ -3,9 +3,10 @@ import { QueryRef } from 'apollo-angular';
 import { filter, map, tap, of } from 'rxjs';
 import { partition } from 'lodash-es';
 import { SubSink } from 'subsink';
-import { CreateScheduleInput, CreateSchedulesGQL, CreateSchedulesMutationVariables, CreateScheduleWorkoutInput, UpdateScheduleGQL, UpdateScheduleMutationVariables, UpdateScheduleWorkoutInput, UserSchedulesGQL, UserSchedulesQuery, UserSchedulesQueryVariables } from '../../generated/graphql.generated';
-import { FrontendSchedule, FrontendScheduleWorkout, FrontendService } from '../services/frontend.service';
+import { CreateScheduleInput, CreateSchedulesGQL, CreateSchedulesMutation, CreateSchedulesMutationVariables, CreateScheduleWorkoutInput, UpdateScheduleGQL, UpdateScheduleMutationVariables, UpdateScheduleWorkoutInput, UserSchedulesGQL, UserSchedulesQuery, UserSchedulesQueryVariables, UserSchedulesDocument } from '../../generated/graphql.generated';
+import { FrontendSchedule, FrontendService } from '../services/frontend.service';
 import { WorkoutTemplatesService } from './workout-templates.service';
+import { MutationOptionsAlone } from 'apollo-angular/types';
 
 @Injectable({
   providedIn: 'root'
@@ -54,8 +55,11 @@ export class SchedulesService {
       schedules: this.getCreateScheduleInput([ newSchedule ]),
     }
 
-    this.createSchedulesGQL.mutate(mutationVariables)
-      .subscribe(() => this.userSchedulesQuery?.refetch());
+    const opts: MutationOptionsAlone<CreateSchedulesMutation, CreateSchedulesMutationVariables> = {
+      refetchQueries: [ { query: UserSchedulesDocument, variables: { userId: this.userId } } ],
+    }
+
+    this.createSchedulesGQL.mutate(mutationVariables, opts).subscribe();
   }
 
   updateSchedule(updatedSchedule: FrontendSchedule) {

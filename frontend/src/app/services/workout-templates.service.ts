@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
+import { MutationOptionsAlone } from 'apollo-angular/types';
 import { partition } from 'lodash-es';
 import { filter, map, of, tap } from 'rxjs';
 import { SubSink } from 'subsink';
-import { CreateWorkoutTemplatesGQL, UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables, CreateWorkoutTemplatesMutationVariables, CreateWorkoutTemplateInput, UserWorkoutTemplatesGQL, CreateExerciseTemplateInput, CreateSetTemplateInput, UpdateWorkoutTemplateGQL, UpdateExerciseTemplateInput, UpdateWorkoutTemplateMutationVariables, UpdateSetTemplateInput } from '../../generated/graphql.generated';
+import { CreateWorkoutTemplatesGQL, UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables, CreateWorkoutTemplatesMutationVariables, CreateWorkoutTemplateInput, UserWorkoutTemplatesGQL, CreateExerciseTemplateInput, CreateSetTemplateInput, UpdateWorkoutTemplateGQL, UpdateExerciseTemplateInput, UpdateWorkoutTemplateMutationVariables, UpdateSetTemplateInput, CreateWorkoutTemplatesMutation, UserWorkoutTemplatesDocument } from '../../generated/graphql.generated';
 import { FrontendExerciseTemplate, FrontendService, FrontendSetTemplate, FrontendWorkoutTemplate } from '../services/frontend.service';
 
 @Injectable({
@@ -48,8 +49,11 @@ export class WorkoutTemplatesService {
       workoutTemplates: this.getCreateWorkoutTemplateInput([ newWorkoutTemplate ]),
     };
 
-    this.createWorkoutTemplatesGQL.mutate(mutationVariables)
-      .subscribe(() => this.userWorkoutTemplatesQuery?.refetch());
+    const opts: MutationOptionsAlone<CreateWorkoutTemplatesMutation, CreateWorkoutTemplatesMutationVariables> = {
+      refetchQueries: [ { query: UserWorkoutTemplatesDocument, variables: { userId: this.userId }}],
+    }
+
+    this.createWorkoutTemplatesGQL.mutate(mutationVariables, opts).subscribe();
   }
 
   editWorkoutTemplate(editedWorkoutTemplate: FrontendWorkoutTemplate) {
