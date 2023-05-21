@@ -69,7 +69,7 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
 
     const exerciseTemplates: FrontendExerciseTemplate[] = [];
 
-    for (const exerciseTemplate of (workoutTemplateToEdit.exerciseTemplates || [])) {
+    for (const exerciseTemplate of (workoutTemplateToEdit.exerciseTemplates)) {
 
       let key: string;
 
@@ -80,10 +80,13 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
         this.currentKey++;
       }
 
+      const setTemplates = [ ...exerciseTemplate.setTemplates ]
+        .sort((a, b) => a.order - b.order);
+
       const frontendExercise: FrontendExerciseTemplate = {
         ...exerciseTemplate,
         key,
-        setTemplates: exerciseTemplate.setTemplates || [],
+        setTemplates,
       };
 
       exerciseTemplates.push(frontendExercise);
@@ -91,7 +94,8 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
       this.collapsedTemplates[frontendExercise.key] = false;
     }
 
-    this.exerciseTemplates = exerciseTemplates;
+    this.exerciseTemplates = exerciseTemplates
+      .sort((a, b) => a.order - b.order);
   }
 
   drop(
@@ -142,9 +146,13 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
   }
 
   reorderTemplates() {
-    this.exerciseTemplates.forEach((group, index) => {
-      group.order = index + 1;
-    })
+    for (let i = 0; i < this.exerciseTemplates.length; i++) {
+
+      const exerciseTemplate = this.exerciseTemplates[i];
+
+      exerciseTemplate.order = i + 1;
+    }
+
     this.exerciseTemplates = cloneDeep(this.exerciseTemplates);
   }
 

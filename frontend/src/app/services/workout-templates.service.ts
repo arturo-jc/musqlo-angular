@@ -105,7 +105,7 @@ export class WorkoutTemplatesService {
         throw new Error('Cannot update exercise template without an ID');
       }
 
-      const uneditedExerciseTemplate = uneditedWorkoutTemplate.exerciseTemplates.find(t => t.id === uneditedWorkoutTemplate.id);
+      const uneditedExerciseTemplate = uneditedWorkoutTemplate.exerciseTemplates.find(t => t.id === editedExerciseTemplate.id);
 
       if (!uneditedExerciseTemplate) { continue; }
 
@@ -122,6 +122,7 @@ export class WorkoutTemplatesService {
 
       updateExerciseTemplateInputs.push({
         exerciseTemplateId: editedExerciseTemplate.id,
+        order: editedExerciseTemplate.order,
         addSetTemplates: this.getCreateSetTemplateInput(newSetTemplates),
         removeSetTemplates,
       });
@@ -148,6 +149,8 @@ export class WorkoutTemplatesService {
       workoutTemplates: [
         {
           workoutTemplateId: uneditedWorkoutTemplate.id,
+          name: editedWorkoutTemplate.name,
+          backgroundColor: editedWorkoutTemplate.backgroundColor,
           removeExerciseTemplates,
           addExerciseTemplates: this.getCreateExerciseTemplateInput(newExerciseTemplates),
         }

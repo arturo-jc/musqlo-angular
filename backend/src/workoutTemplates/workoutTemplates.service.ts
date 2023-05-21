@@ -44,6 +44,7 @@ export function updateWorkoutTemplate(workoutTemplateId: string, update: Pick<Up
 
   const updatedWorkoutTemplate = {
     ...currentValue,
+    ...update,
     name: update.name || currentValue.name,
   };
 
