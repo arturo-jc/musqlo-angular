@@ -177,10 +177,16 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
         dow = dow + 7;
       }
 
+      const workoutTemplateKey = event.extendedProps['key'];
+
+      const workoutTemplate = this.workoutTemplatesService.workoutTemplates.find(wt => wt.key === workoutTemplateKey);
+
       const newWorkout: FrontendScheduleWorkout = {
-        workoutTemplateKey: event.extendedProps['key'],
+        workoutTemplateKey,
         dow,
         allDay: event.allDay,
+        id: event.id.length ? event.id : undefined,
+        workoutTemplateId: workoutTemplate?.id,
       }
 
       if (!event.allDay) {
@@ -199,10 +205,6 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
 
     if (!scheduleToEdit || !this.calendarApi) { return; }
 
-    const { currentRange } = this.calendarApi.getCurrentData().dateProfile;
-
-    const scheduleStart = this.fullCalendar.findFirstSunday(dayjs(currentRange.start));
-
     let showTimes = false;
 
     for (const scheduleWorkout of (scheduleToEdit.workouts || [])) {
@@ -213,21 +215,11 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
 
       if (!workout) { continue; }
 
-      const eventInput = this.fullCalendar.getEventInput(workout);
+      const { currentRange } = this.calendarApi.getCurrentData().dateProfile;
 
-      eventInput.allDay = scheduleWorkout.allDay || undefined;
+      const eventInput = this.fullCalendar.getEventInput(workout, scheduleWorkout, currentRange.start);
 
-      if (scheduleWorkout.dow === null || scheduleWorkout.dow === undefined) {
-        throw new Error('Cannot read dow');
-      }
-
-      const eventDay = scheduleStart.add(scheduleWorkout.dow, 'day');
-
-      if (eventInput.allDay) {
-        eventInput.start = eventDay.toDate();
-      } else {
-        this.setEventTimes(scheduleWorkout.start, eventInput, 'start', eventDay);
-        this.setEventTimes(scheduleWorkout.end, eventInput, 'end', eventDay);
+      if (!eventInput.allDay) {
         showTimes = true;
       }
 

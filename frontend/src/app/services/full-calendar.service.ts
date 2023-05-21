@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { EventContentArg, EventInput } from '@fullcalendar/core';
-import { EventImpl } from '@fullcalendar/core/internal';
+import { DateMarker, EventImpl } from '@fullcalendar/core/internal';
 import dayjs from 'dayjs';
 import { DEFAULT_BG_COLOR } from '../mutate-workout-template/mutate-workout-template.component';
 import { WorkoutTemplatesService } from './workout-templates.service';
 import { LIGHT_DARK_THRESHOLD } from '../shared/color-picker/color-picker.component';
 import { FrontendExerciseTemplate, FrontendWorkoutTemplate } from '../services/frontend.service';
+import { ScheduleWorkout } from '../../generated/graphql.generated';
 
 @Injectable({
   providedIn: 'root'
@@ -104,11 +105,11 @@ export class FullCalendarService {
     }
   }
 
-  getEventInput(workoutTemplate: FrontendWorkoutTemplate): EventInput {
+  getEventInput(workoutTemplate: FrontendWorkoutTemplate, scheduleWorkout?: ScheduleWorkout, start?: DateMarker): EventInput {
 
     const backgroundColor = workoutTemplate.backgroundColor || DEFAULT_BG_COLOR;
 
-    return {
+    const eventInput: EventInput = {
       title: workoutTemplate.name,
       extendedProps: {
         key: workoutTemplate.key,
@@ -117,6 +118,47 @@ export class FullCalendarService {
       borderColor: backgroundColor,
       textColor: this.getTextColor(backgroundColor),
     }
+
+    if (!scheduleWorkout) {
+      return eventInput;
+    }
+
+    if (scheduleWorkout.id) {
+      eventInput.id = scheduleWorkout.id;
+    }
+
+    eventInput.allDay = scheduleWorkout.allDay || undefined;
+
+    if (scheduleWorkout.dow === null || scheduleWorkout.dow === undefined) {
+      throw new Error('Cannot read dow');
+    }
+
+    if (!start) {
+      return eventInput;
+    }
+
+    const scheduleStart = this.findFirstSunday(dayjs(start));
+
+    const eventDay = scheduleStart.add(scheduleWorkout.dow, 'day');
+
+    if (eventInput.allDay) {
+
+      eventInput.start = eventDay.toDate();
+
+    } else {
+      this.setEventTimes(scheduleWorkout.start, eventInput, 'start', eventDay);
+      this.setEventTimes(scheduleWorkout.end, eventInput, 'end', eventDay);
+    }
+
+    return eventInput;
+  }
+
+  setEventTimes(dateString: string | undefined | null, eventInput: EventInput, time: 'start' | 'end', eventDay: dayjs.Dayjs) {
+    if (!dateString) { return; }
+
+    const [ hourString, minString, secString ] = dateString.split(':');
+
+    eventInput[time] = eventDay.hour(Number(hourString)).minute(Number(minString)).second(Number(secString)).toDate();
   }
 
   getTextColor(backgroundColor: string): string {
