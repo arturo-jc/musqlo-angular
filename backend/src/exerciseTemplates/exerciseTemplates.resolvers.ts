@@ -2,7 +2,7 @@ import { Context } from '../context';
 import { ExerciseTemplateResolvers, MutationResolvers, Resolvers } from '../generated/graphql.generated';
 import { createSetTemplates, deleteSetTemplates } from '../setTemplates/setTemplates.service';
 import { savedSetTemplates } from '../setTemplates/setTemplates.service';
-import { updateExerciseTemplate } from './exerciseTemplates.service';
+import { savedExerciseTemplates, updateExerciseTemplate } from './exerciseTemplates.service';
 
 const setTemplatesResolver: ExerciseTemplateResolvers<Context>['setTemplates'] = (parent) => {
   return savedSetTemplates.filter(s => s.exerciseTemplateId === parent.id);
@@ -34,7 +34,10 @@ const updateExerciseTemplatesResolver: MutationResolvers<Context>['updateExercis
   }
 
   deleteSetTemplates(removeSetTemplates);
-  return [];
+
+  const exerciseTemplateIds = args.exerciseTemplates.map(et => et.exerciseTemplateId);
+
+  return savedExerciseTemplates.filter(et => exerciseTemplateIds.includes(et.id));
 }
 
 const resolvers: Resolvers<Context> = {

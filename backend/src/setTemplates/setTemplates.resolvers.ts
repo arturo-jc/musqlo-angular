@@ -1,9 +1,20 @@
 import { Context } from '../context';
 import { savedExerciseItems } from '../exerciseItems/exerciseItems.resolvers';
 import { MutationResolvers, Resolvers, SetTemplateResolvers } from '../generated/graphql.generated';
+import { savedSetTemplates, updateSetTemplate } from './setTemplates.service';
 
-export const updateSetTemplatesResolver: MutationResolvers<Context>['updateSetTemplates'] = (_parent, _args) => {
-  throw new Error('Not implemented');
+export const updateSetTemplatesResolver: MutationResolvers<Context>['updateSetTemplates'] = (_parent, args) => {
+
+  for (const setTemplate of args.setTemplates) {
+
+    const { setTemplateId, ...update } = setTemplate;
+
+    updateSetTemplate(setTemplateId, update);
+  }
+
+  const setTemplateIds = args.setTemplates.map(st => st.setTemplateId);
+
+  return savedSetTemplates.filter(st => setTemplateIds.includes(st.id));
 }
 
 const categoryResolver: SetTemplateResolvers<Context>['category'] = (parent) => {
