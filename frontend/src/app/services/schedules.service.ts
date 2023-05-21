@@ -33,6 +33,12 @@ export class SchedulesService {
   subs = new SubSink();
 
   addSchedule(newSchedule: FrontendSchedule) {
+
+    if (this.userId) {
+      this.createSchedule(newSchedule);
+      return;
+    }
+
     newSchedule.key = this.currentKey.toString();
 
     this.currentKey++;
@@ -40,6 +46,15 @@ export class SchedulesService {
     const updatedSchedules = [ ...this.schedules, newSchedule ];
 
     this.schedules = updatedSchedules;
+  }
+
+  createSchedule(newSchedule: FrontendSchedule) {
+
+    const mutationVariables: CreateSchedulesMutationVariables = {
+      schedules: this.getCreateScheduleInput([ newSchedule ]),
+    }
+
+    this.createSchedulesGQL.mutate(mutationVariables).subscribe();
   }
 
   updateSchedule(updatedSchedule: FrontendSchedule) {
@@ -130,6 +145,7 @@ export class SchedulesService {
   }
 
   onAuthSuccess(userId: string) {
+
     this.userId = userId;
 
     const watchQueryVariables: UserSchedulesQueryVariables = { userId };
@@ -144,14 +160,40 @@ export class SchedulesService {
 
   createUnsavedSchedules() {
 
-    const unsavedSchedules: CreateScheduleInput[] = [];
+    const unsavedSchedules = this.schedules.filter(s => !s.id);
 
-    for (const schedule of this.schedules) {
-      if (schedule.id) { continue; }
+    if (!unsavedSchedules.length) { return of([]); }
 
-      if (!schedule.key) {
-        throw new Error('Cannot save a schedule without a key');
+    unsavedSchedules.forEach(s => {
+      if (!s.key) {
+        throw new Error('Cannot save schedule without a key');
       }
+    })
+
+    const mutationVariables: CreateSchedulesMutationVariables = {
+      schedules: this.getCreateScheduleInput(unsavedSchedules),
+    }
+
+    return this.createSchedulesGQL.mutate(mutationVariables).pipe(
+      filter(res => !res.loading),
+      map(res => this.frontend.convertSchedules(res.data?.createSchedules)),
+      tap(newSchedules => this.schedules = newSchedules)
+    );
+  }
+
+  reset() {
+    this.userId = null;
+    this.schedules = [];
+    this.editScheduleKey = undefined;
+    this.currentKey = 0;
+    this.subs.unsubscribe();
+  }
+
+  getCreateScheduleInput(schedules: FrontendSchedule[]): CreateScheduleInput[] {
+
+    const output: CreateScheduleInput[] = [];
+
+    for (const schedule of schedules) {
 
       const unsavedScheduleWorkouts: CreateScheduleWorkoutInput[] = [];
 
@@ -176,28 +218,10 @@ export class SchedulesService {
         key: schedule.key,
       }
 
-      unsavedSchedules.push(unsavedSchedule);
+      output.push(unsavedSchedule);
     }
 
-    if (!unsavedSchedules.length) { return of([]); }
-
-    const mutationVariables: CreateSchedulesMutationVariables = {
-      schedules: unsavedSchedules,
-    }
-
-    return this.createSchedulesGQL.mutate(mutationVariables).pipe(
-      filter(res => !res.loading),
-      map(res => this.frontend.convertSchedules(res.data?.createSchedules)),
-      tap(newSchedules => this.schedules = newSchedules)
-    );
-  }
-
-  reset() {
-    this.userId = null;
-    this.schedules = [];
-    this.editScheduleKey = undefined;
-    this.currentKey = 0;
-    this.subs.unsubscribe();
+    return output;
   }
 
   get scheduleToEdit() {

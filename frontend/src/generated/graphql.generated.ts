@@ -30,7 +30,7 @@ export type CreateExerciseTemplateInput = {
 };
 
 export type CreateScheduleInput = {
-  key: Scalars['String'];
+  key?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   workouts: Array<CreateScheduleWorkoutInput>;
 };

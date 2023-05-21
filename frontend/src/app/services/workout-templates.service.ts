@@ -32,9 +32,23 @@ export class WorkoutTemplatesService {
 
   addWorkoutTemplate(newWorkoutTemplate: FrontendWorkoutTemplate) {
 
+    if (this.userId) {
+      this.createWorkoutTemplate(newWorkoutTemplate);
+      return;
+    }
+
     const updatedWorkoutTemplates = [ ...this.workoutTemplates, newWorkoutTemplate ];
 
     this.workoutTemplates = updatedWorkoutTemplates;
+  }
+
+  createWorkoutTemplate(newWorkoutTemplate: FrontendWorkoutTemplate) {
+
+    const mutationVariables: CreateWorkoutTemplatesMutationVariables = {
+      workoutTemplates: this.getCreateWorkoutTemplateInput([ newWorkoutTemplate ]),
+    };
+
+    this.createWorkoutTemplatesGQL.mutate(mutationVariables).subscribe();
   }
 
   editWorkoutTemplate(editedWorkoutTemplate: FrontendWorkoutTemplate) {
@@ -175,7 +189,7 @@ export class WorkoutTemplatesService {
     this.subs.sink = this.userWorkoutTemplatesQuery.valueChanges.pipe(
       filter(res => !res.loading),
       map(res => this.frontend.convertWorkoutTemplates(res.data.user?.workoutTemplates, true)),
-    ).subscribe(userWorkoutTemplates => this.workoutTemplates = userWorkoutTemplates);
+    ).subscribe(userWorkoutTemplates =>  this.workoutTemplates = userWorkoutTemplates);
   }
 
   setKeys(workoutTemplates: { key?: string | null | undefined; id: string }[]) {

@@ -17,7 +17,7 @@ type Schedule {
 
 input CreateScheduleInput {
   name: String!
-  key: String!
+  key: String
   workouts: [CreateScheduleWorkoutInput!]!
 }
 
