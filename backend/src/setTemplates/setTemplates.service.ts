@@ -25,14 +25,16 @@ export function createSetTemplates(setTemplates: CreateSetTemplateInput[], exerc
   return output;
 }
 
-export function updateSetTemplate(setTemplateId: string, update: Omit<UpdateSetTemplateInput, 'setTemplateId'>) {
+export function updateSetTemplate(input: UpdateSetTemplateInput) {
+
+  const { setTemplateId, ...update } = input;
 
   const setTemplateIndex = savedSetTemplates.findIndex(st => st.id === setTemplateId);
 
   const currentValue = savedSetTemplates[setTemplateIndex];
 
   if (!currentValue) {
-    throw new Error('Could not resolve set template');
+    throw new Error('Set template not found');
   }
 
   const updatedSetTemplate = {

@@ -6,10 +6,7 @@ import { savedSetTemplates, updateSetTemplate } from './setTemplates.service';
 export const updateSetTemplatesResolver: MutationResolvers<Context>['updateSetTemplates'] = (_parent, args) => {
 
   for (const setTemplate of args.setTemplates) {
-
-    const { setTemplateId, ...update } = setTemplate;
-
-    updateSetTemplate(setTemplateId, update);
+    updateSetTemplate(setTemplate);
   }
 
   const setTemplateIds = args.setTemplates.map(st => st.setTemplateId);
@@ -21,7 +18,7 @@ const categoryResolver: SetTemplateResolvers<Context>['category'] = (parent) => 
   const exerciseItem = savedExerciseItems.find(i => i.id === parent.exerciseItemId);
 
   if (!exerciseItem) {
-    throw new Error('Could not resolve exercise item');
+    throw new Error('Exercise item not found');
   }
 
   return exerciseItem.category;
@@ -31,7 +28,7 @@ const exerciseTypeResolver: SetTemplateResolvers<Context>['exerciseType'] = (par
   const exerciseItem = savedExerciseItems.find(i => i.id === parent.exerciseItemId);
 
   if (!exerciseItem) {
-    throw new Error('Could not resolve exercise item');
+    throw new Error('Exercise item not found');
   }
 
   return exerciseItem.exerciseType;

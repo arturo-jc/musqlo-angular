@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
-import { filter, map, tap, of, partition } from 'rxjs';
+import { filter, map, tap, of } from 'rxjs';
+import { partition } from 'lodash-es';
 import { SubSink } from 'subsink';
-import { CreateScheduleInput, CreateSchedulesGQL, CreateSchedulesMutationVariables, CreateScheduleWorkoutInput, UpdateScheduleGQL, UpdateScheduleMutationVariables, UserSchedulesGQL, UserSchedulesQuery, UserSchedulesQueryVariables } from '../../generated/graphql.generated';
-import { FrontendSchedule, FrontendService } from '../services/frontend.service';
+import { CreateScheduleInput, CreateSchedulesGQL, CreateSchedulesMutationVariables, CreateScheduleWorkoutInput, UpdateScheduleGQL, UpdateScheduleMutationVariables, UpdateScheduleWorkoutInput, UserSchedulesGQL, UserSchedulesQuery, UserSchedulesQueryVariables } from '../../generated/graphql.generated';
+import { FrontendSchedule, FrontendScheduleWorkout, FrontendService } from '../services/frontend.service';
 import { WorkoutTemplatesService } from './workout-templates.service';
 
 @Injectable({
@@ -60,6 +61,7 @@ export class SchedulesService {
   }
 
   updateExistingSchedule(editedSchedule: FrontendSchedule) {
+
     const uneditedSchedule = this.scheduleToEdit;
 
     if (!uneditedSchedule?.id) {
@@ -78,24 +80,50 @@ export class SchedulesService {
     const removeWorkouts: string[] = [];
 
     for (const workout of uneditedSchedule?.workouts || []) {
+
       if (!workout.id || scheduleWorkoutIds.includes(workout.id)) { continue; }
 
       removeWorkouts.push(workout.id);
     }
 
-    // const [ existingScheduleWorkouts, newScheduleWorkouts ] = partition(editedSchedule.workouts || [], sw => sw.id);
+    const [ existingScheduleWorkouts, newScheduleWorkouts ] = partition(editedSchedule.workouts || [], sw => sw.id);
 
-    // for (const workout of newScheduleWorkouts) {
+    const updateScheduleWorkoutInputs: UpdateScheduleWorkoutInput[] = [];
 
-    // }
-    //
+    for (const existingScheduleWorkout of existingScheduleWorkouts) {
+
+      if (!existingScheduleWorkout.id) {
+        throw new Error('Cannot update schedule workout without an ID');
+      }
+
+      const updateScheduleWorkout: UpdateScheduleWorkoutInput = {
+        scheduleWorkoutId: existingScheduleWorkout.id,
+        allDay: existingScheduleWorkout.allDay,
+        dow: existingScheduleWorkout.dow,
+        start: existingScheduleWorkout.start,
+        end: existingScheduleWorkout.end,
+      }
+
+      updateScheduleWorkoutInputs.push(updateScheduleWorkout);
+    }
+
+    const addWorkouts: CreateScheduleWorkoutInput[] = newScheduleWorkouts
+      .map(sw => ({
+        allDay: sw.allDay,
+        dow: sw.dow,
+        start: sw.start,
+        end: sw.end,
+        workoutTemplateId: sw.workoutTemplateId,
+      }))
 
     const mutationVariables: UpdateScheduleMutationVariables = {
       schedules: {
-        scheduleId: uneditedSchedule?.id,
+        scheduleId: uneditedSchedule.id,
+        name: editedSchedule.name,
         removeWorkouts,
+        addWorkouts,
       },
-      scheduleWorkouts: [],
+      scheduleWorkouts: updateScheduleWorkoutInputs,
     }
 
     this.updateScheduleGQL.mutate(mutationVariables).subscribe();
