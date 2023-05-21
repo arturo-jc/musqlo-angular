@@ -1,4 +1,4 @@
-import { CreateScheduleInput, Schedule } from '../generated/graphql.generated';
+import { CreateScheduleInput, Schedule, UpdateScheduleInput } from '../generated/graphql.generated';
 import { v1 as uuid } from 'uuid';
 import { RequiredBy } from '../utils/types';
 import { createScheduleWorkouts } from '../scheduleWorkouts/scheduleWorkouts.service';
@@ -39,6 +39,22 @@ export function saveSchedules(schedules: CreateScheduleInput[], userId: string):
   return output;
 }
 
-export function updateSchedule(scheduleId: string, update: any) {
+export function updateSchedule(input: Omit<UpdateScheduleInput, 'addWorkouts' | 'removeWorkouts'>) {
+  const { scheduleId, ...update } = input;
 
+  const scheduleIndex = savedSchedules.findIndex(s => s.id === scheduleId);
+
+  const currentValue = savedSchedules[scheduleIndex];
+
+  if (!currentValue) {
+    throw new Error('Could not find schedule');
+  }
+
+  const updatedSchedule: SavedSchedule = {
+    ...currentValue,
+    ...update,
+    name: update.name || currentValue.name,
+  }
+
+  savedSchedules.splice(scheduleIndex, 1, updatedSchedule);
 }

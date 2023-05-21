@@ -1,7 +1,7 @@
 import { Context } from '../context';
 import { MutationResolvers, Resolvers, ScheduleResolvers, UserResolvers } from "../generated/graphql.generated";
-import { saveSchedules, savedSchedules } from './schedules.service';
-import { savedScheduleWorkouts } from '../scheduleWorkouts/scheduleWorkouts.service';
+import { saveSchedules, savedSchedules, updateSchedule } from './schedules.service';
+import { createScheduleWorkouts, deleteScheduleWorkouts, savedScheduleWorkouts } from '../scheduleWorkouts/scheduleWorkouts.service';
 
 const getSchedules: UserResolvers<Context>['schedules'] = (parent) => {
   return savedSchedules.filter(s => s.userId === parent.id).map(s => ({ ...s, key: s.id }));
@@ -22,26 +22,32 @@ const createSchedules: MutationResolvers<Context>['createSchedules'] = (_parent,
 
 const updateSchedules: MutationResolvers<Context>['updateSchedules'] = (_parent, args) => {
 
-  const removeScheduleWorkouts: string[] = [];
+  const deleteScheduleWorkoutIds: string[] = [];
 
   for (const schedule of args.schedules) {
 
     const {
       addWorkouts,
-      removeWorkouts: remove,
+      removeWorkouts,
       ...update
     } = schedule;
 
     if (addWorkouts?.length) {
-
+      createScheduleWorkouts(addWorkouts, update.scheduleId);
     }
 
-    if (remove?.length) {
-      removeScheduleWorkouts.push(...remove);
+    if (removeWorkouts?.length) {
+      deleteScheduleWorkoutIds.push(...removeWorkouts);
     }
+
+    updateSchedule(update);
   }
 
-  return [];
+  deleteScheduleWorkouts(deleteScheduleWorkoutIds);
+
+  const scheduleIds = args.schedules.map(s => s.scheduleId);
+
+  return savedSchedules.filter(s => scheduleIds.includes(s.id));
 }
 
 const resolvers: Resolvers<Context> = {

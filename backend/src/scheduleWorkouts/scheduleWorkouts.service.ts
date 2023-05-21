@@ -5,7 +5,7 @@ import { UpdateScheduleWorkoutInput } from '../generated/graphql.generated';
 
 export type SavedScheduleWorkout = RequiredBy<ScheduleWorkout, 'id' | 'scheduleId'>;
 
-export const savedScheduleWorkouts: SavedScheduleWorkout[] = [];
+export let savedScheduleWorkouts: SavedScheduleWorkout[] = [];
 
 export function createScheduleWorkouts(scheduleWorkouts: CreateScheduleWorkoutInput[], scheduleId: string): SavedScheduleWorkout[] {
 
@@ -28,6 +28,7 @@ export function createScheduleWorkouts(scheduleWorkouts: CreateScheduleWorkoutIn
 }
 
 export function updateScheduleWorkout(input: UpdateScheduleWorkoutInput) {
+
   const { scheduleWorkoutId, ...update } = input;
 
   const scheduleWorkoutIndex = savedScheduleWorkouts.findIndex(sw => sw.id === scheduleWorkoutId);
@@ -44,6 +45,8 @@ export function updateScheduleWorkout(input: UpdateScheduleWorkoutInput) {
   }
 
   savedScheduleWorkouts.splice(scheduleWorkoutIndex, 1, updatedScheduleWorkout);
-
 }
 
+export function deleteScheduleWorkouts(deleteScheduleWorkoutIds: string[]) {
+  savedScheduleWorkouts = savedScheduleWorkouts.filter(sw => !deleteScheduleWorkoutIds.includes(sw.id));
+}
