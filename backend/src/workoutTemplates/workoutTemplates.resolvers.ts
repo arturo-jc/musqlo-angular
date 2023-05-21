@@ -1,7 +1,7 @@
 import { Context } from '../context';
 import { createExerciseTemplates, deleteExerciseTemplates, savedExerciseTemplates } from '../exerciseTemplates/exerciseTemplates.service';
 import { MutationResolvers, Resolvers, UserResolvers, WorkoutTemplateResolvers } from '../generated/graphql.generated';
-import { createWorkoutTemplates, savedWorkoutTemplates, updateWorkoutTemplates } from './workoutTemplates.service';
+import { createWorkoutTemplates, savedWorkoutTemplates, updateWorkoutTemplate } from './workoutTemplates.service';
 
 const createWorkoutTemplatesResolver: MutationResolvers<Context>['createWorkoutTemplates'] = (_parent, args, ctx) => {
 
@@ -33,7 +33,7 @@ const updateWorkoutTemplatesResolver: MutationResolvers<Context>['updateWorkoutT
       removeExerciseTemplates.push(...remove);
     }
 
-    updateWorkoutTemplates(workoutTemplateId, update);
+    updateWorkoutTemplate(workoutTemplateId, update);
   }
 
   deleteExerciseTemplates(removeExerciseTemplates);

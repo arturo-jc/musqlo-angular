@@ -32,7 +32,7 @@ export function createWorkoutTemplates(workoutTemplates: CreateWorkoutTemplateIn
   return output;
 }
 
-export function updateWorkoutTemplates(workoutTemplateId: string, update: Pick<UpdateWorkoutTemplateInput, 'name' | 'backgroundColor'>) {
+export function updateWorkoutTemplate(workoutTemplateId: string, update: Pick<UpdateWorkoutTemplateInput, 'name' | 'backgroundColor'>) {
 
   const workoutTemplateIndex = savedWorkoutTemplates.findIndex(wt => wt.id === workoutTemplateId);
 

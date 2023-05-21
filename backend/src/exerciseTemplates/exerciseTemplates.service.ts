@@ -1,4 +1,4 @@
-import { CreateExerciseTemplateInput, ExerciseTemplate } from '../generated/graphql.generated';
+import { CreateExerciseTemplateInput, ExerciseTemplate, UpdateExerciseTemplateInput } from '../generated/graphql.generated';
 import { v1 as uuid } from 'uuid';
 import { createSetTemplates } from '../setTemplates/setTemplates.service';
 import { RequiredBy } from '../utils/types';
@@ -29,6 +29,24 @@ export function createExerciseTemplates(exerciseTemplates: CreateExerciseTemplat
   }
 
   return output;
+}
+
+export function updateExerciseTemplate(exerciseTemplateId: string, update: Pick<UpdateExerciseTemplateInput, 'order'>) {
+
+  const exerciseTemplateIndex = savedExerciseTemplates.findIndex(et => et.id === exerciseTemplateId);
+
+  const currentValue = savedExerciseTemplates[exerciseTemplateIndex];
+
+  if (!currentValue) {
+    throw new Error('Could not find exercise template');
+  }
+
+  const updatedExerciseTemplate = {
+    ...currentValue,
+    order: update.order || currentValue.order,
+  }
+
+  savedExerciseTemplates.splice(exerciseTemplateIndex, 1, updatedExerciseTemplate);
 }
 
 export function deleteExerciseTemplates(exerciseTemplateIds: string[]) {
