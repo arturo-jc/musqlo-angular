@@ -191,15 +191,7 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
   reorderSets(template: FrontendExerciseTemplate) {
     if (!template.setTemplates) { return; }
 
-    for (let i = 0; i < template.setTemplates.length; i++) {
-
-      const setTemplate = template.setTemplates[i];
-
-      if (!setTemplate.order) { continue; }
-
-      setTemplate.order = i + 1;
-    }
-
+    template.setTemplates.forEach((t, i) => t.order = i + 1);
   }
 
   deleteSet(input: { template: FrontendExerciseTemplate, index: number }) {
