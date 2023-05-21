@@ -80,6 +80,8 @@ export type Mutation = {
   createWorkoutTemplates: Array<WorkoutTemplate>;
   signUp: AuthenticateOutput;
   updateExerciseTemplates: Array<ExerciseTemplate>;
+  updateScheduleWorkouts: Array<ScheduleWorkout>;
+  updateSchedules: Array<Schedule>;
   updateSetTemplates: Array<SetTemplate>;
   updateWorkoutTemplates: Array<WorkoutTemplate>;
 };
@@ -104,6 +106,16 @@ export type MutationSignUpArgs = {
 
 export type MutationUpdateExerciseTemplatesArgs = {
   exerciseTemplates: Array<UpdateExerciseTemplateInput>;
+};
+
+
+export type MutationUpdateScheduleWorkoutsArgs = {
+  scheduleWorkouts: Array<UpdateScheduleWorkoutInput>;
+};
+
+
+export type MutationUpdateSchedulesArgs = {
+  schedules: Array<UpdateScheduleInput>;
 };
 
 
@@ -176,6 +188,20 @@ export type UpdateExerciseTemplateInput = {
   exerciseTemplateId: Scalars['String'];
   order?: InputMaybe<Scalars['Int']>;
   removeSetTemplates?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type UpdateScheduleInput = {
+  addWorkouts?: InputMaybe<Array<CreateScheduleWorkoutInput>>;
+  name?: InputMaybe<Scalars['String']>;
+  removeWorkouts?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type UpdateScheduleWorkoutInput = {
+  allDay?: InputMaybe<Scalars['Boolean']>;
+  dow?: InputMaybe<Scalars['Int']>;
+  end?: InputMaybe<Scalars['String']>;
+  scheduleWorkoutId: Scalars['String'];
+  start?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateSetTemplateInput = {
@@ -301,6 +327,8 @@ export type ResolversTypes = ResolversObject<{
   SetTemplate: ResolverTypeWrapper<SetTemplate>;
   String: ResolverTypeWrapper<Scalars['String']>;
   UpdateExerciseTemplateInput: UpdateExerciseTemplateInput;
+  UpdateScheduleInput: UpdateScheduleInput;
+  UpdateScheduleWorkoutInput: UpdateScheduleWorkoutInput;
   UpdateSetTemplateInput: UpdateSetTemplateInput;
   UpdateWorkoutTemplateInput: UpdateWorkoutTemplateInput;
   User: ResolverTypeWrapper<User>;
@@ -326,6 +354,8 @@ export type ResolversParentTypes = ResolversObject<{
   SetTemplate: SetTemplate;
   String: Scalars['String'];
   UpdateExerciseTemplateInput: UpdateExerciseTemplateInput;
+  UpdateScheduleInput: UpdateScheduleInput;
+  UpdateScheduleWorkoutInput: UpdateScheduleWorkoutInput;
   UpdateSetTemplateInput: UpdateSetTemplateInput;
   UpdateWorkoutTemplateInput: UpdateWorkoutTemplateInput;
   User: User;
@@ -363,6 +393,8 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createWorkoutTemplates?: Resolver<Array<ResolversTypes['WorkoutTemplate']>, ParentType, ContextType, RequireFields<MutationCreateWorkoutTemplatesArgs, 'workoutTemplates'>>;
   signUp?: Resolver<ResolversTypes['AuthenticateOutput'], ParentType, ContextType, RequireFields<MutationSignUpArgs, 'email' | 'password'>>;
   updateExerciseTemplates?: Resolver<Array<ResolversTypes['ExerciseTemplate']>, ParentType, ContextType, RequireFields<MutationUpdateExerciseTemplatesArgs, 'exerciseTemplates'>>;
+  updateScheduleWorkouts?: Resolver<Array<ResolversTypes['ScheduleWorkout']>, ParentType, ContextType, RequireFields<MutationUpdateScheduleWorkoutsArgs, 'scheduleWorkouts'>>;
+  updateSchedules?: Resolver<Array<ResolversTypes['Schedule']>, ParentType, ContextType, RequireFields<MutationUpdateSchedulesArgs, 'schedules'>>;
   updateSetTemplates?: Resolver<Array<ResolversTypes['SetTemplate']>, ParentType, ContextType, RequireFields<MutationUpdateSetTemplatesArgs, 'setTemplates'>>;
   updateWorkoutTemplates?: Resolver<Array<ResolversTypes['WorkoutTemplate']>, ParentType, ContextType, RequireFields<MutationUpdateWorkoutTemplatesArgs, 'workoutTemplates'>>;
 }>;

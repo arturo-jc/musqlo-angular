@@ -1,7 +1,5 @@
 extend type Mutation {
-  updateSetTemplates(
-    setTemplates: [UpdateSetTemplateInput!]!
-  ): [SetTemplate!]!
+  updateSetTemplates(setTemplates: [UpdateSetTemplateInput!]!): [SetTemplate!]!
 }
 
 type SetTemplate {

@@ -1,9 +1,10 @@
 extend type Mutation {
   createSchedules(schedules: [CreateScheduleInput!]!): [Schedule!]!
+  updateSchedules(schedules: [UpdateScheduleInput!]!): [Schedule!]!
 }
 
 extend type User {
-schedules: [Schedule!]
+  schedules: [Schedule!]
 }
 
 type Schedule {
@@ -15,26 +16,15 @@ type Schedule {
   workoutIds: [String!]
 }
 
-type ScheduleWorkout {
-  id: String
-  workoutTemplateId: String
-  workoutTemplateKey: String
-  dow: Int
-  allDay: Boolean
-  start: String
-  end: String
-}
-
 input CreateScheduleInput {
   name: String!
   key: String!
   workouts: [CreateScheduleWorkoutInput!]!
 }
 
-input CreateScheduleWorkoutInput {
-  workoutTemplateId: String
-  dow: Int
-  allDay: Boolean
-  start: String
-  end: String
+input UpdateScheduleInput {
+  name: String
+  addWorkouts: [CreateScheduleWorkoutInput!]
+  removeWorkouts: [String!]
 }
+

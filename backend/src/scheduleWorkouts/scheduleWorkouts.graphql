@@ -1,0 +1,29 @@
+extend type Mutation {
+  updateScheduleWorkouts(scheduleWorkouts: [UpdateScheduleWorkoutInput!]!): [ScheduleWorkout!]!
+}
+
+type ScheduleWorkout {
+  id: String
+  workoutTemplateId: String
+  workoutTemplateKey: String
+  dow: Int
+  allDay: Boolean
+  start: String
+  end: String
+}
+
+input CreateScheduleWorkoutInput {
+  workoutTemplateId: String
+  dow: Int
+  allDay: Boolean
+  start: String
+  end: String
+}
+
+input UpdateScheduleWorkoutInput {
+  scheduleWorkoutId: String!
+  dow: Int
+  allDay: Boolean
+  start: String
+  end: String
+}

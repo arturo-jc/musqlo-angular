@@ -1,7 +1,5 @@
 extend type Mutation {
-  updateExerciseTemplates(
-    exerciseTemplates: [UpdateExerciseTemplateInput!]!
-  ): [ExerciseTemplate!]!
+  updateExerciseTemplates(exerciseTemplates: [UpdateExerciseTemplateInput!]!): [ExerciseTemplate!]!
 }
 
 type ExerciseTemplate {
