@@ -48,7 +48,8 @@ export class WorkoutTemplatesService {
       workoutTemplates: this.getCreateWorkoutTemplateInput([ newWorkoutTemplate ]),
     };
 
-    this.createWorkoutTemplatesGQL.mutate(mutationVariables).subscribe();
+    this.createWorkoutTemplatesGQL.mutate(mutationVariables)
+      .subscribe(() => this.userWorkoutTemplatesQuery?.refetch());
   }
 
   editWorkoutTemplate(editedWorkoutTemplate: FrontendWorkoutTemplate) {
@@ -184,7 +185,7 @@ export class WorkoutTemplatesService {
 
     const watchQueryVariables: UserWorkoutTemplatesQueryVariables = { userId };
 
-    this.userWorkoutTemplatesQuery = this.userWorkoutTemplatesGQL.watch(watchQueryVariables, { fetchPolicy: 'cache-and-network' });
+    this.userWorkoutTemplatesQuery = this.userWorkoutTemplatesGQL.watch(watchQueryVariables);
 
     this.subs.sink = this.userWorkoutTemplatesQuery.valueChanges.pipe(
       filter(res => !res.loading),

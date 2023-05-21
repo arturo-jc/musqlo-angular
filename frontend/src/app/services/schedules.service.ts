@@ -54,7 +54,8 @@ export class SchedulesService {
       schedules: this.getCreateScheduleInput([ newSchedule ]),
     }
 
-    this.createSchedulesGQL.mutate(mutationVariables).subscribe();
+    this.createSchedulesGQL.mutate(mutationVariables)
+      .subscribe(() => this.userSchedulesQuery?.refetch());
   }
 
   updateSchedule(updatedSchedule: FrontendSchedule) {
@@ -150,7 +151,7 @@ export class SchedulesService {
 
     const watchQueryVariables: UserSchedulesQueryVariables = { userId };
 
-    this.userSchedulesQuery = this.userSchedulesGQL.watch(watchQueryVariables, { fetchPolicy: 'cache-and-network' });
+    this.userSchedulesQuery = this.userSchedulesGQL.watch(watchQueryVariables);
 
     this.subs.sink = this.userSchedulesQuery.valueChanges.pipe(
       filter(res => !res.loading),
