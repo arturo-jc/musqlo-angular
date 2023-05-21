@@ -1,15 +1,8 @@
-import { Context } from "../context";
-import { CreateScheduleWorkoutInput, MutationResolvers, Resolvers, Schedule, ScheduleResolvers, ScheduleWorkout, UserResolvers } from "../generated/graphql.generated";
+import { Context } from '../context';
+import { MutationResolvers, Resolvers, Schedule, ScheduleResolvers, UserResolvers } from "../generated/graphql.generated";
 import { v1 as uuid } from 'uuid';
-import { RequiredBy } from "../utils/types";
-
-export type SavedSchedule = RequiredBy<Schedule, 'id' | 'userId' | 'workoutIds'>;
-
-export type SavedScheduleWorkout = RequiredBy<ScheduleWorkout, 'id'>;
-
-const savedSchedules: SavedSchedule[] = [];
-
-const savedScheduleWorkouts: SavedScheduleWorkout[] = [];
+import { SavedSchedule, savedSchedules, saveScheduleWorkouts } from './schedules.service';
+import { savedScheduleWorkouts } from '../scheduleWorkouts/scheduleWorkouts.service';
 
 const getSchedules: UserResolvers<Context>['schedules'] = (parent) => {
   return savedSchedules.filter(s => s.userId === parent.id).map(s => ({ ...s, key: s.id }));
@@ -64,21 +57,10 @@ const createSchedules: MutationResolvers<Context>['createSchedules'] = (_parent,
   return output;
 }
 
-function saveScheduleWorkouts(scheduleWorkouts: CreateScheduleWorkoutInput[]): SavedScheduleWorkout[] {
-
-  const output: SavedScheduleWorkout[] = [];
-
-  for (const workout of scheduleWorkouts) {
-
-    const newWorkout: SavedScheduleWorkout = { ...workout, id: uuid() };
-
-    savedScheduleWorkouts.push(newWorkout);
-
-    output.push(newWorkout);
-  }
-
-  return output;
+const updateSchedules: MutationResolvers<Context>['updateSchedules'] = (_parent, _args) => {
+  throw new Error('not implemented!');
 }
+
 
 const resolvers: Resolvers<Context> = {
   Schedule: {
@@ -89,6 +71,7 @@ const resolvers: Resolvers<Context> = {
   },
   Mutation: {
     createSchedules,
+    updateSchedules,
   },
 }
 
