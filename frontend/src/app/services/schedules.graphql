@@ -4,6 +4,18 @@ mutation CreateSchedules($schedules: [CreateScheduleInput!]!) {
   }
 }
 
+mutation UpdateSchedule(
+  $schedules: [UpdateScheduleInput!]!
+  $scheduleWorkouts: [UpdateScheduleWorkoutInput!]!
+) {
+  updateSchedules(schedules: $schedules) {
+    ...FullSchedule
+  }
+  updateScheduleWorkouts(scheduleWorkouts: $scheduleWorkouts) {
+    ...FullScheduleWorkout
+  }
+}
+
 fragment FullSchedule on Schedule {
   ...BaseSchedule
   ...Schedule_ScheduleWorkouts
@@ -21,16 +33,3 @@ fragment Schedule_ScheduleWorkouts on Schedule {
   }
 }
 
-fragment FullScheduleWorkout on ScheduleWorkout {
-  ...BaseScheduleWorkout
-}
-
-fragment BaseScheduleWorkout on ScheduleWorkout {
-  id
-  workoutTemplateId
-  workoutTemplateKey
-  dow
-  allDay
-  start
-  end
-}

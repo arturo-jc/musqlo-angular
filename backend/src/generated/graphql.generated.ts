@@ -156,7 +156,6 @@ export type Schedule = {
   key?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   userId?: Maybe<Scalars['String']>;
-  workoutIds?: Maybe<Array<Scalars['String']>>;
   workouts?: Maybe<Array<ScheduleWorkout>>;
 };
 
@@ -195,6 +194,7 @@ export type UpdateScheduleInput = {
   addWorkouts?: InputMaybe<Array<CreateScheduleWorkoutInput>>;
   name?: InputMaybe<Scalars['String']>;
   removeWorkouts?: InputMaybe<Array<Scalars['String']>>;
+  scheduleId: Scalars['String'];
 };
 
 export type UpdateScheduleWorkoutInput = {
@@ -414,7 +414,6 @@ export type ScheduleResolvers<ContextType = any, ParentType extends ResolversPar
   key?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   userId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  workoutIds?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
   workouts?: Resolver<Maybe<Array<ResolversTypes['ScheduleWorkout']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;

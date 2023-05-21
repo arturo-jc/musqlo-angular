@@ -76,11 +76,14 @@ export class WorkoutTemplatesService {
     for (const exerciseTemplate of editedWorkoutTemplate.exerciseTemplates) {
 
       for (const setTemplate of exerciseTemplate.setTemplates) {
+
         if (!setTemplate.id) { continue; }
+
         setTemplateIds.push(setTemplate.id);
       }
 
       if (!exerciseTemplate.id) { continue; }
+
       exerciseTemplateIds.push(exerciseTemplate.id);
     }
 

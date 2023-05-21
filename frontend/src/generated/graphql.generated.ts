@@ -195,6 +195,7 @@ export type UpdateScheduleInput = {
   addWorkouts?: InputMaybe<Array<CreateScheduleWorkoutInput>>;
   name?: InputMaybe<Scalars['String']>;
   removeWorkouts?: InputMaybe<Array<Scalars['String']>>;
+  scheduleId: Scalars['String'];
 };
 
 export type UpdateScheduleWorkoutInput = {
@@ -277,6 +278,10 @@ export type BaseExerciseTemplateFragment = { __typename?: 'ExerciseTemplate', id
 
 export type ExerciseTemplate_SetTemplatesFragment = { __typename?: 'ExerciseTemplate', setTemplates?: Array<{ __typename?: 'SetTemplate', id?: string | null, exerciseTemplateId?: string | null, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null };
 
+export type FullScheduleWorkoutFragment = { __typename?: 'ScheduleWorkout', id?: string | null, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null };
+
+export type BaseScheduleWorkoutFragment = { __typename?: 'ScheduleWorkout', id?: string | null, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null };
+
 export type CreateSchedulesMutationVariables = Exact<{
   schedules: Array<CreateScheduleInput> | CreateScheduleInput;
 }>;
@@ -284,15 +289,19 @@ export type CreateSchedulesMutationVariables = Exact<{
 
 export type CreateSchedulesMutation = { __typename?: 'Mutation', createSchedules: Array<{ __typename?: 'Schedule', id?: string | null, key?: string | null, name: string, workouts?: Array<{ __typename?: 'ScheduleWorkout', id?: string | null, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null }> | null }> };
 
+export type UpdateScheduleMutationVariables = Exact<{
+  schedules: Array<UpdateScheduleInput> | UpdateScheduleInput;
+  scheduleWorkouts: Array<UpdateScheduleWorkoutInput> | UpdateScheduleWorkoutInput;
+}>;
+
+
+export type UpdateScheduleMutation = { __typename?: 'Mutation', updateSchedules: Array<{ __typename?: 'Schedule', id?: string | null, key?: string | null, name: string, workouts?: Array<{ __typename?: 'ScheduleWorkout', id?: string | null, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null }> | null }>, updateScheduleWorkouts: Array<{ __typename?: 'ScheduleWorkout', id?: string | null, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null }> };
+
 export type FullScheduleFragment = { __typename?: 'Schedule', id?: string | null, key?: string | null, name: string, workouts?: Array<{ __typename?: 'ScheduleWorkout', id?: string | null, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null }> | null };
 
 export type BaseScheduleFragment = { __typename?: 'Schedule', id?: string | null, key?: string | null, name: string };
 
 export type Schedule_ScheduleWorkoutsFragment = { __typename?: 'Schedule', workouts?: Array<{ __typename?: 'ScheduleWorkout', id?: string | null, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null }> | null };
-
-export type FullScheduleWorkoutFragment = { __typename?: 'ScheduleWorkout', id?: string | null, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null };
-
-export type BaseScheduleWorkoutFragment = { __typename?: 'ScheduleWorkout', id?: string | null, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null };
 
 export type FullSetTemplateFragment = { __typename?: 'SetTemplate', id?: string | null, exerciseTemplateId?: string | null, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number };
 
@@ -340,13 +349,6 @@ export type BaseWorkoutTemplateFragment = { __typename?: 'WorkoutTemplate', id?:
 
 export type WorkoutTemplate_ExerciseTemplatesFragment = { __typename?: 'WorkoutTemplate', exerciseTemplates?: Array<{ __typename?: 'ExerciseTemplate', id?: string | null, name: string, order: number, setTemplates?: Array<{ __typename?: 'SetTemplate', id?: string | null, exerciseTemplateId?: string | null, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null }> | null };
 
-export const BaseScheduleFragmentDoc = gql`
-    fragment BaseSchedule on Schedule {
-  id
-  key
-  name
-}
-    `;
 export const BaseScheduleWorkoutFragmentDoc = gql`
     fragment BaseScheduleWorkout on ScheduleWorkout {
   id
@@ -356,6 +358,18 @@ export const BaseScheduleWorkoutFragmentDoc = gql`
   allDay
   start
   end
+}
+    `;
+export const FullScheduleWorkoutFragmentDoc = gql`
+    fragment FullScheduleWorkout on ScheduleWorkout {
+  ...BaseScheduleWorkout
+}
+    ${BaseScheduleWorkoutFragmentDoc}`;
+export const BaseScheduleFragmentDoc = gql`
+    fragment BaseSchedule on Schedule {
+  id
+  key
+  name
 }
     `;
 export const Schedule_ScheduleWorkoutsFragmentDoc = gql`
@@ -372,11 +386,6 @@ export const FullScheduleFragmentDoc = gql`
 }
     ${BaseScheduleFragmentDoc}
 ${Schedule_ScheduleWorkoutsFragmentDoc}`;
-export const FullScheduleWorkoutFragmentDoc = gql`
-    fragment FullScheduleWorkout on ScheduleWorkout {
-  ...BaseScheduleWorkout
-}
-    ${BaseScheduleWorkoutFragmentDoc}`;
 export const BaseSetTemplateFragmentDoc = gql`
     fragment BaseSetTemplate on SetTemplate {
   id
@@ -567,6 +576,28 @@ export const CreateSchedulesDocument = gql`
   })
   export class CreateSchedulesGQL extends Apollo.Mutation<CreateSchedulesMutation, CreateSchedulesMutationVariables> {
     override document = CreateSchedulesDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const UpdateScheduleDocument = gql`
+    mutation UpdateSchedule($schedules: [UpdateScheduleInput!]!, $scheduleWorkouts: [UpdateScheduleWorkoutInput!]!) {
+  updateSchedules(schedules: $schedules) {
+    ...FullSchedule
+  }
+  updateScheduleWorkouts(scheduleWorkouts: $scheduleWorkouts) {
+    ...FullScheduleWorkout
+  }
+}
+    ${FullScheduleFragmentDoc}
+${FullScheduleWorkoutFragmentDoc}`;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class UpdateScheduleGQL extends Apollo.Mutation<UpdateScheduleMutation, UpdateScheduleMutationVariables> {
+    override document = UpdateScheduleDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

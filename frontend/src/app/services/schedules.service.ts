@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
-import { filter, map, tap, of } from 'rxjs';
+import { filter, map, tap, of, partition } from 'rxjs';
 import { SubSink } from 'subsink';
-import { CreateScheduleInput, CreateSchedulesGQL, CreateSchedulesMutationVariables, CreateScheduleWorkoutInput, UserSchedulesGQL, UserSchedulesQuery, UserSchedulesQueryVariables } from '../../generated/graphql.generated';
+import { CreateScheduleInput, CreateSchedulesGQL, CreateSchedulesMutationVariables, CreateScheduleWorkoutInput, UpdateScheduleGQL, UpdateScheduleMutationVariables, UserSchedulesGQL, UserSchedulesQuery, UserSchedulesQueryVariables } from '../../generated/graphql.generated';
 import { FrontendSchedule, FrontendService } from '../services/frontend.service';
 import { WorkoutTemplatesService } from './workout-templates.service';
 
@@ -15,6 +15,7 @@ export class SchedulesService {
     private workoutTemplates: WorkoutTemplatesService,
     private userSchedulesGQL: UserSchedulesGQL,
     private createSchedulesGQL: CreateSchedulesGQL,
+    private updateScheduleGQL: UpdateScheduleGQL,
     private frontend: FrontendService,
   ) { }
 
@@ -61,7 +62,43 @@ export class SchedulesService {
   updateExistingSchedule(editedSchedule: FrontendSchedule) {
     const uneditedSchedule = this.scheduleToEdit;
 
-    console.log({ uneditedSchedule, editedSchedule });
+    if (!uneditedSchedule?.id) {
+      throw new Error('Cannot update schedule without an ID');
+    }
+
+    const scheduleWorkoutIds: string[] = [];
+
+    for (const workout of editedSchedule.workouts || []) {
+
+      if (!workout.id) { continue; }
+
+      scheduleWorkoutIds.push(workout.id);
+    }
+
+    const removeWorkouts: string[] = [];
+
+    for (const workout of uneditedSchedule?.workouts || []) {
+      if (!workout.id || scheduleWorkoutIds.includes(workout.id)) { continue; }
+
+      removeWorkouts.push(workout.id);
+    }
+
+    // const [ existingScheduleWorkouts, newScheduleWorkouts ] = partition(editedSchedule.workouts || [], sw => sw.id);
+
+    // for (const workout of newScheduleWorkouts) {
+
+    // }
+    //
+
+    const mutationVariables: UpdateScheduleMutationVariables = {
+      schedules: {
+        scheduleId: uneditedSchedule?.id,
+        removeWorkouts,
+      },
+      scheduleWorkouts: [],
+    }
+
+    this.updateScheduleGQL.mutate(mutationVariables).subscribe();
   }
 
   onAuthSuccess(userId: string) {

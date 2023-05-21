@@ -1,0 +1,13 @@
+fragment FullScheduleWorkout on ScheduleWorkout {
+  ...BaseScheduleWorkout
+}
+
+fragment BaseScheduleWorkout on ScheduleWorkout {
+  id
+  workoutTemplateId
+  workoutTemplateKey
+  dow
+  allDay
+  start
+  end
+}
