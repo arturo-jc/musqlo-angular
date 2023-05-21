@@ -136,7 +136,7 @@ export class FrontendService {
       const frontendScheduleWorkout: FrontendScheduleWorkout = {
         id: scheduleWorkout.id,
         workoutTemplateId: scheduleWorkout.workoutTemplateId,
-        workoutTemplateKey: scheduleWorkout.workoutTemplateKey,
+        workoutTemplateKey: scheduleWorkout.workoutTemplateId,
         dow: scheduleWorkout.dow,
         allDay: scheduleWorkout.allDay,
         start: scheduleWorkout.start,

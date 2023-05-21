@@ -166,6 +166,7 @@ export type ScheduleWorkout = {
   dow?: Maybe<Scalars['Int']>;
   end?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
+  scheduleId?: Maybe<Scalars['String']>;
   start?: Maybe<Scalars['String']>;
   workoutTemplateId?: Maybe<Scalars['String']>;
   workoutTemplateKey?: Maybe<Scalars['String']>;
@@ -423,6 +424,7 @@ export type ScheduleWorkoutResolvers<ContextType = any, ParentType extends Resol
   dow?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   end?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  scheduleId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   start?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   workoutTemplateId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   workoutTemplateKey?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;

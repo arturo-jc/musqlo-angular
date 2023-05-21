@@ -81,6 +81,8 @@ export type Mutation = {
   createWorkoutTemplates: Array<WorkoutTemplate>;
   signUp: AuthenticateOutput;
   updateExerciseTemplates: Array<ExerciseTemplate>;
+  updateScheduleWorkouts: Array<ScheduleWorkout>;
+  updateSchedules: Array<Schedule>;
   updateSetTemplates: Array<SetTemplate>;
   updateWorkoutTemplates: Array<WorkoutTemplate>;
 };
@@ -105,6 +107,16 @@ export type MutationSignUpArgs = {
 
 export type MutationUpdateExerciseTemplatesArgs = {
   exerciseTemplates: Array<UpdateExerciseTemplateInput>;
+};
+
+
+export type MutationUpdateScheduleWorkoutsArgs = {
+  scheduleWorkouts: Array<UpdateScheduleWorkoutInput>;
+};
+
+
+export type MutationUpdateSchedulesArgs = {
+  schedules: Array<UpdateScheduleInput>;
 };
 
 
@@ -145,7 +157,6 @@ export type Schedule = {
   key?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   userId?: Maybe<Scalars['String']>;
-  workoutIds?: Maybe<Array<Scalars['String']>>;
   workouts?: Maybe<Array<ScheduleWorkout>>;
 };
 
@@ -155,6 +166,7 @@ export type ScheduleWorkout = {
   dow?: Maybe<Scalars['Int']>;
   end?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
+  scheduleId?: Maybe<Scalars['String']>;
   start?: Maybe<Scalars['String']>;
   workoutTemplateId?: Maybe<Scalars['String']>;
   workoutTemplateKey?: Maybe<Scalars['String']>;
@@ -177,6 +189,20 @@ export type UpdateExerciseTemplateInput = {
   exerciseTemplateId: Scalars['String'];
   order?: InputMaybe<Scalars['Int']>;
   removeSetTemplates?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type UpdateScheduleInput = {
+  addWorkouts?: InputMaybe<Array<CreateScheduleWorkoutInput>>;
+  name?: InputMaybe<Scalars['String']>;
+  removeWorkouts?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type UpdateScheduleWorkoutInput = {
+  allDay?: InputMaybe<Scalars['Boolean']>;
+  dow?: InputMaybe<Scalars['Int']>;
+  end?: InputMaybe<Scalars['String']>;
+  scheduleWorkoutId: Scalars['String'];
+  start?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateSetTemplateInput = {

@@ -4,6 +4,7 @@ extend type Mutation {
 
 type ScheduleWorkout {
   id: String
+  scheduleId: String
   workoutTemplateId: String
   workoutTemplateKey: String
   dow: Int

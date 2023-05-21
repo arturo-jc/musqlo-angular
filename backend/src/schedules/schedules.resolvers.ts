@@ -8,13 +8,7 @@ const getSchedules: UserResolvers<Context>['schedules'] = (parent) => {
 }
 
 const workouts: ScheduleResolvers<Context>['workouts'] = (parent, _args, _ctx) => {
-  const schedule = savedSchedules.find(s => s.id === parent.id);
-
-  if (!schedule) {
-    throw new Error(`Could not resolve schedule: ${parent.id}`);
-  }
-
-  return savedScheduleWorkouts.filter(w => schedule.workoutIds.includes(w.id)).map(w => ({ ...w, workoutTemplateKey: w.workoutTemplateId }));
+  return savedScheduleWorkouts.filter(sw => sw.scheduleId === parent.id);
 }
 
 const createSchedules: MutationResolvers<Context>['createSchedules'] = (_parent, args, ctx) => {
@@ -26,10 +20,29 @@ const createSchedules: MutationResolvers<Context>['createSchedules'] = (_parent,
   return saveSchedules(args.schedules, ctx.userId);
 }
 
-const updateSchedules: MutationResolvers<Context>['updateSchedules'] = (_parent, _args) => {
-  throw new Error('not implemented!');
-}
+const updateSchedules: MutationResolvers<Context>['updateSchedules'] = (_parent, args) => {
 
+  const removeScheduleWorkouts: string[] = [];
+
+  for (const schedule of args.schedules) {
+
+    const {
+      addWorkouts,
+      removeWorkouts: remove,
+      ...update
+    } = schedule;
+
+    if (addWorkouts?.length) {
+
+    }
+
+    if (remove?.length) {
+      removeScheduleWorkouts.push(...remove);
+    }
+  }
+
+  return [];
+}
 
 const resolvers: Resolvers<Context> = {
   Schedule: {

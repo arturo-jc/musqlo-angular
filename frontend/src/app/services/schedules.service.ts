@@ -42,6 +42,11 @@ export class SchedulesService {
 
   updateSchedule(updatedSchedule: FrontendSchedule) {
 
+    if (this.userId) {
+      this.updateExistingSchedule(updatedSchedule);
+      return;
+    }
+
     if (!this.editScheduleKey) { return; }
 
     updatedSchedule.key = this.editScheduleKey.toString();
@@ -51,6 +56,12 @@ export class SchedulesService {
     updatedSchedules.splice(this.scheduleToEditIndex, 1, updatedSchedule);
 
     this.schedules = updatedSchedules;
+  }
+
+  updateExistingSchedule(editedSchedule: FrontendSchedule) {
+    const uneditedSchedule = this.scheduleToEdit;
+
+    console.log({ uneditedSchedule, editedSchedule });
   }
 
   onAuthSuccess(userId: string) {

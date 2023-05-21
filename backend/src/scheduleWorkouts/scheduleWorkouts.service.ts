@@ -1,16 +1,22 @@
-import { CreateScheduleWorkoutInput } from '../generated/graphql.generated';
+import { CreateScheduleWorkoutInput, ScheduleWorkout } from '../generated/graphql.generated';
 import { v1 as uuid } from 'uuid';
-import { SavedScheduleWorkout } from '../schedules/schedules.service';
+import { RequiredBy } from '../utils/types';
+
+export type SavedScheduleWorkout = RequiredBy<ScheduleWorkout, 'id' | 'scheduleId'>;
 
 export const savedScheduleWorkouts: SavedScheduleWorkout[] = [];
 
-export function createScheduleWorkouts(scheduleWorkouts: CreateScheduleWorkoutInput[]): SavedScheduleWorkout[] {
+export function createScheduleWorkouts(scheduleWorkouts: CreateScheduleWorkoutInput[], scheduleId: string): SavedScheduleWorkout[] {
 
   const output: SavedScheduleWorkout[] = [];
 
   for (const workout of scheduleWorkouts) {
 
-    const newWorkout: SavedScheduleWorkout = { ...workout, id: uuid() };
+    const newWorkout: SavedScheduleWorkout = {
+      ...workout,
+      id: uuid(),
+      scheduleId,
+    };
 
     savedScheduleWorkouts.push(newWorkout);
 

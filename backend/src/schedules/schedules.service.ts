@@ -1,11 +1,9 @@
-import { CreateScheduleInput, Schedule, ScheduleWorkout } from '../generated/graphql.generated';
+import { CreateScheduleInput, Schedule } from '../generated/graphql.generated';
 import { v1 as uuid } from 'uuid';
 import { RequiredBy } from '../utils/types';
 import { createScheduleWorkouts } from '../scheduleWorkouts/scheduleWorkouts.service';
 
-export type SavedSchedule = RequiredBy<Schedule, 'id' | 'userId' | 'workoutIds'>;
-
-export type SavedScheduleWorkout = RequiredBy<ScheduleWorkout, 'id'>;
+export type SavedSchedule = RequiredBy<Schedule, 'id' | 'userId'>;
 
 export const savedSchedules: SavedSchedule[] = [];
 
@@ -15,12 +13,9 @@ export function saveSchedules(schedules: CreateScheduleInput[], userId: string):
 
   for (const schedule of schedules) {
 
-    const savedScheduleWorkouts = createScheduleWorkouts(schedule.workouts);
-
     const newSchedule: Schedule = {
       id: uuid(),
       name: schedule.name,
-      workouts: savedScheduleWorkouts,
       key: schedule.key,
     };
 
@@ -30,15 +25,20 @@ export function saveSchedules(schedules: CreateScheduleInput[], userId: string):
       throw new Error('Cannot save schedule without ID');
     }
 
+    createScheduleWorkouts(schedule.workouts, newSchedule.id);
+
     const savedSchedule: SavedSchedule = {
       id: newSchedule.id,
       name: schedule.name,
       userId,
-      workoutIds: savedScheduleWorkouts.map(w => w.id),
     };
 
     savedSchedules.push(savedSchedule);
   }
 
   return output;
+}
+
+export function updateSchedule(scheduleId: string, update: any) {
+
 }
