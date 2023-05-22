@@ -230,6 +230,15 @@ export type User = {
   workoutTemplates?: Maybe<Array<WorkoutTemplate>>;
 };
 
+
+export type UserWorkoutTemplatesArgs = {
+  filter?: InputMaybe<UserWorkoutTemplatesFilter>;
+};
+
+export type UserWorkoutTemplatesFilter = {
+  workoutTemplateIds?: InputMaybe<Array<Scalars['String']>>;
+};
+
 export type WorkoutTemplate = {
   __typename?: 'WorkoutTemplate';
   backgroundColor?: Maybe<Scalars['String']>;
@@ -309,6 +318,7 @@ export type BaseSetTemplateFragment = { __typename?: 'SetTemplate', id?: string 
 
 export type UserWorkoutTemplatesQueryVariables = Exact<{
   userId: Scalars['String'];
+  filter?: InputMaybe<UserWorkoutTemplatesFilter>;
 }>;
 
 
@@ -452,7 +462,7 @@ export const FullWorkoutTemplateFragmentDoc = gql`
 ${WorkoutTemplate_ExerciseTemplatesFragmentDoc}`;
 export const User_WorkoutTemplatesFragmentDoc = gql`
     fragment User_WorkoutTemplates on User {
-  workoutTemplates {
+  workoutTemplates(filter: $filter) {
     ...FullWorkoutTemplate
   }
 }
@@ -604,7 +614,7 @@ ${FullScheduleWorkoutFragmentDoc}`;
     }
   }
 export const UserWorkoutTemplatesDocument = gql`
-    query UserWorkoutTemplates($userId: String!) {
+    query UserWorkoutTemplates($userId: String!, $filter: UserWorkoutTemplatesFilter) {
   user(userId: $userId) {
     ...FullUser
   }

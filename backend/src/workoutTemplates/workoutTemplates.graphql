@@ -13,7 +13,14 @@ type WorkoutTemplate {
 }
 
 extend type User {
-  workoutTemplates: [WorkoutTemplate!]
+  workoutTemplates(filter: UserWorkoutTemplatesFilter): [WorkoutTemplate!]
+}
+
+input CreateWorkoutTemplateInput {
+  name: String!
+  key: String!
+  exerciseTemplates: [CreateExerciseTemplateInput!]!
+  backgroundColor: String
 }
 
 input UpdateWorkoutTemplateInput {
@@ -24,9 +31,6 @@ input UpdateWorkoutTemplateInput {
   removeExerciseTemplates: [String!]
 }
 
-input CreateWorkoutTemplateInput {
-  name: String!
-  key: String!
-  exerciseTemplates: [CreateExerciseTemplateInput!]!
-  backgroundColor: String
+input UserWorkoutTemplatesFilter {
+  workoutTemplateIds: [String!]
 }

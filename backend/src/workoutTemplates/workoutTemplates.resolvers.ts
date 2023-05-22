@@ -1,7 +1,7 @@
 import { Context } from '../context';
 import { createExerciseTemplates, deleteExerciseTemplates, savedExerciseTemplates } from '../exerciseTemplates/exerciseTemplates.service';
 import { MutationResolvers, Resolvers, UserResolvers, WorkoutTemplateResolvers } from '../generated/graphql.generated';
-import { createWorkoutTemplates, savedWorkoutTemplates, updateWorkoutTemplate } from './workoutTemplates.service';
+import { SavedWorkoutTemplate, createWorkoutTemplates, savedWorkoutTemplates, updateWorkoutTemplate } from './workoutTemplates.service';
 
 const createWorkoutTemplatesResolver: MutationResolvers<Context>['createWorkoutTemplates'] = (_parent, args, ctx) => {
 
@@ -43,8 +43,14 @@ const updateWorkoutTemplatesResolver: MutationResolvers<Context>['updateWorkoutT
   return savedWorkoutTemplates.filter(swt => workoutTemplateIds.includes(swt.id));
 }
 
-const workoutTemplatesResolver: UserResolvers<Context>['workoutTemplates'] = (parent) => {
-  return savedWorkoutTemplates.filter(t => t.userId === parent.id);
+const workoutTemplatesResolver: UserResolvers<Context>['workoutTemplates'] = (parent, args) => {
+  let userWorkoutTemplates = savedWorkoutTemplates.filter(t => t.userId === parent.id);
+
+  if (args.filter?.workoutTemplateIds?.length) {
+    userWorkoutTemplates = userWorkoutTemplates.filter(wt => args.filter?.workoutTemplateIds?.includes(wt.id));
+  }
+
+  return userWorkoutTemplates;
 }
 
 const exerciseTemplatesResolver: WorkoutTemplateResolvers<Context>['exerciseTemplates'] = (parent) => {

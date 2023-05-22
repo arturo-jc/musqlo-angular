@@ -1,4 +1,4 @@
-query UserWorkoutTemplates($userId: String!) {
+query UserWorkoutTemplates($userId: String!, $filter: UserWorkoutTemplatesFilter) {
   user(userId: $userId) {
     ...FullUser
   }
@@ -23,7 +23,7 @@ fragment BaseUser on User {
 }
 
 fragment User_WorkoutTemplates on User {
-  workoutTemplates {
+  workoutTemplates(filter: $filter) {
     ...FullWorkoutTemplate
   }
 }

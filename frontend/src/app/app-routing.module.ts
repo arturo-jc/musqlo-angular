@@ -4,7 +4,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { MutateScheduleComponent } from './mutate-schedule/mutate-schedule.component';
 import { MutateWorkoutTemplateComponent } from './mutate-workout-template/mutate-workout-template.component';
 import { AuthComponent } from './auth/auth.component';
-import { checkAuth, isAuthenticated, isDeauthenticated } from './services/auth.guards';
+import { checkAuth, isDeauthenticated } from './services/auth.guards';
 
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
@@ -13,6 +13,7 @@ const routes: Routes = [
     { path: 'workouts', children: [
       { path: 'new', component: MutateWorkoutTemplateComponent },
       { path: 'edit', component: MutateWorkoutTemplateComponent },
+      { path: 'edit/:workoutTemplateId', component: MutateWorkoutTemplateComponent },
     ]},
     { path: 'schedules', children: [
       { path: 'new', component: MutateScheduleComponent },
