@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { cloneDeep } from 'lodash-es';
 import { FrontendSchedule, FrontendWorkoutTemplate } from '../services/frontend.service';
 import { SchedulesService } from '../services/schedules.service';
 import { WorkoutTemplatesService } from '../services/workout-templates.service';
@@ -17,9 +18,21 @@ export class DashboardComponent {
   ) {}
 
   editWorkout(workoutTemplate: FrontendWorkoutTemplate) {
-    if (!workoutTemplate.key) { return; }
-    this.workoutTemplatesService.editWorkoutTemplateKey = workoutTemplate.key;
-    this.router.navigate([ 'workouts', 'edit' ]);
+
+    const navCommands = [ 'workouts', 'edit' ];
+
+    if (workoutTemplate.id) {
+
+      // If workout template is saved, push it to URL so we can fetch it from mutate component
+      navCommands.push(workoutTemplate.id);
+
+    } else {
+
+      //Otherwise, store it in `activeWorkoutTemplate` so we can still load it from mutate component
+      this.workoutTemplatesService.activeWorkoutTemplate = cloneDeep(workoutTemplate);
+    }
+
+    this.router.navigate(navCommands);
   }
 
   editSchedule(schedule: FrontendSchedule) {

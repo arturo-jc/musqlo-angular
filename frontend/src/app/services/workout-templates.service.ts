@@ -16,7 +16,7 @@ export class WorkoutTemplatesService {
 
   workoutTemplates: FrontendWorkoutTemplate[] = []
 
-  editWorkoutTemplateKey?: string;
+  activeWorkoutTemplate?: FrontendWorkoutTemplate;
 
   _currentKey = 0;
 
@@ -63,29 +63,29 @@ export class WorkoutTemplatesService {
       return;
     }
 
-    if (this.editWorkoutTemplateKey === undefined) {
-      throw new Error('No editWorkoutTemplateKey found');
+    if (!this.activeWorkoutTemplate) {
+      throw new Error('Active workout template not found');
     }
-
-    editedWorkoutTemplate.key = this.editWorkoutTemplateKey;
 
     const updatedWorkoutTemplates = [ ...this.workoutTemplates ];
 
-    updatedWorkoutTemplates.splice(this.workoutTemplateToEditIndex, 1, editedWorkoutTemplate);
+    const activeWorkoutTemplateIndex = updatedWorkoutTemplates.findIndex(wt => wt.key === this.activeWorkoutTemplate?.key);
+
+    updatedWorkoutTemplates.splice(activeWorkoutTemplateIndex, 1, editedWorkoutTemplate);
 
     this.workoutTemplates = updatedWorkoutTemplates;
   }
 
   updateExistingWorkoutTemplate(editedWorkoutTemplate: FrontendWorkoutTemplate) {
 
-    const uneditedWorkoutTemplate = this.workoutTemplateToEdit;
+    const uneditedWorkoutTemplate = this.activeWorkoutTemplate;
 
     if (!uneditedWorkoutTemplate) {
-      throw new Error('workoutTemplateToEdit not found');
+      throw new Error('active workout template not found');
     }
 
     if (!uneditedWorkoutTemplate.id) {
-      throw new Error('Cannot update workout template without an ID');
+      throw new Error('Workout template ID not found');
     }
 
     const exerciseTemplateIds: string[] = [];
@@ -284,17 +284,8 @@ export class WorkoutTemplatesService {
   reset() {
     this.userId = null;
     this.workoutTemplates = [];
-    this.editWorkoutTemplateKey = undefined;
     this._currentKey = 0;
     this.subs.unsubscribe();
-  }
-
-  get workoutTemplateToEdit() {
-    return this.workoutTemplates.find(t => t.key === this.editWorkoutTemplateKey);
-  }
-
-  get workoutTemplateToEditIndex() {
-    return this.workoutTemplates.findIndex(t => t.key === this.editWorkoutTemplateKey);
   }
 
   get currentKey() {

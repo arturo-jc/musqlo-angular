@@ -4,8 +4,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { cloneDeep } from 'lodash-es';
 import { ExerciseItem } from '../../generated/graphql.generated';
 import { WorkoutTemplatesService } from '../services/workout-templates.service';
+import { AuthService } from '../services/auth.service';
 import { ExerciseItemsComponent } from './exercise-items/exercise-items.component';
 import { FrontendExerciseTemplate, FrontendSetTemplate, FrontendWorkoutTemplate } from '../services/frontend.service';
+import { combineLatest, firstValueFrom, map } from 'rxjs';
 
 export const DEFAULT_BG_COLOR = 'var(--primary-color)';
 
@@ -24,6 +26,8 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
 
   mode!: 'create' | 'edit';
 
+  loadedworkoutTemplateKey?: string | null;
+
   reorderModeButtonPressed = false;
 
   reorderMode = false;
@@ -35,41 +39,77 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
   collapsedTemplates: { [ templateOrder: string ]: boolean } = {};
 
   constructor(
+    private auth: AuthService,
     private workoutTemplates: WorkoutTemplatesService,
     private router: Router,
     private route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
-    this.setMode();
-
-    if (this.mode === 'edit') {
-      this.loadWorkout();
-    }
+    this.checkIfExistingWorkoutTemplate();
   }
 
   ngOnDestroy(): void {
-    this.workoutTemplates.editWorkoutTemplateKey = undefined;
+    this.workoutTemplates.activeWorkoutTemplate = undefined;
   }
 
-  setMode() {
+  async checkIfExistingWorkoutTemplate() {
+
+    const workoutTemplateId$ = this.route.params.pipe(map(params => params['workoutTemplateId']));
+
+    const userId$ = this.auth.user.pipe(map(user => user?.id));
+
+    const [ workoutTemplateId, userId ] = await firstValueFrom(combineLatest([ workoutTemplateId$, userId$ ]));
+
+    const isExistingWorkoutTemplate = Boolean(workoutTemplateId);
+
+    if (isExistingWorkoutTemplate && userId) {
+
+      this.setMode(isExistingWorkoutTemplate);
+
+    } else if (isExistingWorkoutTemplate) {
+      throw new Error('You need to be logged in to access a workout template');
+    } else {
+
+      this.setMode(isExistingWorkoutTemplate);
+
+      if (this.mode === 'edit') {
+        this.setWorkoutTemplate();
+      }
+
+    }
+  }
+
+  setMode(isExistingWorkoutTemplate: boolean) {
+
+    if (isExistingWorkoutTemplate) {
+      this.mode = 'edit';
+      return;
+    }
+
     const [ urlFragment ] = this.route.snapshot.url;
     this.mode = urlFragment.path === 'new' ? 'create' : 'edit';
   }
 
-  loadWorkout() {
-    const { workoutTemplateToEdit } = this.workoutTemplates;
+  setWorkoutTemplate() {
+    const { activeWorkoutTemplate } = this.workoutTemplates;
 
-    if (!workoutTemplateToEdit) { return; }
+    if (!activeWorkoutTemplate) {
+      throw new Error('Active workout template not found');
+    }
 
-    if (!workoutTemplateToEdit.name) { return; }
+    if (!activeWorkoutTemplate.name) {
+      throw new Error('Active workout template must have a name')
+    }
 
-    this.title = workoutTemplateToEdit.name;
-    this.color = workoutTemplateToEdit.backgroundColor || DEFAULT_BG_COLOR;
+    this.title = activeWorkoutTemplate.name;
+    this.color = activeWorkoutTemplate.backgroundColor || DEFAULT_BG_COLOR;
+
+    this.loadedworkoutTemplateKey = activeWorkoutTemplate.key;
 
     const exerciseTemplates: FrontendExerciseTemplate[] = [];
 
-    for (const exerciseTemplate of (workoutTemplateToEdit.exerciseTemplates)) {
+    for (const exerciseTemplate of (activeWorkoutTemplate.exerciseTemplates)) {
 
       let key: string;
 
@@ -224,7 +264,7 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
       name: this.title,
       exerciseTemplates: this.exerciseTemplates,
       backgroundColor: this.color,
-      key: this.workoutTemplates.currentKey,
+      key: this.loadedworkoutTemplateKey || this.workoutTemplates.currentKey,
     }
 
     if (this.mode === 'create') {
