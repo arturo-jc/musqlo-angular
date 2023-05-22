@@ -197,12 +197,6 @@ export class WorkoutTemplatesService {
     ).subscribe(userWorkoutTemplates =>  this.workoutTemplates = userWorkoutTemplates);
   }
 
-  setKeys(workoutTemplates: { key?: string | null | undefined; id: string }[]) {
-    for (const template of workoutTemplates) {
-      template.key = template.id;
-    }
-  }
-
   createUnsavedWorkoutTemplates() {
 
     const unsavedWorkoutTemplates = this.workoutTemplates.filter(t => !t.id);

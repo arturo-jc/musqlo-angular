@@ -65,7 +65,9 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
 
     if (isExistingWorkoutTemplate && userId) {
 
-      this.setMode(isExistingWorkoutTemplate);
+      // TO DO: FETCH WORKOUT TEMPLATE
+
+      // this.setMode(isExistingWorkoutTemplate);
 
     } else if (isExistingWorkoutTemplate) {
       throw new Error('You need to be logged in to access a workout template');
