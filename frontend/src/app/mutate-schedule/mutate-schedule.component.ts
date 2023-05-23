@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, ViewChild } from '@angular/core';
 import { Calendar, CalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridWeek from '@fullcalendar/daygrid';
 import timeGridWeek from '@fullcalendar/timegrid';
