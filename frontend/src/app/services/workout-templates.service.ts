@@ -4,7 +4,7 @@ import { MutationOptionsAlone } from 'apollo-angular/types';
 import { partition } from 'lodash-es';
 import { filter, map, of, tap } from 'rxjs';
 import { SubSink } from 'subsink';
-import { CreateWorkoutTemplatesGQL, UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables, CreateWorkoutTemplatesMutationVariables, CreateWorkoutTemplateInput, UserWorkoutTemplatesGQL, CreateExerciseTemplateInput, CreateSetTemplateInput, UpdateWorkoutTemplateGQL, UpdateExerciseTemplateInput, UpdateWorkoutTemplateMutationVariables, UpdateSetTemplateInput, CreateWorkoutTemplatesMutation, UserWorkoutTemplatesDocument } from '../../generated/graphql.generated';
+import { CreateWorkoutTemplatesGQL, UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables, CreateWorkoutTemplatesMutationVariables, CreateWorkoutTemplateInput, UserWorkoutTemplatesGQL, CreateExerciseTemplateInput, CreateSetTemplateInput, UpdateWorkoutTemplateGQL, UpdateExerciseTemplateInput, UpdateWorkoutTemplateMutationVariables, UpdateSetTemplateInput, CreateWorkoutTemplatesMutation, UserWorkoutTemplatesDocument, UpdateWorkoutTemplateMutation } from '../../generated/graphql.generated';
 import { FrontendExerciseTemplate, FrontendService, FrontendSetTemplate, FrontendWorkoutTemplate } from '../services/frontend.service';
 
 @Injectable({
@@ -50,7 +50,7 @@ export class WorkoutTemplatesService {
     };
 
     const opts: MutationOptionsAlone<CreateWorkoutTemplatesMutation, CreateWorkoutTemplatesMutationVariables> = {
-      refetchQueries: [ { query: UserWorkoutTemplatesDocument, variables: { userId: this.userId }}],
+      refetchQueries: [ { query: UserWorkoutTemplatesDocument, variables: { userId: this.userId }} ],
     }
 
     this.createWorkoutTemplatesGQL.mutate(mutationVariables, opts).subscribe();
@@ -181,7 +181,16 @@ export class WorkoutTemplatesService {
       setTemplates: updateSetTemplateInputs,
     }
 
-    this.updateWorkoutTemplateGQL.mutate(mutationVariables).subscribe();
+    const opts: MutationOptionsAlone<UpdateWorkoutTemplateMutation, UpdateWorkoutTemplateMutationVariables> = {
+      refetchQueries: [
+        {
+          query: UserWorkoutTemplatesDocument,
+          variables: { userId: this.userId, workoutTemplateIds: [ uneditedWorkoutTemplate.id ] }
+        }
+      ],
+    }
+
+    this.updateWorkoutTemplateGQL.mutate(mutationVariables, opts).subscribe();
   }
 
   onAuthSuccess(userId: string) {

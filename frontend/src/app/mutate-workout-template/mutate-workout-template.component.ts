@@ -2,12 +2,14 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { cloneDeep } from 'lodash-es';
-import { ExerciseItem } from '../../generated/graphql.generated';
+import { ExerciseItem, UserWorkoutTemplatesGQL, UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables } from '../../generated/graphql.generated';
 import { WorkoutTemplatesService } from '../services/workout-templates.service';
 import { AuthService } from '../services/auth.service';
 import { ExerciseItemsComponent } from './exercise-items/exercise-items.component';
-import { FrontendExerciseTemplate, FrontendSetTemplate, FrontendWorkoutTemplate } from '../services/frontend.service';
+import { FrontendExerciseTemplate, FrontendService, FrontendSetTemplate, FrontendWorkoutTemplate as workoutTemplate } from '../services/frontend.service';
 import { combineLatest, firstValueFrom, map } from 'rxjs';
+import { SubSink } from 'subsink';
+import { QueryRef } from 'apollo-angular';
 
 export const DEFAULT_BG_COLOR = 'var(--primary-color)';
 
@@ -36,13 +38,19 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
 
   exerciseTemplates: FrontendExerciseTemplate[] = [];
 
-  collapsedTemplates: { [ templateOrder: string ]: boolean } = {};
+  collapsedExerciseTemplates: { [ exerciseTemplateKey: string ]: boolean } = {};
+
+  workoutTemplateQuery?: QueryRef<UserWorkoutTemplatesQuery, UserWorkoutTemplatesQueryVariables>;
+
+  subs = new SubSink();
 
   constructor(
     private auth: AuthService,
     private workoutTemplates: WorkoutTemplatesService,
+    private userWorkoutTemplatesGQL: UserWorkoutTemplatesGQL,
     private router: Router,
     private route: ActivatedRoute,
+    private frontend: FrontendService,
   ) {}
 
   ngOnInit(): void {
@@ -65,18 +73,45 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
 
     if (isExistingWorkoutTemplate && userId) {
 
-      // TO DO: FETCH WORKOUT TEMPLATE
+      const queryVariables: UserWorkoutTemplatesQueryVariables = {
+        userId,
+        filter: { workoutTemplateIds: [ workoutTemplateId ] }
+      }
 
-      // this.setMode(isExistingWorkoutTemplate);
+      const { data: { user } } = await firstValueFrom(this.userWorkoutTemplatesGQL.fetch(queryVariables));
+
+      if (!user?.workoutTemplates?.length) {
+        throw new Error('Could not find workout template');
+      }
+
+      const [ workoutTemplate ] = this.frontend.convertWorkoutTemplates(user.workoutTemplates, true);
+
+      this.workoutTemplates.activeWorkoutTemplate = cloneDeep(workoutTemplate);
+
+      this.setMode(isExistingWorkoutTemplate);
+
+      this.setWorkoutTemplate(workoutTemplate);
 
     } else if (isExistingWorkoutTemplate) {
+
       throw new Error('You need to be logged in to access a workout template');
+
     } else {
 
       this.setMode(isExistingWorkoutTemplate);
 
       if (this.mode === 'edit') {
-        this.setWorkoutTemplate();
+        const { activeWorkoutTemplate } = this.workoutTemplates;
+
+        if (!activeWorkoutTemplate) {
+          throw new Error('Active workout template not found');
+        }
+
+        if (!activeWorkoutTemplate.name) {
+          throw new Error('Active workout template must have a name')
+        }
+
+        this.setWorkoutTemplate(activeWorkoutTemplate);
       }
 
     }
@@ -93,25 +128,16 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
     this.mode = urlFragment.path === 'new' ? 'create' : 'edit';
   }
 
-  setWorkoutTemplate() {
-    const { activeWorkoutTemplate } = this.workoutTemplates;
+  setWorkoutTemplate(workoutTemplate: workoutTemplate) {
 
-    if (!activeWorkoutTemplate) {
-      throw new Error('Active workout template not found');
-    }
+    this.title = workoutTemplate.name;
+    this.color = workoutTemplate.backgroundColor || DEFAULT_BG_COLOR;
 
-    if (!activeWorkoutTemplate.name) {
-      throw new Error('Active workout template must have a name')
-    }
-
-    this.title = activeWorkoutTemplate.name;
-    this.color = activeWorkoutTemplate.backgroundColor || DEFAULT_BG_COLOR;
-
-    this.loadedworkoutTemplateKey = activeWorkoutTemplate.key;
+    this.loadedworkoutTemplateKey = workoutTemplate.key;
 
     const exerciseTemplates: FrontendExerciseTemplate[] = [];
 
-    for (const exerciseTemplate of (activeWorkoutTemplate.exerciseTemplates)) {
+    for (const exerciseTemplate of (workoutTemplate.exerciseTemplates)) {
 
       let key: string;
 
@@ -133,7 +159,7 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
 
       exerciseTemplates.push(frontendExercise);
 
-      this.collapsedTemplates[frontendExercise.key] = false;
+      this.collapsedExerciseTemplates[frontendExercise.key] = false;
     }
 
     this.exerciseTemplates = exerciseTemplates
@@ -213,9 +239,9 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
 
     const lastExistingSet = template.setTemplates[template.setTemplates.length - 1];
 
-    const delay = this.collapsedTemplates[template.key] ? 400 : 0;
+    const delay = this.collapsedExerciseTemplates[template.key] ? 400 : 0;
 
-    this.collapsedTemplates[template.key] = false;
+    this.collapsedExerciseTemplates[template.key] = false;
 
     setTimeout(() => {
 
@@ -262,7 +288,7 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
 
   saveWorkout() {
 
-    const workoutTemplateToSave: FrontendWorkoutTemplate = {
+    const workoutTemplateToSave: workoutTemplate = {
       name: this.title,
       exerciseTemplates: this.exerciseTemplates,
       backgroundColor: this.color,

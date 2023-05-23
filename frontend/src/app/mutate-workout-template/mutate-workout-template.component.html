@@ -43,7 +43,7 @@
         >
         <li *ngFor="let template of exerciseTemplates" [cdkDragData]="template" cdkDrag [cdkDragDisabled]="!reorderMode">
             <app-exercise-template
-                [(collapsed)]="collapsedTemplates[template.key]"
+                [(collapsed)]="collapsedExerciseTemplates[template.key]"
                 [template]="template"
                 [reorderMode]="reorderMode"
                 [hideSets]="reorderModeButtonPressed"

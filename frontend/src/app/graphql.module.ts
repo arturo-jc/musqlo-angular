@@ -7,7 +7,19 @@ const uri = '/api/graphql'; // <-- add the URL of the GraphQL server here
 export function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
   return {
     link: httpLink.create({uri}),
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+      typePolicies: {
+        WorkoutTemplate: {
+          fields: {
+            exerciseTemplates: {
+              merge(_existing, incoming) {
+                return incoming;
+              }
+            }
+          }
+        }
+      }
+    }),
   };
 }
 
