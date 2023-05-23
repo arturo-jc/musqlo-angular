@@ -18,6 +18,7 @@ const routes: Routes = [
     { path: 'schedules', children: [
       { path: 'new', component: MutateScheduleComponent },
       { path: 'edit', component: MutateScheduleComponent },
+      { path: 'edit/:scheduleId', component: MutateScheduleComponent },
     ] },
     { path: 'login', component: AuthComponent, canActivate: [ isDeauthenticated ] },
     { path: 'signup', component: AuthComponent, canActivate: [ isDeauthenticated ] },

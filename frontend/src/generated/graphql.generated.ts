@@ -231,8 +231,17 @@ export type User = {
 };
 
 
+export type UserSchedulesArgs = {
+  filter?: InputMaybe<UserSchedulesFilter>;
+};
+
+
 export type UserWorkoutTemplatesArgs = {
   filter?: InputMaybe<UserWorkoutTemplatesFilter>;
+};
+
+export type UserSchedulesFilter = {
+  scheduleIds?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type UserWorkoutTemplatesFilter = {
@@ -326,14 +335,17 @@ export type UserWorkoutTemplatesQuery = { __typename?: 'Query', user?: { __typen
 
 export type UserSchedulesQueryVariables = Exact<{
   userId: Scalars['String'];
+  filter?: InputMaybe<UserSchedulesFilter>;
 }>;
 
 
 export type UserSchedulesQuery = { __typename?: 'Query', user?: { __typename?: 'User', id: string, schedules?: Array<{ __typename?: 'Schedule', id?: string | null, key?: string | null, name: string, workouts?: Array<{ __typename?: 'ScheduleWorkout', id?: string | null, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null }> | null }> | null } | null };
 
-export type FullUserFragment = { __typename?: 'User', id: string, workoutTemplates?: Array<{ __typename?: 'WorkoutTemplate', id?: string | null, name: string, backgroundColor?: string | null, key?: string | null, exerciseTemplates?: Array<{ __typename?: 'ExerciseTemplate', id?: string | null, name: string, order: number, setTemplates?: Array<{ __typename?: 'SetTemplate', id?: string | null, exerciseTemplateId?: string | null, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null }> | null }> | null };
+export type FullUserFragment = { __typename?: 'User', id: string, workoutTemplates?: Array<{ __typename?: 'WorkoutTemplate', id?: string | null, name: string, backgroundColor?: string | null, key?: string | null, exerciseTemplates?: Array<{ __typename?: 'ExerciseTemplate', id?: string | null, name: string, order: number, setTemplates?: Array<{ __typename?: 'SetTemplate', id?: string | null, exerciseTemplateId?: string | null, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null }> | null }> | null, schedules?: Array<{ __typename?: 'Schedule', id?: string | null, key?: string | null, name: string, workouts?: Array<{ __typename?: 'ScheduleWorkout', id?: string | null, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null }> | null }> | null };
 
 export type BaseUserFragment = { __typename?: 'User', id: string };
+
+export type User_SchedulesFragment = { __typename?: 'User', schedules?: Array<{ __typename?: 'Schedule', id?: string | null, key?: string | null, name: string, workouts?: Array<{ __typename?: 'ScheduleWorkout', id?: string | null, workoutTemplateId?: string | null, workoutTemplateKey?: string | null, dow?: number | null, allDay?: boolean | null, start?: string | null, end?: string | null }> | null }> | null };
 
 export type User_WorkoutTemplatesFragment = { __typename?: 'User', workoutTemplates?: Array<{ __typename?: 'WorkoutTemplate', id?: string | null, name: string, backgroundColor?: string | null, key?: string | null, exerciseTemplates?: Array<{ __typename?: 'ExerciseTemplate', id?: string | null, name: string, order: number, setTemplates?: Array<{ __typename?: 'SetTemplate', id?: string | null, exerciseTemplateId?: string | null, exerciseItemId: string, exerciseType?: string | null, reps?: number | null, weight?: number | null, order: number }> | null }> | null }> | null };
 
@@ -375,27 +387,6 @@ export const FullScheduleWorkoutFragmentDoc = gql`
   ...BaseScheduleWorkout
 }
     ${BaseScheduleWorkoutFragmentDoc}`;
-export const BaseScheduleFragmentDoc = gql`
-    fragment BaseSchedule on Schedule {
-  id
-  key
-  name
-}
-    `;
-export const Schedule_ScheduleWorkoutsFragmentDoc = gql`
-    fragment Schedule_ScheduleWorkouts on Schedule {
-  workouts {
-    ...BaseScheduleWorkout
-  }
-}
-    ${BaseScheduleWorkoutFragmentDoc}`;
-export const FullScheduleFragmentDoc = gql`
-    fragment FullSchedule on Schedule {
-  ...BaseSchedule
-  ...Schedule_ScheduleWorkouts
-}
-    ${BaseScheduleFragmentDoc}
-${Schedule_ScheduleWorkoutsFragmentDoc}`;
 export const BaseSetTemplateFragmentDoc = gql`
     fragment BaseSetTemplate on SetTemplate {
   id
@@ -467,13 +458,43 @@ export const User_WorkoutTemplatesFragmentDoc = gql`
   }
 }
     ${FullWorkoutTemplateFragmentDoc}`;
+export const BaseScheduleFragmentDoc = gql`
+    fragment BaseSchedule on Schedule {
+  id
+  key
+  name
+}
+    `;
+export const Schedule_ScheduleWorkoutsFragmentDoc = gql`
+    fragment Schedule_ScheduleWorkouts on Schedule {
+  workouts {
+    ...BaseScheduleWorkout
+  }
+}
+    ${BaseScheduleWorkoutFragmentDoc}`;
+export const FullScheduleFragmentDoc = gql`
+    fragment FullSchedule on Schedule {
+  ...BaseSchedule
+  ...Schedule_ScheduleWorkouts
+}
+    ${BaseScheduleFragmentDoc}
+${Schedule_ScheduleWorkoutsFragmentDoc}`;
+export const User_SchedulesFragmentDoc = gql`
+    fragment User_Schedules on User {
+  schedules(filter: $filter) {
+    ...FullSchedule
+  }
+}
+    ${FullScheduleFragmentDoc}`;
 export const FullUserFragmentDoc = gql`
     fragment FullUser on User {
   ...BaseUser
   ...User_WorkoutTemplates
+  ...User_Schedules
 }
     ${BaseUserFragmentDoc}
-${User_WorkoutTemplatesFragmentDoc}`;
+${User_WorkoutTemplatesFragmentDoc}
+${User_SchedulesFragmentDoc}`;
 export const ExerciseItemsDocument = gql`
     query ExerciseItems {
   exerciseItems {
@@ -616,10 +637,12 @@ ${FullScheduleWorkoutFragmentDoc}`;
 export const UserWorkoutTemplatesDocument = gql`
     query UserWorkoutTemplates($userId: String!, $filter: UserWorkoutTemplatesFilter) {
   user(userId: $userId) {
-    ...FullUser
+    ...BaseUser
+    ...User_WorkoutTemplates
   }
 }
-    ${FullUserFragmentDoc}`;
+    ${BaseUserFragmentDoc}
+${User_WorkoutTemplatesFragmentDoc}`;
 
   @Injectable({
     providedIn: 'root'
@@ -632,15 +655,14 @@ export const UserWorkoutTemplatesDocument = gql`
     }
   }
 export const UserSchedulesDocument = gql`
-    query UserSchedules($userId: String!) {
+    query UserSchedules($userId: String!, $filter: UserSchedulesFilter) {
   user(userId: $userId) {
-    id
-    schedules {
-      ...FullSchedule
-    }
+    ...BaseUser
+    ...User_Schedules
   }
 }
-    ${FullScheduleFragmentDoc}`;
+    ${BaseUserFragmentDoc}
+${User_SchedulesFragmentDoc}`;
 
   @Injectable({
     providedIn: 'root'

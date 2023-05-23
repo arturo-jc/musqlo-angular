@@ -11,8 +11,12 @@ import dayjs from 'dayjs';
 import { EventImpl } from '@fullcalendar/core/internal';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WorkoutTemplatesService } from '../services/workout-templates.service';
+import { combineLatest, firstValueFrom, map } from 'rxjs';
 import { Maybe } from 'graphql/jsutils/Maybe';
-import { FrontendSchedule, FrontendScheduleWorkout } from '../services/frontend.service';
+import { FrontendSchedule, FrontendScheduleWorkout, FrontendService } from '../services/frontend.service';
+import { AuthService } from '../services/auth.service';
+import { UserSchedulesGQL, UserSchedulesQueryVariables } from '../../generated/graphql.generated';
+import { cloneDeep } from '@apollo/client/utilities';
 
 export type CalendarView = 'weekly' | 'biweekly';
 
@@ -26,7 +30,7 @@ export interface CalendarViewOption {
   templateUrl: './mutate-schedule.component.html',
   styleUrls: ['./mutate-schedule.component.scss']
 })
-export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy {
+export class MutateScheduleComponent implements AfterViewInit, OnDestroy {
 
   @ViewChild(FullCalendarComponent, { static: false }) calendar?: FullCalendarComponent;
 
@@ -35,6 +39,8 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
   mode!: 'create' | 'edit';
 
   title = 'New Schedule';
+
+  existingSchedule?: FrontendSchedule;
 
   calendarApi?: Calendar;
 
@@ -91,30 +97,99 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
   constructor(
     public fullCalendar: FullCalendarService,
     private schedulesService: SchedulesService,
+    private userSchedulesGQL: UserSchedulesGQL,
     private workoutTemplatesService: WorkoutTemplatesService,
     private router: Router,
     private route: ActivatedRoute,
+    private auth: AuthService,
+    private frontend: FrontendService,
     private cd: ChangeDetectorRef,
   ) {}
 
-  ngOnInit(): void {
-    this.setMode();
-  }
-
   ngAfterViewInit(): void {
-    if (!this.calendar) { return; }
+
+    if (!this.calendar) {
+      throw new Error('Calendar not found');
+    }
+
     this.calendarApi = this.calendar.getApi();
 
-    if (this.mode === 'edit') {
-      this.loadSchedule();
-    }
+    this.checkForExistingSchedule();
   }
 
   ngOnDestroy(): void {
+    this.schedulesService.activeSchedule = undefined;
   }
 
-  setMode() {
+  async checkForExistingSchedule() {
+
+    const scheduleId$ = this.route.params.pipe(map(params => params['scheduleId']));
+
+    const [ scheduleId, userId ] = await firstValueFrom(combineLatest([ scheduleId$, this.auth.userId ]));
+
+    const isExistingSchedule = Boolean(scheduleId);
+
+    this.setMode(isExistingSchedule);
+
+    if (isExistingSchedule && userId) {
+
+      this.fetchSchedule(userId, scheduleId);
+
+    } else if (isExistingSchedule) {
+
+      throw new Error('You need to be logged in to access a workout template');
+
+    } else {
+
+      if (this.mode === 'create') { return; }
+
+      this.loadActiveSchedule();
+    }
+
+  }
+
+  async fetchSchedule(userId: string, scheduleId: string) {
+
+    const queryVariables: UserSchedulesQueryVariables = {
+      userId,
+      filter: { scheduleIds: [ scheduleId ] },
+    }
+
+    const { data: { user } } = await firstValueFrom(this.userSchedulesGQL.fetch(queryVariables));
+
+    if (!user?.schedules?.length) {
+      throw new Error('Failed to retrieve schedule');
+    }
+
+    const [ schedule ] = this.frontend.convertSchedules(user.schedules);
+
+    this.schedulesService.activeSchedule = cloneDeep(schedule);
+
+    this.setSchedule(schedule);
+
+  }
+
+  loadActiveSchedule() {
+
+    const { activeSchedule } = this.schedulesService;
+
+    if (!activeSchedule) {
+      throw new Error('Active schedule not found');
+    }
+
+    this.setSchedule(activeSchedule);
+
+  }
+
+  setMode(isExistingSchedule: boolean) {
+
+    if (isExistingSchedule) {
+      this.mode = 'edit';
+      return;
+    }
+
     const [ urlFragment ] = this.route.snapshot.url;
+
     this.mode = urlFragment.path === 'new' ? 'create' : 'edit';
   }
 
@@ -200,14 +275,15 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
     return workouts;
   }
 
-  loadSchedule() {
-    const { scheduleToEdit } = this.schedulesService;
+  setSchedule(activeSchedule: FrontendSchedule) {
 
-    if (!scheduleToEdit || !this.calendarApi) { return; }
+    if (!this.calendarApi) {
+      throw new Error('Calendar API not found');
+    }
 
     let showTimes = false;
 
-    for (const scheduleWorkout of (scheduleToEdit.workouts || [])) {
+    for (const scheduleWorkout of (activeSchedule.workouts || [])) {
       if (!scheduleWorkout) { continue; }
 
       const workout = this.workoutTemplatesService.workoutTemplates
@@ -226,11 +302,11 @@ export class MutateScheduleComponent implements OnInit, AfterViewInit, OnDestroy
       this.calendarApi.addEvent(eventInput);
     }
 
-    this.setCalendarView(scheduleToEdit, showTimes);
+    this.setCalendarView(activeSchedule, showTimes);
 
-    if (!scheduleToEdit.name) { return; }
+    if (!activeSchedule.name) { return; }
 
-    this.title = scheduleToEdit.name;
+    this.title = activeSchedule.name;
 
     this.cd.detectChanges();
   }

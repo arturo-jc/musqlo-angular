@@ -25,7 +25,7 @@ export class SchedulesService {
 
   schedules: FrontendSchedule[] = [];
 
-  editScheduleKey?: string | null;
+  activeSchedule?: FrontendSchedule;
 
   currentKey = 0;
 
@@ -69,20 +69,22 @@ export class SchedulesService {
       return;
     }
 
-    if (!this.editScheduleKey) { return; }
-
-    updatedSchedule.key = this.editScheduleKey.toString();
+    if (!this.activeSchedule) {
+      throw new Error('Active schedule not found');
+    }
 
     const updatedSchedules = [ ...this.schedules ];
 
-    updatedSchedules.splice(this.scheduleToEditIndex, 1, updatedSchedule);
+    const activeWorkoutTemplateIndex = updatedSchedules.findIndex(s => s.key === this.activeSchedule?.key);
+
+    updatedSchedules.splice(activeWorkoutTemplateIndex, 1, updatedSchedule);
 
     this.schedules = updatedSchedules;
   }
 
   updateExistingSchedule(editedSchedule: FrontendSchedule) {
 
-    const uneditedSchedule = this.scheduleToEdit;
+    const uneditedSchedule = this.activeSchedule;
 
     if (!uneditedSchedule?.id) {
       throw new Error('Cannot update schedule without an ID');
@@ -189,7 +191,6 @@ export class SchedulesService {
   reset() {
     this.userId = null;
     this.schedules = [];
-    this.editScheduleKey = undefined;
     this.currentKey = 0;
     this.subs.unsubscribe();
   }
@@ -227,13 +228,5 @@ export class SchedulesService {
     }
 
     return output;
-  }
-
-  get scheduleToEdit() {
-    return this.schedules.find(t => t.key === this.editScheduleKey);
-  }
-
-  get scheduleToEditIndex() {
-    return this.schedules.findIndex(t => t.key === this.editScheduleKey);
   }
 }

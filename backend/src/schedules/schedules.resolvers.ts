@@ -3,8 +3,15 @@ import { MutationResolvers, Resolvers, ScheduleResolvers, UserResolvers } from "
 import { saveSchedules, savedSchedules, updateSchedule } from './schedules.service';
 import { createScheduleWorkouts, deleteScheduleWorkouts, savedScheduleWorkouts } from '../scheduleWorkouts/scheduleWorkouts.service';
 
-const getSchedules: UserResolvers<Context>['schedules'] = (parent) => {
-  return savedSchedules.filter(s => s.userId === parent.id).map(s => ({ ...s, key: s.id }));
+const getSchedules: UserResolvers<Context>['schedules'] = (parent, args) => {
+
+  let userSchedules = savedSchedules.filter(s => s.userId === parent.id);
+
+  if (args.filter?.scheduleIds?.length) {
+    userSchedules = userSchedules.filter(s => args.filter?.scheduleIds?.includes(s.id));
+  }
+
+  return userSchedules;
 }
 
 const workouts: ScheduleResolvers<Context>['workouts'] = (parent, _args, _ctx) => {

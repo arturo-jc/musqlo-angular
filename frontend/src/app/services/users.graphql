@@ -1,25 +1,31 @@
 query UserWorkoutTemplates($userId: String!, $filter: UserWorkoutTemplatesFilter) {
   user(userId: $userId) {
-    ...FullUser
+    ...BaseUser
+    ...User_WorkoutTemplates
   }
 }
 
-query UserSchedules($userId: String!) {
+query UserSchedules($userId: String!, $filter: UserSchedulesFilter) {
   user(userId: $userId) {
-    id
-    schedules {
-      ...FullSchedule
-    }
+    ...BaseUser
+    ...User_Schedules
   }
 }
 
 fragment FullUser on User {
   ...BaseUser
   ...User_WorkoutTemplates
+  ...User_Schedules
 }
 
 fragment BaseUser on User {
   id
+}
+
+fragment User_Schedules on User {
+  schedules(filter: $filter) {
+    ...FullSchedule
+  }
 }
 
 fragment User_WorkoutTemplates on User {

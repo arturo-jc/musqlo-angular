@@ -230,8 +230,17 @@ export type User = {
 };
 
 
+export type UserSchedulesArgs = {
+  filter?: InputMaybe<UserSchedulesFilter>;
+};
+
+
 export type UserWorkoutTemplatesArgs = {
   filter?: InputMaybe<UserWorkoutTemplatesFilter>;
+};
+
+export type UserSchedulesFilter = {
+  scheduleIds?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type UserWorkoutTemplatesFilter = {
@@ -342,6 +351,7 @@ export type ResolversTypes = ResolversObject<{
   UpdateSetTemplateInput: UpdateSetTemplateInput;
   UpdateWorkoutTemplateInput: UpdateWorkoutTemplateInput;
   User: ResolverTypeWrapper<User>;
+  UserSchedulesFilter: UserSchedulesFilter;
   UserWorkoutTemplatesFilter: UserWorkoutTemplatesFilter;
   WorkoutTemplate: ResolverTypeWrapper<WorkoutTemplate>;
 }>;
@@ -370,6 +380,7 @@ export type ResolversParentTypes = ResolversObject<{
   UpdateSetTemplateInput: UpdateSetTemplateInput;
   UpdateWorkoutTemplateInput: UpdateWorkoutTemplateInput;
   User: User;
+  UserSchedulesFilter: UserSchedulesFilter;
   UserWorkoutTemplatesFilter: UserWorkoutTemplatesFilter;
   WorkoutTemplate: WorkoutTemplate;
 }>;
@@ -456,7 +467,7 @@ export type SetTemplateResolvers<ContextType = any, ParentType extends Resolvers
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  schedules?: Resolver<Maybe<Array<ResolversTypes['Schedule']>>, ParentType, ContextType>;
+  schedules?: Resolver<Maybe<Array<ResolversTypes['Schedule']>>, ParentType, ContextType, Partial<UserSchedulesArgs>>;
   username?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   workoutTemplates?: Resolver<Maybe<Array<ResolversTypes['WorkoutTemplate']>>, ParentType, ContextType, Partial<UserWorkoutTemplatesArgs>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

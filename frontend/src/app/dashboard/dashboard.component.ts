@@ -36,8 +36,16 @@ export class DashboardComponent {
   }
 
   editSchedule(schedule: FrontendSchedule) {
-    this.schedulesService.editScheduleKey = schedule.key;
-    this.router.navigate([ 'schedules', 'edit' ]);
+
+    const navCommands = [ 'schedules', 'edit' ];
+
+    if (schedule.id) {
+      navCommands.push(schedule.id);
+    } else {
+      this.schedulesService.activeSchedule = schedule;
+    }
+
+    this.router.navigate(navCommands);
   }
 
 }

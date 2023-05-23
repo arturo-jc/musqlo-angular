@@ -20,6 +20,8 @@ export class AuthService {
 
   isAuthenticated = this._user.pipe(map(user => Boolean(user)));
 
+  userId = this._user.pipe(map(user => user?.id));
+
   onAuthSuccess = this._onAuthSuccess.asObservable();
 
   onAuthFail = this._onAuthFail.asObservable();

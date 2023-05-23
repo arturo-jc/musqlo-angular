@@ -4,7 +4,7 @@ extend type Mutation {
 }
 
 extend type User {
-  schedules: [Schedule!]
+  schedules(filter: UserSchedulesFilter): [Schedule!]
 }
 
 type Schedule {
@@ -28,3 +28,6 @@ input UpdateScheduleInput {
   removeWorkouts: [String!]
 }
 
+input UserSchedulesFilter {
+  scheduleIds: [String!]
+}

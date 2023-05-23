@@ -54,43 +54,26 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.checkIfExistingWorkoutTemplate();
+    this.checkForExistingWorkoutTemplate();
   }
 
   ngOnDestroy(): void {
     this.workoutTemplates.activeWorkoutTemplate = undefined;
   }
 
-  async checkIfExistingWorkoutTemplate() {
+  async checkForExistingWorkoutTemplate() {
 
     const workoutTemplateId$ = this.route.params.pipe(map(params => params['workoutTemplateId']));
 
-    const userId$ = this.auth.user.pipe(map(user => user?.id));
-
-    const [ workoutTemplateId, userId ] = await firstValueFrom(combineLatest([ workoutTemplateId$, userId$ ]));
+    const [ workoutTemplateId, userId ] = await firstValueFrom(combineLatest([ workoutTemplateId$, this.auth.userId ]));
 
     const isExistingWorkoutTemplate = Boolean(workoutTemplateId);
 
+    this.setMode(isExistingWorkoutTemplate);
+
     if (isExistingWorkoutTemplate && userId) {
 
-      const queryVariables: UserWorkoutTemplatesQueryVariables = {
-        userId,
-        filter: { workoutTemplateIds: [ workoutTemplateId ] }
-      }
-
-      const { data: { user } } = await firstValueFrom(this.userWorkoutTemplatesGQL.fetch(queryVariables));
-
-      if (!user?.workoutTemplates?.length) {
-        throw new Error('Could not find workout template');
-      }
-
-      const [ workoutTemplate ] = this.frontend.convertWorkoutTemplates(user.workoutTemplates, true);
-
-      this.workoutTemplates.activeWorkoutTemplate = cloneDeep(workoutTemplate);
-
-      this.setMode(isExistingWorkoutTemplate);
-
-      this.setWorkoutTemplate(workoutTemplate);
+      this.fetchWorkoutTemplate(userId, workoutTemplateId);
 
     } else if (isExistingWorkoutTemplate) {
 
@@ -98,23 +81,46 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
 
     } else {
 
-      this.setMode(isExistingWorkoutTemplate);
+      if (this.mode === 'create') { return; }
 
-      if (this.mode === 'edit') {
-        const { activeWorkoutTemplate } = this.workoutTemplates;
-
-        if (!activeWorkoutTemplate) {
-          throw new Error('Active workout template not found');
-        }
-
-        if (!activeWorkoutTemplate.name) {
-          throw new Error('Active workout template must have a name')
-        }
-
-        this.setWorkoutTemplate(activeWorkoutTemplate);
-      }
+      this.loadActiveWorkoutTemplate();
 
     }
+  }
+
+  async fetchWorkoutTemplate(userId: string, workoutTemplateId: string) {
+
+    const queryVariables: UserWorkoutTemplatesQueryVariables = {
+      userId,
+      filter: { workoutTemplateIds: [ workoutTemplateId ] },
+    }
+
+    const { data: { user } } = await firstValueFrom(this.userWorkoutTemplatesGQL.fetch(queryVariables));
+
+    if (!user?.workoutTemplates?.length) {
+      throw new Error('Could not find workout template');
+    }
+
+    const [ workoutTemplate ] = this.frontend.convertWorkoutTemplates(user.workoutTemplates, true);
+
+    this.workoutTemplates.activeWorkoutTemplate = cloneDeep(workoutTemplate);
+
+    this.setWorkoutTemplate(workoutTemplate);
+  }
+
+  loadActiveWorkoutTemplate() {
+
+    const { activeWorkoutTemplate } = this.workoutTemplates;
+
+    if (!activeWorkoutTemplate) {
+      throw new Error('Active workout template not found');
+    }
+
+    if (!activeWorkoutTemplate.name) {
+      throw new Error('Active workout template must have a name')
+    }
+
+    this.setWorkoutTemplate(activeWorkoutTemplate);
   }
 
   setMode(isExistingWorkoutTemplate: boolean) {
@@ -125,6 +131,7 @@ export class MutateWorkoutTemplateComponent implements OnInit, OnDestroy {
     }
 
     const [ urlFragment ] = this.route.snapshot.url;
+
     this.mode = urlFragment.path === 'new' ? 'create' : 'edit';
   }
 
